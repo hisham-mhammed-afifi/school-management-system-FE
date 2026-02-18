@@ -3,6 +3,7 @@ import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 import { apiInterceptor } from './api.interceptor';
+import { AuthService } from '@core/services/auth.service';
 
 describe('apiInterceptor', () => {
   let http: HttpClient;
@@ -82,6 +83,56 @@ describe('apiInterceptor', () => {
 
     const req = httpTesting.expectOne('http://localhost:3000/api/users');
     expect(req.request.headers.has('Authorization')).toBe(false);
+    req.flush([]);
+  });
+
+  it('should attach X-School-Id header when school is selected by super admin', () => {
+    localStorage.setItem('access_token', 'my-jwt-token');
+    localStorage.setItem('selected_school_id', 'school-123');
+
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        provideHttpClient(withInterceptors([apiInterceptor])),
+        provideHttpClientTesting(),
+      ],
+    });
+
+    http = TestBed.inject(HttpClient);
+    httpTesting = TestBed.inject(HttpTestingController);
+
+    // Log in as a super admin (schoolId: null) so currentSchoolId uses the stored value
+    const authService = TestBed.inject(AuthService);
+    authService.login({ email: 'admin@test.com', password: 'pass' }).subscribe();
+    const loginReq = httpTesting.expectOne('http://localhost:3000/api/v1/auth/login');
+    loginReq.flush({
+      success: true,
+      data: {
+        accessToken: 'my-jwt-token',
+        refreshToken: 'refresh',
+        user: {
+          id: 'u1',
+          email: 'admin@test.com',
+          roles: ['super_admin'],
+          permissions: [],
+          schoolId: null,
+        },
+      },
+    });
+
+    http.get('/api/users').subscribe();
+
+    const req = httpTesting.expectOne('http://localhost:3000/api/users');
+    expect(req.request.headers.get('X-School-Id')).toBe('school-123');
+    req.flush([]);
+  });
+
+  it('should not attach X-School-Id header when no school is selected', () => {
+    http.get('/api/users').subscribe();
+
+    const req = httpTesting.expectOne('http://localhost:3000/api/users');
+    expect(req.request.headers.has('X-School-Id')).toBe(false);
     req.flush([]);
   });
 });

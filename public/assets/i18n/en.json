@@ -12,7 +12,12 @@
     "SEARCH": "Search",
     "NO_RESULTS": "No results found",
     "ERROR": "An error occurred",
-    "SUCCESS": "Operation completed successfully"
+    "SUCCESS": "Operation completed successfully",
+    "BACK": "Go back",
+    "PAGINATION": "Pagination",
+    "SHOWING": "Showing {{from}} to {{to}} of {{total}}",
+    "PREVIOUS": "Previous page",
+    "NEXT": "Next page"
   },
   "AUTH": {
     "LOGIN": "Login",
@@ -29,7 +34,9 @@
     "ABOUT": "About",
     "SETTINGS": "Settings",
     "PROFILE": "Profile",
-    "DASHBOARD": "Dashboard"
+    "DASHBOARD": "Dashboard",
+    "USERS": "Users",
+    "ROLES": "Roles"
   },
   "LAYOUT": {
     "SIDEBAR": "Main navigation",
@@ -37,6 +44,51 @@
   },
   "DASHBOARD": {
     "SUBTITLE": "Here's an overview of your school"
+  },
+  "USERS": {
+    "TITLE": "Users",
+    "ADD": "Add User",
+    "CREATE": "Create User",
+    "EDIT": "Edit User",
+    "DETAIL": "User Details",
+    "EMAIL": "Email",
+    "PHONE": "Phone",
+    "ROLES": "Roles",
+    "STATUS": "Status",
+    "LAST_LOGIN": "Last Login",
+    "ACTIVE": "Active",
+    "INACTIVE": "Inactive",
+    "NEVER": "Never",
+    "SEARCH_PLACEHOLDER": "Search by email...",
+    "FILTER_ROLE": "Filter by role",
+    "FILTER_STATUS": "Filter by status",
+    "ALL_ROLES": "All Roles",
+    "ALL_STATUSES": "All Statuses",
+    "ASSIGN_ROLES": "Assign Roles",
+    "ASSIGN_ROLE": "Assign Role",
+    "ASSIGNED_ROLES": "Assigned Roles",
+    "REMOVE_ROLE": "Remove role",
+    "NO_ROLES": "No roles assigned",
+    "LOAD_ERROR": "Failed to load users"
+  },
+  "ROLES": {
+    "TITLE": "Roles",
+    "ADD": "Add Role",
+    "CREATE": "Create Role",
+    "EDIT": "Edit Role",
+    "DETAIL": "Role Details",
+    "NAME": "Role Name",
+    "SYSTEM": "System",
+    "PERMISSIONS": "Permissions",
+    "PERMISSIONS_COUNT": "permissions",
+    "SAVE_PERMISSIONS": "Save Permissions",
+    "SEARCH_PLACEHOLDER": "Search roles...",
+    "SEED_PROTECTED": "This is a system role and cannot be renamed or deleted.",
+    "LOAD_ERROR": "Failed to load roles"
+  },
+  "SCHOOL": {
+    "SELECT": "Select school",
+    "SELECT_PLACEHOLDER": "Select a school..."
   },
   "VALIDATION": {
     "REQUIRED": "This field is required",

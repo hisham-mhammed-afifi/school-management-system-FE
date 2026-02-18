@@ -1,0 +1,156 @@
+<div class="flex flex-col gap-4">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <h1 class="text-xl font-bold text-text-primary">{{ 'USERS.TITLE' | translate }}</h1>
+    <a
+      routerLink="new"
+      class="inline-flex items-center gap-2 px-4 py-2 border-0 bg-accent text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-accent-hover no-underline"
+    >
+      <span class="material-icons text-lg leading-none">person_add</span>
+      {{ 'USERS.ADD' | translate }}
+    </a>
+  </div>
+
+  <!-- Filters -->
+  <div class="flex flex-wrap gap-3">
+    <div class="flex-1 min-w-48">
+      <label for="user-search" class="sr-only">{{ 'COMMON.SEARCH' | translate }}</label>
+      <input
+        id="user-search"
+        type="text"
+        (input)="onSearch($event)"
+        class="w-full px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+        [placeholder]="'USERS.SEARCH_PLACEHOLDER' | translate"
+      />
+    </div>
+    <div>
+      <label for="role-filter" class="sr-only">{{ 'USERS.FILTER_ROLE' | translate }}</label>
+      <select
+        id="role-filter"
+        (change)="onRoleFilter($event)"
+        class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+      >
+        <option value="">{{ 'USERS.ALL_ROLES' | translate }}</option>
+        @for (role of roles(); track role.id) {
+          <option [value]="role.id">{{ role.name }}</option>
+        }
+      </select>
+    </div>
+    <div>
+      <label for="status-filter" class="sr-only">{{ 'USERS.FILTER_STATUS' | translate }}</label>
+      <select
+        id="status-filter"
+        (change)="onStatusFilter($event)"
+        class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+      >
+        <option value="">{{ 'USERS.ALL_STATUSES' | translate }}</option>
+        <option value="true">{{ 'USERS.ACTIVE' | translate }}</option>
+        <option value="false">{{ 'USERS.INACTIVE' | translate }}</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Error -->
+  @if (error()) {
+    <div role="alert" class="px-3 py-2 rounded-md text-sm font-medium bg-error-bg text-error-text">
+      {{ error()! | translate }}
+    </div>
+  }
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="flex justify-center py-12">
+      <p class="text-sm text-text-tertiary">{{ 'COMMON.LOADING' | translate }}</p>
+    </div>
+  }
+
+  <!-- Users table -->
+  @if (!loading() && !error()) {
+    @if (users().length === 0) {
+      <div class="text-center py-12">
+        <span class="material-icons text-4xl text-text-tertiary mb-2">group_off</span>
+        <p class="text-sm text-text-tertiary">{{ 'COMMON.NO_RESULTS' | translate }}</p>
+      </div>
+    } @else {
+      <div class="bg-surface rounded-xl shadow-card border border-border overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border bg-bg-secondary">
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'USERS.EMAIL' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'USERS.ROLES' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'USERS.STATUS' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'USERS.LAST_LOGIN' | translate }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (user of users(); track user.id) {
+                <tr
+                  class="border-b border-border last:border-b-0 transition-colors hover:bg-surface-hover"
+                >
+                  <td class="px-4 py-3">
+                    <a
+                      [routerLink]="[user.id]"
+                      class="text-accent font-medium hover:underline no-underline"
+                    >
+                      {{ user.email }}
+                    </a>
+                    @if (user.phone) {
+                      <p class="text-xs text-text-tertiary mt-0.5">{{ user.phone }}</p>
+                    }
+                  </td>
+                  <td class="px-4 py-3">
+                    <div class="flex flex-wrap gap-1">
+                      @for (role of user.roles; track role.roleId) {
+                        <span
+                          class="inline-block px-2 py-0.5 rounded-full bg-bg-secondary text-xs font-medium text-text-secondary"
+                        >
+                          {{ role.roleName }}
+                        </span>
+                      }
+                    </div>
+                  </td>
+                  <td class="px-4 py-3">
+                    @if (user.isActive) {
+                      <span
+                        class="inline-flex items-center gap-1 text-xs font-medium text-success-text"
+                      >
+                        <span class="material-icons text-sm">check_circle</span>
+                        {{ 'USERS.ACTIVE' | translate }}
+                      </span>
+                    } @else {
+                      <span
+                        class="inline-flex items-center gap-1 text-xs font-medium text-error-text"
+                      >
+                        <span class="material-icons text-sm">cancel</span>
+                        {{ 'USERS.INACTIVE' | translate }}
+                      </span>
+                    }
+                  </td>
+                  <td class="px-4 py-3 text-text-tertiary">
+                    {{ user.lastLoginAt ?? ('USERS.NEVER' | translate) }}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <app-pagination
+        [page]="meta().page"
+        [limit]="meta().limit"
+        [total]="meta().total"
+        (pageChange)="onPageChange($event)"
+      />
+    }
+  }
+</div>

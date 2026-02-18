@@ -1,0 +1,121 @@
+<div class="flex flex-col gap-4">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <a
+        routerLink="/users"
+        class="p-2 rounded-lg bg-transparent text-text-secondary transition-colors hover:bg-surface-hover no-underline"
+        [attr.aria-label]="'COMMON.BACK' | translate"
+      >
+        <span class="material-icons text-xl leading-none">arrow_back</span>
+      </a>
+      <h1 class="text-xl font-bold text-text-primary">{{ 'USERS.DETAIL' | translate }}</h1>
+    </div>
+    @if (user()) {
+      <a
+        [routerLink]="['edit']"
+        class="inline-flex items-center gap-2 px-4 py-2 border-0 bg-accent text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-accent-hover no-underline"
+      >
+        <span class="material-icons text-lg leading-none">edit</span>
+        {{ 'COMMON.EDIT' | translate }}
+      </a>
+    }
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="flex justify-center py-12">
+      <p class="text-sm text-text-tertiary">{{ 'COMMON.LOADING' | translate }}</p>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (error()) {
+    <div role="alert" class="px-3 py-2 rounded-md text-sm font-medium bg-error-bg text-error-text">
+      {{ error()! | translate }}
+    </div>
+  }
+
+  @if (user(); as u) {
+    <!-- User info -->
+    <div class="bg-surface rounded-xl p-5 shadow-card border border-border">
+      <div class="flex flex-col gap-3">
+        <div class="flex items-center gap-3">
+          <span class="material-icons text-3xl text-text-tertiary">account_circle</span>
+          <div>
+            <p class="text-lg font-semibold text-text-primary">{{ u.email }}</p>
+            @if (u.phone) {
+              <p class="text-sm text-text-tertiary">{{ u.phone }}</p>
+            }
+          </div>
+        </div>
+        <div class="flex gap-4 text-sm text-text-secondary">
+          <div class="flex items-center gap-1">
+            @if (u.isActive) {
+              <span class="material-icons text-sm text-success-text">check_circle</span>
+              {{ 'USERS.ACTIVE' | translate }}
+            } @else {
+              <span class="material-icons text-sm text-error-text">cancel</span>
+              {{ 'USERS.INACTIVE' | translate }}
+            }
+          </div>
+          <div>
+            {{ 'USERS.LAST_LOGIN' | translate }}:
+            {{ u.lastLoginAt ?? ('USERS.NEVER' | translate) }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Assigned roles -->
+    <div class="bg-surface rounded-xl p-5 shadow-card border border-border flex flex-col gap-3">
+      <h2 class="text-base font-semibold text-text-primary">
+        {{ 'USERS.ASSIGNED_ROLES' | translate }}
+      </h2>
+      @if (u.roles.length === 0) {
+        <p class="text-sm text-text-tertiary italic">{{ 'USERS.NO_ROLES' | translate }}</p>
+      } @else {
+        <div class="flex flex-wrap gap-2">
+          @for (role of u.roles; track role.roleId) {
+            <div
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-bg-secondary text-sm font-medium text-text-primary"
+            >
+              {{ role.roleName }}
+              <button
+                type="button"
+                (click)="removeRole(role.roleId)"
+                [disabled]="actionLoading()"
+                class="p-0 border-0 bg-transparent cursor-pointer text-text-tertiary transition-colors hover:text-danger-text disabled:opacity-50"
+                [attr.aria-label]="'USERS.REMOVE_ROLE' | translate"
+              >
+                <span class="material-icons text-base leading-none">close</span>
+              </button>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Assign new role -->
+    @if (unassignedRoles().length > 0) {
+      <div class="bg-surface rounded-xl p-5 shadow-card border border-border flex flex-col gap-3">
+        <h2 class="text-base font-semibold text-text-primary">
+          {{ 'USERS.ASSIGN_ROLE' | translate }}
+        </h2>
+        <div class="flex flex-wrap gap-2">
+          @for (role of unassignedRoles(); track role.id) {
+            <button
+              type="button"
+              (click)="assignRole(role.id)"
+              [disabled]="actionLoading()"
+              class="px-3 py-1.5 rounded-full border border-border bg-transparent text-sm font-medium text-text-secondary cursor-pointer transition-colors hover:bg-accent hover:text-white hover:border-accent disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <span class="material-icons text-sm leading-none align-middle">add</span>
+              {{ role.name }}
+            </button>
+          }
+        </div>
+      </div>
+    }
+  }
+</div>

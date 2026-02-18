@@ -18,6 +18,54 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/dashboard/dashboard').then((m) => m.DashboardComponent),
       },
+      {
+        path: 'users',
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./features/users/users').then((m) => m.UsersComponent),
+          },
+          {
+            path: 'new',
+            loadComponent: () =>
+              import('./features/users/user-form/user-form').then((m) => m.UserFormComponent),
+          },
+          {
+            path: ':id',
+            loadComponent: () =>
+              import('./features/users/user-detail/user-detail').then((m) => m.UserDetailComponent),
+          },
+          {
+            path: ':id/edit',
+            loadComponent: () =>
+              import('./features/users/user-form/user-form').then((m) => m.UserFormComponent),
+          },
+        ],
+      },
+      {
+        path: 'roles',
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./features/roles/roles').then((m) => m.RolesComponent),
+          },
+          {
+            path: 'new',
+            loadComponent: () =>
+              import('./features/roles/role-form/role-form').then((m) => m.RoleFormComponent),
+          },
+          {
+            path: ':id',
+            loadComponent: () =>
+              import('./features/roles/role-detail/role-detail').then((m) => m.RoleDetailComponent),
+          },
+          {
+            path: ':id/edit',
+            loadComponent: () =>
+              import('./features/roles/role-form/role-form').then((m) => m.RoleFormComponent),
+          },
+        ],
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

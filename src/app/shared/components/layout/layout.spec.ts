@@ -81,4 +81,12 @@ describe('LayoutComponent', () => {
 
     expect(el.querySelector('router-outlet')).toBeTruthy();
   });
+
+  it('should not render school switcher when user is not super admin', () => {
+    const fixture = TestBed.createComponent(LayoutComponent);
+    fixture.detectChanges();
+
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('app-school-switcher')).toBeNull();
+  });
 });

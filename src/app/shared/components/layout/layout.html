@@ -28,6 +28,9 @@
       </button>
 
       <div class="flex items-center gap-3 ms-auto">
+        @if (isSuperAdmin()) {
+          <app-school-switcher />
+        }
         <app-theme-toggle />
         <app-language-switcher />
         <button

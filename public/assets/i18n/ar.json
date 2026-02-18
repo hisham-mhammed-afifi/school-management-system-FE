@@ -12,7 +12,12 @@
     "SEARCH": "بحث",
     "NO_RESULTS": "لا توجد نتائج",
     "ERROR": "حدث خطأ",
-    "SUCCESS": "تمت العملية بنجاح"
+    "SUCCESS": "تمت العملية بنجاح",
+    "BACK": "رجوع",
+    "PAGINATION": "التنقل بين الصفحات",
+    "SHOWING": "عرض {{from}} إلى {{to}} من {{total}}",
+    "PREVIOUS": "الصفحة السابقة",
+    "NEXT": "الصفحة التالية"
   },
   "AUTH": {
     "LOGIN": "تسجيل الدخول",
@@ -29,7 +34,9 @@
     "ABOUT": "عن التطبيق",
     "SETTINGS": "الإعدادات",
     "PROFILE": "الملف الشخصي",
-    "DASHBOARD": "لوحة التحكم"
+    "DASHBOARD": "لوحة التحكم",
+    "USERS": "المستخدمون",
+    "ROLES": "الأدوار"
   },
   "LAYOUT": {
     "SIDEBAR": "القائمة الرئيسية",
@@ -37,6 +44,51 @@
   },
   "DASHBOARD": {
     "SUBTITLE": "إليك نظرة عامة على مدرستك"
+  },
+  "USERS": {
+    "TITLE": "المستخدمون",
+    "ADD": "إضافة مستخدم",
+    "CREATE": "إنشاء مستخدم",
+    "EDIT": "تعديل المستخدم",
+    "DETAIL": "تفاصيل المستخدم",
+    "EMAIL": "البريد الإلكتروني",
+    "PHONE": "رقم الهاتف",
+    "ROLES": "الأدوار",
+    "STATUS": "الحالة",
+    "LAST_LOGIN": "آخر دخول",
+    "ACTIVE": "نشط",
+    "INACTIVE": "غير نشط",
+    "NEVER": "لم يسجل الدخول",
+    "SEARCH_PLACEHOLDER": "البحث بالبريد الإلكتروني...",
+    "FILTER_ROLE": "تصفية حسب الدور",
+    "FILTER_STATUS": "تصفية حسب الحالة",
+    "ALL_ROLES": "جميع الأدوار",
+    "ALL_STATUSES": "جميع الحالات",
+    "ASSIGN_ROLES": "تعيين الأدوار",
+    "ASSIGN_ROLE": "تعيين دور",
+    "ASSIGNED_ROLES": "الأدوار المعيّنة",
+    "REMOVE_ROLE": "إزالة الدور",
+    "NO_ROLES": "لا توجد أدوار معيّنة",
+    "LOAD_ERROR": "فشل تحميل المستخدمين"
+  },
+  "ROLES": {
+    "TITLE": "الأدوار",
+    "ADD": "إضافة دور",
+    "CREATE": "إنشاء دور",
+    "EDIT": "تعديل الدور",
+    "DETAIL": "تفاصيل الدور",
+    "NAME": "اسم الدور",
+    "SYSTEM": "نظام",
+    "PERMISSIONS": "الصلاحيات",
+    "PERMISSIONS_COUNT": "صلاحية",
+    "SAVE_PERMISSIONS": "حفظ الصلاحيات",
+    "SEARCH_PLACEHOLDER": "البحث في الأدوار...",
+    "SEED_PROTECTED": "هذا دور نظامي ولا يمكن تغيير اسمه أو حذفه.",
+    "LOAD_ERROR": "فشل تحميل الأدوار"
+  },
+  "SCHOOL": {
+    "SELECT": "اختر المدرسة",
+    "SELECT_PLACEHOLDER": "اختر مدرسة..."
   },
   "VALIDATION": {
     "REQUIRED": "هذا الحقل مطلوب",

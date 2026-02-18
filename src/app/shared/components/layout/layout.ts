@@ -5,7 +5,9 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { SidebarComponent } from '@shared/components/sidebar/sidebar';
 import { ThemeToggleComponent } from '@shared/components/theme-toggle/theme-toggle';
 import { LanguageSwitcherComponent } from '@shared/components/language-switcher/language-switcher';
+import { SchoolSwitcherComponent } from '@shared/components/school-switcher/school-switcher';
 import { AuthService } from '@core/services/auth.service';
+import { SchoolService } from '@core/services/school.service';
 
 @Component({
   selector: 'app-layout',
@@ -15,14 +17,17 @@ import { AuthService } from '@core/services/auth.service';
     SidebarComponent,
     ThemeToggleComponent,
     LanguageSwitcherComponent,
+    SchoolSwitcherComponent,
   ],
   templateUrl: './layout.html',
   styleUrl: './layout.css',
 })
 export class LayoutComponent {
   private readonly authService = inject(AuthService);
+  private readonly schoolService = inject(SchoolService);
 
   readonly user = this.authService.user;
+  readonly isSuperAdmin = this.schoolService.isSuperAdmin;
   readonly sidebarOpen = signal(false);
 
   toggleSidebar(): void {

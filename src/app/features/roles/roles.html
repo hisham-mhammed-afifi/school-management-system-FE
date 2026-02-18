@@ -1,0 +1,96 @@
+<div class="flex flex-col gap-4">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <h1 class="text-xl font-bold text-text-primary">{{ 'ROLES.TITLE' | translate }}</h1>
+    <a
+      routerLink="new"
+      class="inline-flex items-center gap-2 px-4 py-2 border-0 bg-accent text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-accent-hover no-underline"
+    >
+      <span class="material-icons text-lg leading-none">add_circle</span>
+      {{ 'ROLES.ADD' | translate }}
+    </a>
+  </div>
+
+  <!-- Search -->
+  <div>
+    <label for="role-search" class="sr-only">{{ 'COMMON.SEARCH' | translate }}</label>
+    <input
+      id="role-search"
+      type="text"
+      (input)="onSearch($event)"
+      class="w-full max-w-sm px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+      [placeholder]="'ROLES.SEARCH_PLACEHOLDER' | translate"
+    />
+  </div>
+
+  <!-- Error -->
+  @if (error()) {
+    <div role="alert" class="px-3 py-2 rounded-md text-sm font-medium bg-error-bg text-error-text">
+      {{ error()! | translate }}
+    </div>
+  }
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="flex justify-center py-12">
+      <p class="text-sm text-text-tertiary">{{ 'COMMON.LOADING' | translate }}</p>
+    </div>
+  }
+
+  @if (!loading() && !error()) {
+    @if (roles().length === 0) {
+      <div class="text-center py-12">
+        <span class="material-icons text-4xl text-text-tertiary mb-2">admin_panel_settings</span>
+        <p class="text-sm text-text-tertiary">{{ 'COMMON.NO_RESULTS' | translate }}</p>
+      </div>
+    } @else {
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        @for (role of roles(); track role.id) {
+          <div
+            class="bg-surface rounded-xl p-4 shadow-card border border-border flex flex-col gap-3"
+          >
+            <div class="flex items-start justify-between">
+              <div>
+                <a
+                  [routerLink]="[role.id]"
+                  class="text-base font-semibold text-text-primary hover:text-accent transition-colors no-underline"
+                >
+                  {{ role.name }}
+                </a>
+                @if (isSeedRole(role.name)) {
+                  <span
+                    class="ms-2 inline-block px-2 py-0.5 rounded-full bg-info-bg text-info-text text-xs font-medium"
+                  >
+                    {{ 'ROLES.SYSTEM' | translate }}
+                  </span>
+                }
+              </div>
+              @if (!isSeedRole(role.name)) {
+                <button
+                  type="button"
+                  (click)="deleteRole(role)"
+                  class="p-1 border-0 bg-transparent text-text-tertiary cursor-pointer transition-colors hover:text-danger-text"
+                  [attr.aria-label]="'COMMON.DELETE' | translate"
+                >
+                  <span class="material-icons text-lg leading-none">delete</span>
+                </button>
+              }
+            </div>
+            @if (role.permissions) {
+              <p class="text-xs text-text-tertiary">
+                {{ role.permissions.length }} {{ 'ROLES.PERMISSIONS_COUNT' | translate }}
+              </p>
+            }
+          </div>
+        }
+      </div>
+
+      <app-pagination
+        [page]="meta().page"
+        [limit]="meta().limit"
+        [total]="meta().total"
+        (pageChange)="onPageChange($event)"
+      />
+    }
+  }
+</div>

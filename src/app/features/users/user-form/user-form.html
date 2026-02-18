@@ -1,0 +1,166 @@
+<div class="flex flex-col gap-4">
+  <!-- Header -->
+  <div class="flex items-center gap-3">
+    <a
+      routerLink="/users"
+      class="p-2 rounded-lg bg-transparent text-text-secondary transition-colors hover:bg-surface-hover no-underline"
+      [attr.aria-label]="'COMMON.BACK' | translate"
+    >
+      <span class="material-icons text-xl leading-none">arrow_back</span>
+    </a>
+    <h1 class="text-xl font-bold text-text-primary">
+      @if (isEdit()) {
+        {{ 'USERS.EDIT' | translate }}
+      } @else {
+        {{ 'USERS.CREATE' | translate }}
+      }
+    </h1>
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="flex justify-center py-12">
+      <p class="text-sm text-text-tertiary">{{ 'COMMON.LOADING' | translate }}</p>
+    </div>
+  }
+
+  @if (!loading()) {
+    <!-- Error -->
+    @if (errorMessage()) {
+      <div
+        role="alert"
+        class="px-3 py-2 rounded-md text-sm font-medium bg-error-bg text-error-text"
+      >
+        {{ errorMessage()! | translate }}
+      </div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4 max-w-lg">
+      <div class="bg-surface rounded-xl p-5 shadow-card border border-border flex flex-col gap-4">
+        <!-- Email -->
+        <div class="flex flex-col gap-1">
+          <label for="user-email" class="text-sm font-medium text-text-secondary">
+            {{ 'USERS.EMAIL' | translate }}
+          </label>
+          <input
+            id="user-email"
+            type="email"
+            dir="ltr"
+            autocomplete="email"
+            formControlName="email"
+            class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+          />
+          @if (form.controls.email.touched && form.controls.email.errors) {
+            <span class="text-xs text-danger-text">
+              @if (form.controls.email.errors['required']) {
+                {{ 'VALIDATION.REQUIRED' | translate }}
+              } @else if (form.controls.email.errors['email']) {
+                {{ 'VALIDATION.INVALID_EMAIL' | translate }}
+              }
+            </span>
+          }
+        </div>
+
+        <!-- Phone -->
+        <div class="flex flex-col gap-1">
+          <label for="user-phone" class="text-sm font-medium text-text-secondary">
+            {{ 'USERS.PHONE' | translate }}
+          </label>
+          <input
+            id="user-phone"
+            type="tel"
+            dir="ltr"
+            autocomplete="tel"
+            formControlName="phone"
+            class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+          />
+        </div>
+
+        <!-- Password (create only) -->
+        @if (!isEdit()) {
+          <div class="flex flex-col gap-1">
+            <label for="user-password" class="text-sm font-medium text-text-secondary">
+              {{ 'AUTH.PASSWORD' | translate }}
+            </label>
+            <input
+              id="user-password"
+              type="password"
+              autocomplete="new-password"
+              formControlName="password"
+              class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+            />
+            @if (form.controls.password.touched && form.controls.password.errors) {
+              <span class="text-xs text-danger-text">
+                @if (form.controls.password.errors['required']) {
+                  {{ 'VALIDATION.REQUIRED' | translate }}
+                } @else if (form.controls.password.errors['minlength']) {
+                  {{ 'VALIDATION.MIN_LENGTH' | translate: { min: 8 } }}
+                }
+              </span>
+            }
+          </div>
+        }
+
+        <!-- Active status (edit only) -->
+        @if (isEdit()) {
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              formControlName="isActive"
+              class="w-4 h-4 accent-accent rounded"
+            />
+            <span class="text-sm font-medium text-text-secondary">{{
+              'USERS.ACTIVE' | translate
+            }}</span>
+          </label>
+        }
+      </div>
+
+      <!-- Role selection (create only) -->
+      @if (!isEdit()) {
+        <div class="bg-surface rounded-xl p-5 shadow-card border border-border flex flex-col gap-3">
+          <h2 class="text-base font-semibold text-text-primary">
+            {{ 'USERS.ASSIGN_ROLES' | translate }}
+          </h2>
+          <div class="flex flex-wrap gap-2">
+            @for (role of roles(); track role.id) {
+              <button
+                type="button"
+                (click)="toggleRole(role.id)"
+                class="px-3 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer"
+                [class]="
+                  selectedRoleIds().has(role.id)
+                    ? 'bg-accent text-white border-accent'
+                    : 'bg-transparent text-text-secondary border-border hover:bg-surface-hover'
+                "
+              >
+                {{ role.name }}
+              </button>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Actions -->
+      <div class="flex gap-3">
+        <button
+          type="submit"
+          [disabled]="saving()"
+          class="px-4 py-2 border-0 bg-accent text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          @if (saving()) {
+            {{ 'COMMON.LOADING' | translate }}
+          } @else {
+            {{ 'COMMON.SAVE' | translate }}
+          }
+        </button>
+        <a
+          routerLink="/users"
+          class="px-4 py-2 border-0 bg-bg-tertiary text-text-primary rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-surface-hover no-underline inline-flex items-center"
+        >
+          {{ 'COMMON.CANCEL' | translate }}
+        </a>
+      </div>
+    </form>
+  }
+</div>

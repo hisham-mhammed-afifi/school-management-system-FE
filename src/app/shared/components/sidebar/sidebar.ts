@@ -20,6 +20,8 @@ export class SidebarComponent {
 
   readonly navItems: SidebarItem[] = [
     { labelKey: 'NAV.DASHBOARD', route: '/dashboard', icon: 'dashboard' },
+    { labelKey: 'NAV.USERS', route: '/users', icon: 'people' },
+    { labelKey: 'NAV.ROLES', route: '/roles', icon: 'admin_panel_settings' },
   ];
 
   close(): void {

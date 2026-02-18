@@ -87,6 +87,7 @@ export class AuthService {
     this._user.set(null);
     localStorage.removeItem(ACCESS_TOKEN_KEY);
     localStorage.removeItem(REFRESH_TOKEN_KEY);
+    localStorage.removeItem('selected_school_id');
   }
 
   private storeTokens(accessToken: string, refreshToken: string): void {
