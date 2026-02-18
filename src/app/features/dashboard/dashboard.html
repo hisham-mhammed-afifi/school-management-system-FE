@@ -1,0 +1,19 @@
+<div class="flex flex-col gap-4">
+  <!-- Welcome banner -->
+  <section class="bg-gradient-to-br from-gradient-from to-gradient-to text-white rounded-xl p-5">
+    <h1 class="text-xl font-semibold">
+      {{ 'AUTH.WELCOME' | translate: { name: user()?.email ?? '' } }}
+    </h1>
+    <p class="text-sm mt-1 opacity-90">{{ 'DASHBOARD.SUBTITLE' | translate }}</p>
+  </section>
+
+  <!-- Placeholder cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    @for (card of [1, 2, 3]; track card) {
+      <div class="bg-surface rounded-xl p-5 shadow-card border border-border">
+        <div class="h-4 w-24 bg-bg-tertiary rounded animate-pulse mb-3"></div>
+        <div class="h-8 w-16 bg-bg-secondary rounded animate-pulse"></div>
+      </div>
+    }
+  </div>
+</div>

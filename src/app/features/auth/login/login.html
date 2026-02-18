@@ -1,0 +1,99 @@
+<div class="min-h-screen flex items-center justify-center bg-bg-primary px-4 py-8">
+  <div class="w-full max-w-sm flex flex-col gap-6">
+    <!-- Header controls -->
+    <div class="flex justify-end items-center gap-3">
+      <app-theme-toggle />
+      <app-language-switcher />
+    </div>
+
+    <!-- Login card -->
+    <div class="bg-surface rounded-xl p-6 shadow-card border border-border">
+      <h1 class="text-2xl font-bold text-text-primary mb-1">
+        {{ 'AUTH.LOGIN' | translate }}
+      </h1>
+      <p class="text-sm text-text-tertiary mb-6">
+        {{ 'AUTH.LOGIN_SUBTITLE' | translate }}
+      </p>
+
+      <!-- Error message -->
+      @if (errorMessage()) {
+        <div
+          role="alert"
+          class="mb-4 px-3 py-2 rounded-md text-sm font-medium bg-error-bg text-error-text"
+        >
+          {{ errorMessage() | translate }}
+        </div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+        <!-- Email field -->
+        <div class="flex flex-col gap-1">
+          <label for="login-email" class="text-sm font-medium text-text-secondary">
+            {{ 'AUTH.EMAIL' | translate }}
+          </label>
+          <input
+            id="login-email"
+            type="email"
+            dir="ltr"
+            autocomplete="email"
+            formControlName="email"
+            class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+            [placeholder]="'AUTH.EMAIL' | translate"
+          />
+          @if (form.controls.email.touched && form.controls.email.errors) {
+            <span class="text-xs text-danger-text">
+              @if (form.controls.email.errors['required']) {
+                {{ 'VALIDATION.REQUIRED' | translate }}
+              } @else if (form.controls.email.errors['email']) {
+                {{ 'VALIDATION.INVALID_EMAIL' | translate }}
+              }
+            </span>
+          }
+        </div>
+
+        <!-- Password field -->
+        <div class="flex flex-col gap-1">
+          <label for="login-password" class="text-sm font-medium text-text-secondary">
+            {{ 'AUTH.PASSWORD' | translate }}
+          </label>
+          <input
+            id="login-password"
+            type="password"
+            autocomplete="current-password"
+            formControlName="password"
+            class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+            [placeholder]="'AUTH.PASSWORD' | translate"
+          />
+          @if (form.controls.password.touched && form.controls.password.errors?.['required']) {
+            <span class="text-xs text-danger-text">
+              {{ 'VALIDATION.REQUIRED' | translate }}
+            </span>
+          }
+        </div>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          [disabled]="loading()"
+          class="w-full px-4 py-2.5 border-0 bg-accent text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          @if (loading()) {
+            {{ 'COMMON.LOADING' | translate }}
+          } @else {
+            {{ 'AUTH.LOGIN' | translate }}
+          }
+        </button>
+
+        <!-- Forgot password link -->
+        <div class="text-center">
+          <button
+            type="button"
+            class="bg-transparent border-0 text-sm text-accent cursor-pointer transition-colors hover:text-accent-hover hover:underline p-0"
+          >
+            {{ 'AUTH.FORGOT_PASSWORD' | translate }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

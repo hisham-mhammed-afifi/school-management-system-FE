@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { provideTranslateService } from '@ngx-translate/core';
 import { App } from '@app/app';
 import { TranslationService } from '@core/services/translation.service';
@@ -23,7 +24,7 @@ describe('App', () => {
 
     await TestBed.configureTestingModule({
       imports: [App],
-      providers: [provideTranslateService({ fallbackLang: 'en' })],
+      providers: [provideRouter([]), provideTranslateService({ fallbackLang: 'en' })],
     }).compileComponents();
   });
 
@@ -47,13 +48,6 @@ describe('App', () => {
     const skipLink = (fixture.nativeElement as HTMLElement).querySelector('.skip-link');
     expect(skipLink).toBeTruthy();
     expect(skipLink?.getAttribute('href')).toBe('#main-content');
-  });
-
-  it('should render app title', async () => {
-    const fixture = TestBed.createComponent(App);
-    await fixture.whenStable();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('COMMON.APP_NAME');
   });
 
   it('should initialize translation service', () => {
@@ -83,5 +77,12 @@ describe('App', () => {
 
     const wrapper = (fixture.nativeElement as HTMLElement).querySelector('div');
     expect(wrapper?.getAttribute('dir')).toBe('rtl');
+  });
+
+  it('should render router-outlet', () => {
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('router-outlet')).toBeTruthy();
   });
 });

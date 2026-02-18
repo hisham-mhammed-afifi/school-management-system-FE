@@ -12,7 +12,10 @@
       "Bash(npx prettier:*)",
       "Bash(echo:*)",
       "Bash(cmd /c dir:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(npm run lint:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm test:*)"
     ]
   }
 }

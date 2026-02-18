@@ -20,13 +20,23 @@
     "EMAIL": "Email",
     "PASSWORD": "Password",
     "FORGOT_PASSWORD": "Forgot Password?",
-    "WELCOME": "Welcome, {{name}}"
+    "WELCOME": "Welcome, {{name}}",
+    "LOGIN_SUBTITLE": "Sign in to your account",
+    "LOGIN_FAILED": "Invalid email or password"
   },
   "NAV": {
     "HOME": "Home",
     "ABOUT": "About",
     "SETTINGS": "Settings",
-    "PROFILE": "Profile"
+    "PROFILE": "Profile",
+    "DASHBOARD": "Dashboard"
+  },
+  "LAYOUT": {
+    "SIDEBAR": "Main navigation",
+    "TOGGLE_SIDEBAR": "Toggle sidebar"
+  },
+  "DASHBOARD": {
+    "SUBTITLE": "Here's an overview of your school"
   },
   "VALIDATION": {
     "REQUIRED": "This field is required",

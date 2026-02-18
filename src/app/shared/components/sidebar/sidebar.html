@@ -1,0 +1,28 @@
+<aside
+  [class.translate-x-0]="open()"
+  [class.-translate-x-full]="!open()"
+  class="fixed inset-y-0 start-0 z-30 w-64 bg-surface border-e border-border transition-transform duration-200 lg:translate-x-0 flex flex-col"
+  role="navigation"
+  [attr.aria-label]="'LAYOUT.SIDEBAR' | translate"
+>
+  <!-- Brand -->
+  <div class="px-4 py-4 border-b border-border">
+    <h2 class="text-lg font-bold text-text-primary">{{ 'COMMON.APP_NAME' | translate }}</h2>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="flex-1 p-3 flex flex-col gap-1">
+    @for (item of navItems; track item.route) {
+      <a
+        [routerLink]="item.route"
+        routerLinkActive="bg-accent text-white"
+        [routerLinkActiveOptions]="{ exact: false }"
+        (click)="close()"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-text-secondary transition-colors hover:bg-surface-hover hover:text-text-primary no-underline"
+      >
+        <span class="material-icons text-xl leading-none" aria-hidden="true">{{ item.icon }}</span>
+        {{ item.labelKey | translate }}
+      </a>
+    }
+  </nav>
+</aside>

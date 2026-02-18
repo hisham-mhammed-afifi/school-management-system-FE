@@ -10,6 +10,8 @@ describe('errorInterceptor', () => {
   let router: Router;
 
   beforeEach(() => {
+    localStorage.clear();
+
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
@@ -25,6 +27,7 @@ describe('errorInterceptor', () => {
 
   afterEach(() => {
     httpTesting.verify();
+    localStorage.clear();
   });
 
   it('should pass through successful requests', () => {
@@ -35,17 +38,6 @@ describe('errorInterceptor', () => {
     req.flush({ ok: true });
 
     expect(result).toEqual({ ok: true });
-  });
-
-  it('should navigate to /login on 401', () => {
-    const navigateSpy = vi.spyOn(router, 'navigate');
-
-    http.get('/api/data').subscribe({ error: () => {} });
-
-    const req = httpTesting.expectOne('/api/data');
-    req.flush(null, { status: 401, statusText: 'Unauthorized' });
-
-    expect(navigateSpy).toHaveBeenCalledWith(['/login']);
   });
 
   it('should navigate to /forbidden on 403', () => {
@@ -70,5 +62,29 @@ describe('errorInterceptor', () => {
     req.flush(null, { status: 500, statusText: 'Server Error' });
 
     expect(caughtError).toBeTruthy();
+  });
+
+  it('should attempt token refresh on 401 for non-auth requests', () => {
+    localStorage.setItem('refresh_token', 'valid-refresh');
+
+    http.get('/api/data').subscribe({ error: () => {} });
+
+    const req = httpTesting.expectOne('/api/data');
+    req.flush(null, { status: 401, statusText: 'Unauthorized' });
+
+    // Should attempt refresh
+    const refreshReq = httpTesting.expectOne('/api/v1/auth/refresh');
+    refreshReq.flush(null, { status: 401, statusText: 'Unauthorized' });
+  });
+
+  it('should not attempt refresh on login 401', () => {
+    http.post('/api/v1/auth/login', {}).subscribe({ error: () => {} });
+
+    // The URL includes /auth/login so it should NOT attempt refresh
+    const req = httpTesting.expectOne('/api/v1/auth/login');
+    req.flush(null, { status: 401, statusText: 'Unauthorized' });
+
+    // No refresh request should be made
+    httpTesting.expectNone('/api/v1/auth/refresh');
   });
 });

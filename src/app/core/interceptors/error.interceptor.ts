@@ -1,23 +1,39 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, throwError } from 'rxjs';
+import { catchError, switchMap, throwError } from 'rxjs';
+
+import { AuthService } from '@core/services/auth.service';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
+  const authService = inject(AuthService);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
-      switch (error.status) {
-        case 401:
-          router.navigate(['/login']);
-          break;
-        case 403:
-          router.navigate(['/forbidden']);
-          break;
-        case 0:
-          // Network error or CORS issue
-          break;
+      if (
+        error.status === 401 &&
+        !req.url.includes('/auth/login') &&
+        !req.url.includes('/auth/refresh')
+      ) {
+        return authService.refreshToken().pipe(
+          switchMap(() =>
+            next(
+              req.clone({
+                headers: req.headers.set('Authorization', `Bearer ${authService.accessToken}`),
+              }),
+            ),
+          ),
+          catchError(() => {
+            authService.clearSession();
+            router.navigate(['/login']);
+            return throwError(() => error);
+          }),
+        );
+      }
+
+      if (error.status === 403) {
+        router.navigate(['/forbidden']);
       }
 
       return throwError(() => error);

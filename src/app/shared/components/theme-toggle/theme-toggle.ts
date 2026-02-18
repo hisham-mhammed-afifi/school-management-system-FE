@@ -23,7 +23,7 @@ import { ThemeService, type Theme } from '@core/services/theme.service';
               : 'bg-surface text-text-secondary hover:bg-surface-hover'
           "
         >
-          {{ option.icon }}
+          <span class="material-icons text-sm leading-none">{{ option.icon }}</span>
         </button>
       }
     </div>
@@ -33,8 +33,8 @@ export class ThemeToggleComponent {
   readonly themeService = inject(ThemeService);
 
   readonly options: { value: Theme; label: string; icon: string }[] = [
-    { value: 'light', label: 'Light', icon: '\u2600' },
-    { value: 'system', label: 'System', icon: '\u2615' },
-    { value: 'dark', label: 'Dark', icon: '\u263E' },
+    { value: 'light', label: 'Light', icon: 'light_mode' },
+    { value: 'system', label: 'System', icon: 'desktop_windows' },
+    { value: 'dark', label: 'Dark', icon: 'dark_mode' },
   ];
 }

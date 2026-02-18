@@ -20,13 +20,23 @@
     "EMAIL": "البريد الإلكتروني",
     "PASSWORD": "كلمة المرور",
     "FORGOT_PASSWORD": "نسيت كلمة المرور؟",
-    "WELCOME": "مرحبًا، {{name}}"
+    "WELCOME": "مرحبًا، {{name}}",
+    "LOGIN_SUBTITLE": "سجّل الدخول إلى حسابك",
+    "LOGIN_FAILED": "البريد الإلكتروني أو كلمة المرور غير صحيحة"
   },
   "NAV": {
     "HOME": "الرئيسية",
     "ABOUT": "عن التطبيق",
     "SETTINGS": "الإعدادات",
-    "PROFILE": "الملف الشخصي"
+    "PROFILE": "الملف الشخصي",
+    "DASHBOARD": "لوحة التحكم"
+  },
+  "LAYOUT": {
+    "SIDEBAR": "القائمة الرئيسية",
+    "TOGGLE_SIDEBAR": "فتح/إغلاق القائمة"
+  },
+  "DASHBOARD": {
+    "SUBTITLE": "إليك نظرة عامة على مدرستك"
   },
   "VALIDATION": {
     "REQUIRED": "هذا الحقل مطلوب",
