@@ -1,0 +1,37 @@
+{
+  "COMMON": {
+    "APP_NAME": "My Application",
+    "LOADING": "Loading...",
+    "SAVE": "Save",
+    "CANCEL": "Cancel",
+    "DELETE": "Delete",
+    "EDIT": "Edit",
+    "CONFIRM": "Confirm",
+    "YES": "Yes",
+    "NO": "No",
+    "SEARCH": "Search",
+    "NO_RESULTS": "No results found",
+    "ERROR": "An error occurred",
+    "SUCCESS": "Operation completed successfully"
+  },
+  "AUTH": {
+    "LOGIN": "Login",
+    "LOGOUT": "Logout",
+    "EMAIL": "Email",
+    "PASSWORD": "Password",
+    "FORGOT_PASSWORD": "Forgot Password?",
+    "WELCOME": "Welcome, {{name}}"
+  },
+  "NAV": {
+    "HOME": "Home",
+    "ABOUT": "About",
+    "SETTINGS": "Settings",
+    "PROFILE": "Profile"
+  },
+  "VALIDATION": {
+    "REQUIRED": "This field is required",
+    "MIN_LENGTH": "Minimum {{min}} characters required",
+    "MAX_LENGTH": "Maximum {{max}} characters allowed",
+    "INVALID_EMAIL": "Please enter a valid email"
+  }
+}

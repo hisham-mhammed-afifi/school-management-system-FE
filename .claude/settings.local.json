@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm i:*)",
+      "Bash(npx ng build:*)",
+      "Bash(npx ng test:*)",
+      "Bash(ls:*)",
+      "Read(//d/me/frontend/**)",
+      "Bash(test:*)",
+      "Bash(npx husky:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npx prettier:*)",
+      "Bash(echo:*)"
+    ]
+  }
+}
