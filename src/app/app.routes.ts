@@ -87,6 +87,37 @@ export const routes: Routes = [
             ],
           },
           {
+            path: 'teachers',
+            children: [
+              {
+                path: '',
+                loadComponent: () =>
+                  import('./features/teachers/teachers').then((m) => m.TeachersComponent),
+              },
+              {
+                path: 'new',
+                loadComponent: () =>
+                  import('./features/teachers/teacher-form/teacher-form').then(
+                    (m) => m.TeacherFormComponent,
+                  ),
+              },
+              {
+                path: ':id',
+                loadComponent: () =>
+                  import('./features/teachers/teacher-detail/teacher-detail').then(
+                    (m) => m.TeacherDetailComponent,
+                  ),
+              },
+              {
+                path: ':id/edit',
+                loadComponent: () =>
+                  import('./features/teachers/teacher-form/teacher-form').then(
+                    (m) => m.TeacherFormComponent,
+                  ),
+              },
+            ],
+          },
+          {
             path: 'roles',
             children: [
               {

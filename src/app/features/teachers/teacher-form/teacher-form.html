@@ -1,0 +1,275 @@
+<div class="flex flex-col gap-4">
+  <!-- Header -->
+  <div class="flex items-center gap-3">
+    <a
+      [routerLink]="teachersRoute()"
+      class="p-2 rounded-lg bg-transparent text-text-secondary transition-colors hover:bg-surface-hover no-underline"
+      [attr.aria-label]="'COMMON.BACK' | translate"
+    >
+      <span class="material-icons text-xl leading-none">arrow_back</span>
+    </a>
+    <h1 class="text-xl font-bold text-text-primary">
+      @if (isEdit()) {
+        {{ 'TEACHERS.EDIT' | translate }}
+      } @else {
+        {{ 'TEACHERS.CREATE' | translate }}
+      }
+    </h1>
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="flex justify-center py-12">
+      <p class="text-sm text-text-tertiary">{{ 'COMMON.LOADING' | translate }}</p>
+    </div>
+  }
+
+  @if (!loading()) {
+    <!-- Error -->
+    @if (errorMessage()) {
+      <div
+        role="alert"
+        class="px-3 py-2 rounded-md text-sm font-medium bg-error-bg text-error-text"
+      >
+        {{ errorMessage()! | translate }}
+      </div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4 max-w-2xl">
+      <!-- Basic information -->
+      <div class="bg-surface rounded-xl p-5 shadow-card border border-border flex flex-col gap-4">
+        <h2 class="text-base font-semibold text-text-primary">
+          {{ 'TEACHERS.BASIC_INFO' | translate }}
+        </h2>
+
+        <!-- Teacher Code -->
+        <div class="flex flex-col gap-1">
+          <label for="teacher-code" class="text-sm font-medium text-text-secondary">
+            {{ 'TEACHERS.CODE' | translate }}
+          </label>
+          <input
+            id="teacher-code"
+            type="text"
+            formControlName="teacherCode"
+            class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none disabled:bg-bg-secondary disabled:text-text-tertiary"
+          />
+          @if (form.controls.teacherCode.touched && form.controls.teacherCode.errors) {
+            <span class="text-xs text-danger-text">
+              @if (form.controls.teacherCode.errors['required']) {
+                {{ 'VALIDATION.REQUIRED' | translate }}
+              } @else if (form.controls.teacherCode.errors['maxlength']) {
+                {{ 'VALIDATION.MAX_LENGTH' | translate: { max: 30 } }}
+              }
+            </span>
+          }
+        </div>
+
+        <!-- Name row -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="flex flex-col gap-1">
+            <label for="teacher-first-name" class="text-sm font-medium text-text-secondary">
+              {{ 'TEACHERS.FIRST_NAME' | translate }}
+            </label>
+            <input
+              id="teacher-first-name"
+              type="text"
+              formControlName="firstName"
+              class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+            />
+            @if (form.controls.firstName.touched && form.controls.firstName.errors) {
+              <span class="text-xs text-danger-text">
+                @if (form.controls.firstName.errors['required']) {
+                  {{ 'VALIDATION.REQUIRED' | translate }}
+                }
+              </span>
+            }
+          </div>
+          <div class="flex flex-col gap-1">
+            <label for="teacher-last-name" class="text-sm font-medium text-text-secondary">
+              {{ 'TEACHERS.LAST_NAME' | translate }}
+            </label>
+            <input
+              id="teacher-last-name"
+              type="text"
+              formControlName="lastName"
+              class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+            />
+            @if (form.controls.lastName.touched && form.controls.lastName.errors) {
+              <span class="text-xs text-danger-text">
+                @if (form.controls.lastName.errors['required']) {
+                  {{ 'VALIDATION.REQUIRED' | translate }}
+                }
+              </span>
+            }
+          </div>
+        </div>
+
+        <!-- Gender & Hire Date row -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="flex flex-col gap-1">
+            <label for="teacher-gender" class="text-sm font-medium text-text-secondary">
+              {{ 'TEACHERS.GENDER' | translate }}
+            </label>
+            <select
+              id="teacher-gender"
+              formControlName="gender"
+              class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+            >
+              <option value="male">{{ 'TEACHERS.GENDER_MALE' | translate }}</option>
+              <option value="female">{{ 'TEACHERS.GENDER_FEMALE' | translate }}</option>
+            </select>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label for="teacher-hire-date" class="text-sm font-medium text-text-secondary">
+              {{ 'TEACHERS.HIRE_DATE' | translate }}
+            </label>
+            <input
+              id="teacher-hire-date"
+              type="date"
+              formControlName="hireDate"
+              class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+            />
+            @if (form.controls.hireDate.touched && form.controls.hireDate.errors) {
+              <span class="text-xs text-danger-text">
+                {{ 'VALIDATION.REQUIRED' | translate }}
+              </span>
+            }
+          </div>
+        </div>
+
+        <!-- Status (edit only) -->
+        @if (isEdit()) {
+          <div class="flex flex-col gap-1">
+            <label for="teacher-status" class="text-sm font-medium text-text-secondary">
+              {{ 'TEACHERS.STATUS' | translate }}
+            </label>
+            <select
+              id="teacher-status"
+              formControlName="status"
+              class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+            >
+              @for (status of statuses; track status) {
+                <option [value]="status">
+                  {{ 'TEACHERS.STATUS_' + status.toUpperCase() | translate }}
+                </option>
+              }
+            </select>
+          </div>
+        }
+      </div>
+
+      <!-- Professional information -->
+      <div class="bg-surface rounded-xl p-5 shadow-card border border-border flex flex-col gap-4">
+        <h2 class="text-base font-semibold text-text-primary">
+          {{ 'TEACHERS.PROFESSIONAL_INFO' | translate }}
+        </h2>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Specialization -->
+          <div class="flex flex-col gap-1">
+            <label for="teacher-specialization" class="text-sm font-medium text-text-secondary">
+              {{ 'TEACHERS.SPECIALIZATION' | translate }}
+            </label>
+            <input
+              id="teacher-specialization"
+              type="text"
+              formControlName="specialization"
+              class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+            />
+          </div>
+
+          <!-- Qualification -->
+          <div class="flex flex-col gap-1">
+            <label for="teacher-qualification" class="text-sm font-medium text-text-secondary">
+              {{ 'TEACHERS.QUALIFICATION' | translate }}
+            </label>
+            <input
+              id="teacher-qualification"
+              type="text"
+              formControlName="qualification"
+              class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+            />
+          </div>
+
+          <!-- National ID -->
+          <div class="flex flex-col gap-1">
+            <label for="teacher-national-id" class="text-sm font-medium text-text-secondary">
+              {{ 'TEACHERS.NATIONAL_ID' | translate }}
+            </label>
+            <input
+              id="teacher-national-id"
+              type="text"
+              formControlName="nationalId"
+              class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact information -->
+      <div class="bg-surface rounded-xl p-5 shadow-card border border-border flex flex-col gap-4">
+        <h2 class="text-base font-semibold text-text-primary">
+          {{ 'TEACHERS.CONTACT_INFO' | translate }}
+        </h2>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Email -->
+          <div class="flex flex-col gap-1">
+            <label for="teacher-email" class="text-sm font-medium text-text-secondary">
+              {{ 'TEACHERS.EMAIL' | translate }}
+            </label>
+            <input
+              id="teacher-email"
+              type="email"
+              dir="ltr"
+              autocomplete="email"
+              formControlName="email"
+              class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+            />
+            @if (form.controls.email.touched && form.controls.email.errors) {
+              <span class="text-xs text-danger-text">
+                {{ 'VALIDATION.INVALID_EMAIL' | translate }}
+              </span>
+            }
+          </div>
+
+          <!-- Phone -->
+          <div class="flex flex-col gap-1">
+            <label for="teacher-phone" class="text-sm font-medium text-text-secondary">
+              {{ 'TEACHERS.PHONE' | translate }}
+            </label>
+            <input
+              id="teacher-phone"
+              type="tel"
+              dir="ltr"
+              autocomplete="tel"
+              formControlName="phone"
+              class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex gap-3">
+        <button
+          type="submit"
+          [disabled]="saving()"
+          class="px-4 py-2 border-0 bg-accent text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          @if (saving()) {
+            {{ 'COMMON.LOADING' | translate }}
+          } @else {
+            {{ 'COMMON.SAVE' | translate }}
+          }
+        </button>
+        <a
+          [routerLink]="teachersRoute()"
+          class="px-4 py-2 border-0 bg-bg-secondary text-text-primary rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-surface-hover no-underline inline-flex items-center"
+        >
+          {{ 'COMMON.CANCEL' | translate }}
+        </a>
+      </div>
+    </form>
+  }
+</div>
