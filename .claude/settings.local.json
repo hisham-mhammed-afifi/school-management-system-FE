@@ -10,7 +10,9 @@
       "Bash(npx husky:*)",
       "Bash(npx eslint:*)",
       "Bash(npx prettier:*)",
-      "Bash(echo:*)"
+      "Bash(echo:*)",
+      "Bash(cmd /c dir:*)",
+      "Bash(dir:*)"
     ]
   }
 }
