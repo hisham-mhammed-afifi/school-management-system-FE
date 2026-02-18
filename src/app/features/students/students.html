@@ -1,0 +1,163 @@
+<div class="flex flex-col gap-4">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <h1 class="text-xl font-bold text-text-primary">{{ 'STUDENTS.TITLE' | translate }}</h1>
+    <a
+      routerLink="new"
+      class="inline-flex items-center gap-2 px-4 py-2 border-0 bg-accent text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-accent-hover no-underline"
+    >
+      <span class="material-icons text-lg leading-none">person_add</span>
+      {{ 'STUDENTS.ADD' | translate }}
+    </a>
+  </div>
+
+  <!-- Filters -->
+  <div class="flex flex-wrap gap-3">
+    <div class="flex-1 min-w-48">
+      <label for="student-search" class="sr-only">{{ 'COMMON.SEARCH' | translate }}</label>
+      <input
+        id="student-search"
+        type="text"
+        (input)="onSearch($event)"
+        class="w-full px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+        [placeholder]="'STUDENTS.SEARCH_PLACEHOLDER' | translate"
+      />
+    </div>
+    <div>
+      <label for="status-filter" class="sr-only">{{ 'STUDENTS.FILTER_STATUS' | translate }}</label>
+      <select
+        id="status-filter"
+        (change)="onStatusFilter($event)"
+        class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+      >
+        <option value="">{{ 'STUDENTS.ALL_STATUSES' | translate }}</option>
+        @for (status of statuses; track status) {
+          <option [value]="status">
+            {{ 'STUDENTS.STATUS_' + status.toUpperCase() | translate }}
+          </option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <!-- Error -->
+  @if (error()) {
+    <div role="alert" class="px-3 py-2 rounded-md text-sm font-medium bg-error-bg text-error-text">
+      {{ error()! | translate }}
+    </div>
+  }
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="flex justify-center py-12">
+      <p class="text-sm text-text-tertiary">{{ 'COMMON.LOADING' | translate }}</p>
+    </div>
+  }
+
+  <!-- Students table -->
+  @if (!loading() && !error()) {
+    @if (students().length === 0) {
+      <div class="text-center py-12">
+        <span class="material-icons text-4xl text-text-tertiary mb-2">school</span>
+        <p class="text-sm text-text-tertiary">{{ 'COMMON.NO_RESULTS' | translate }}</p>
+      </div>
+    } @else {
+      <div class="bg-surface rounded-xl shadow-card border border-border overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border bg-bg-secondary">
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'STUDENTS.CODE' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'STUDENTS.NAME' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'STUDENTS.GENDER' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'STUDENTS.ADMISSION_DATE' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'STUDENTS.STATUS' | translate }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (student of students(); track student.id) {
+                <tr
+                  class="border-b border-border last:border-b-0 transition-colors hover:bg-surface-hover"
+                >
+                  <td class="px-4 py-3 text-text-secondary font-mono text-xs">
+                    {{ student.studentCode }}
+                  </td>
+                  <td class="px-4 py-3">
+                    <a
+                      [routerLink]="[student.id]"
+                      class="text-accent font-medium hover:underline no-underline"
+                    >
+                      {{ student.firstName }} {{ student.lastName }}
+                    </a>
+                    @if (student.email) {
+                      <p class="text-xs text-text-tertiary mt-0.5">{{ student.email }}</p>
+                    }
+                  </td>
+                  <td class="px-4 py-3 text-text-secondary">
+                    {{ 'STUDENTS.GENDER_' + student.gender.toUpperCase() | translate }}
+                  </td>
+                  <td class="px-4 py-3 text-text-secondary">
+                    {{ student.admissionDate }}
+                  </td>
+                  <td class="px-4 py-3">
+                    @switch (student.status) {
+                      @case ('active') {
+                        <span
+                          class="inline-flex items-center gap-1 text-xs font-medium text-success-text"
+                        >
+                          <span class="material-icons text-sm">check_circle</span>
+                          {{ 'STUDENTS.STATUS_ACTIVE' | translate }}
+                        </span>
+                      }
+                      @case ('graduated') {
+                        <span
+                          class="inline-flex items-center gap-1 text-xs font-medium text-info-text"
+                        >
+                          <span class="material-icons text-sm">school</span>
+                          {{ 'STUDENTS.STATUS_GRADUATED' | translate }}
+                        </span>
+                      }
+                      @case ('suspended') {
+                        <span
+                          class="inline-flex items-center gap-1 text-xs font-medium text-error-text"
+                        >
+                          <span class="material-icons text-sm">block</span>
+                          {{ 'STUDENTS.STATUS_SUSPENDED' | translate }}
+                        </span>
+                      }
+                      @default {
+                        <span
+                          class="inline-flex items-center gap-1 text-xs font-medium text-text-secondary"
+                        >
+                          <span class="material-icons text-sm">info</span>
+                          {{ 'STUDENTS.STATUS_' + student.status.toUpperCase() | translate }}
+                        </span>
+                      }
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <app-pagination
+        [page]="meta().page"
+        [limit]="meta().limit"
+        [total]="meta().total"
+        (pageChange)="onPageChange($event)"
+      />
+    }
+  }
+</div>

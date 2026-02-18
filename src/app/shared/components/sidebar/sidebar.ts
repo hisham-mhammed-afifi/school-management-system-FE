@@ -28,6 +28,7 @@ export class SidebarComponent {
     return [
       { labelKey: 'NAV.DASHBOARD', route: `${prefix}/dashboard`, icon: 'dashboard' },
       { labelKey: 'NAV.USERS', route: `${prefix}/users`, icon: 'people' },
+      { labelKey: 'NAV.STUDENTS', route: `${prefix}/students`, icon: 'school' },
       { labelKey: 'NAV.ROLES', route: `${prefix}/roles`, icon: 'admin_panel_settings' },
     ];
   });

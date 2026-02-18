@@ -56,6 +56,37 @@ export const routes: Routes = [
             ],
           },
           {
+            path: 'students',
+            children: [
+              {
+                path: '',
+                loadComponent: () =>
+                  import('./features/students/students').then((m) => m.StudentsComponent),
+              },
+              {
+                path: 'new',
+                loadComponent: () =>
+                  import('./features/students/student-form/student-form').then(
+                    (m) => m.StudentFormComponent,
+                  ),
+              },
+              {
+                path: ':id',
+                loadComponent: () =>
+                  import('./features/students/student-detail/student-detail').then(
+                    (m) => m.StudentDetailComponent,
+                  ),
+              },
+              {
+                path: ':id/edit',
+                loadComponent: () =>
+                  import('./features/students/student-form/student-form').then(
+                    (m) => m.StudentFormComponent,
+                  ),
+              },
+            ],
+          },
+          {
             path: 'roles',
             children: [
               {
