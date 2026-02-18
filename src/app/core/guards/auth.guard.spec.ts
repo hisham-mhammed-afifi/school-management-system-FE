@@ -48,14 +48,26 @@ describe('authGuard', () => {
     let guardResult: boolean | undefined;
     (result as Observable<boolean>).subscribe((v) => (guardResult = v));
 
-    const req = httpTesting.expectOne((r) => r.url === '/api/v1/auth/me');
-    req.flush({
-      success: true,
-      data: { id: 'u1', email: 'test@test.com', roles: [], permissions: [], schoolId: null },
-    });
+    httpTesting
+      .expectOne((r) => r.url === '/api/v1/auth/me')
+      .flush({
+        success: true,
+        data: {
+          id: 'u1',
+          email: 'test@test.com',
+          phone: null,
+          isActive: true,
+          lastLoginAt: null,
+          roles: [
+            { roleId: 'r1', roleName: 'teacher', schoolId: 'school-1', schoolName: 'School One' },
+          ],
+          permissions: [],
+        },
+      });
 
     expect(guardResult).toBe(true);
     expect(TestBed.inject(AuthService).user()).toBeTruthy();
+    expect(TestBed.inject(AuthService).user()!.schoolId).toBe('school-1');
   });
 
   it('should redirect to /login when fetchCurrentUser fails', () => {
@@ -72,8 +84,9 @@ describe('authGuard', () => {
     let guardResult: boolean | undefined;
     (result as Observable<boolean>).subscribe((v) => (guardResult = v));
 
-    const req = httpTesting.expectOne((r) => r.url === '/api/v1/auth/me');
-    req.flush({ message: 'Unauthorized' }, { status: 401, statusText: 'Unauthorized' });
+    httpTesting
+      .expectOne((r) => r.url === '/api/v1/auth/me')
+      .flush({ message: 'Unauthorized' }, { status: 401, statusText: 'Unauthorized' });
 
     expect(guardResult).toBe(false);
     expect(navigateSpy).toHaveBeenCalledWith(['/login']);
@@ -87,18 +100,42 @@ describe('authGuard', () => {
     });
     httpTesting = TestBed.inject(HttpTestingController);
 
-    // First, login to populate user signal
+    // Login to populate user signal (login now chains /auth/me)
     const authService = TestBed.inject(AuthService);
     authService.login({ email: 'test@test.com', password: 'pass' }).subscribe();
-    const loginReq = httpTesting.expectOne((r) => r.url === '/api/v1/auth/login');
-    loginReq.flush({
-      success: true,
-      data: {
-        accessToken: 'some-token',
-        refreshToken: 'refresh',
-        user: { id: 'u1', email: 'test@test.com', roles: [], permissions: [], schoolId: 's1' },
-      },
-    });
+
+    httpTesting
+      .expectOne((r) => r.url === '/api/v1/auth/login')
+      .flush({
+        success: true,
+        data: {
+          accessToken: 'some-token',
+          refreshToken: 'refresh',
+          user: {
+            id: 'u1',
+            email: 'test@test.com',
+            roles: ['teacher'],
+            permissions: [],
+            schoolId: 's1',
+            schools: [{ id: 's1', name: 'School One' }],
+          },
+        },
+      });
+
+    httpTesting
+      .expectOne((r) => r.url === '/api/v1/auth/me')
+      .flush({
+        success: true,
+        data: {
+          id: 'u1',
+          email: 'test@test.com',
+          phone: null,
+          isActive: true,
+          lastLoginAt: null,
+          roles: [{ roleId: 'r1', roleName: 'teacher', schoolId: 's1', schoolName: 'School One' }],
+          permissions: [],
+        },
+      });
 
     // Now the guard should return true synchronously (no HTTP call)
     const result = TestBed.runInInjectionContext(() => authGuard({} as never, {} as never));

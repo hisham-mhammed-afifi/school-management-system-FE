@@ -1,9 +1,10 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { RoleService } from '@core/services/role.service';
+import { SchoolService } from '@core/services/school.service';
 import { SEED_ROLES } from '@core/models/role';
 import type { ApiErrorResponse } from '@core/models/api';
 
@@ -16,9 +17,11 @@ import type { ApiErrorResponse } from '@core/models/api';
 export class RoleFormComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly roleService = inject(RoleService);
+  private readonly schoolService = inject(SchoolService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
+  readonly rolesRoute = computed(() => `/schools/${this.schoolService.currentSchoolId()}/roles`);
   readonly isEdit = signal(false);
   readonly roleId = signal<string | null>(null);
   readonly isSeedRole = signal(false);
@@ -52,12 +55,24 @@ export class RoleFormComponent implements OnInit {
 
     if (this.isEdit()) {
       this.roleService.update(this.roleId()!, { name }).subscribe({
-        next: () => this.router.navigate(['/roles', this.roleId()]),
+        next: () =>
+          this.router.navigate([
+            '/schools',
+            this.schoolService.currentSchoolId(),
+            'roles',
+            this.roleId(),
+          ]),
         error: (err) => this.handleError(err),
       });
     } else {
       this.roleService.create({ name }).subscribe({
-        next: (res) => this.router.navigate(['/roles', res.data.id]),
+        next: (res) =>
+          this.router.navigate([
+            '/schools',
+            this.schoolService.currentSchoolId(),
+            'roles',
+            res.data.id,
+          ]),
         error: (err) => this.handleError(err),
       });
     }

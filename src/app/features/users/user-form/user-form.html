@@ -2,7 +2,7 @@
   <!-- Header -->
   <div class="flex items-center gap-3">
     <a
-      routerLink="/users"
+      [routerLink]="usersRoute()"
       class="p-2 rounded-lg bg-transparent text-text-secondary transition-colors hover:bg-surface-hover no-underline"
       [attr.aria-label]="'COMMON.BACK' | translate"
     >
@@ -155,7 +155,7 @@
           }
         </button>
         <a
-          routerLink="/users"
+          [routerLink]="usersRoute()"
           class="px-4 py-2 border-0 bg-bg-tertiary text-text-primary rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-surface-hover no-underline inline-flex items-center"
         >
           {{ 'COMMON.CANCEL' | translate }}

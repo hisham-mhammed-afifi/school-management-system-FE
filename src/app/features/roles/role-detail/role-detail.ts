@@ -3,6 +3,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { RoleService } from '@core/services/role.service';
+import { SchoolService } from '@core/services/school.service';
 import { SEED_ROLES } from '@core/models/role';
 import type { Role, Permission } from '@core/models/role';
 
@@ -20,7 +21,9 @@ interface PermissionGroup {
 export class RoleDetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly roleService = inject(RoleService);
+  private readonly schoolService = inject(SchoolService);
 
+  readonly rolesRoute = computed(() => `/schools/${this.schoolService.currentSchoolId()}/roles`);
   readonly role = signal<Role | null>(null);
   readonly allPermissions = signal<Permission[]>([]);
   readonly selectedPermissionIds = signal<Set<string>>(new Set());

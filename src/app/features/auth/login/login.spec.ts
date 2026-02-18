@@ -79,18 +79,40 @@ describe('LoginComponent', () => {
     fixture.componentInstance.onSubmit();
     expect(fixture.componentInstance.loading()).toBe(true);
 
-    const req = httpTesting.expectOne('/api/v1/auth/login');
-    expect(req.request.method).toBe('POST');
-    req.flush({
+    // Flush login request
+    const loginReq = httpTesting.expectOne('/api/v1/auth/login');
+    expect(loginReq.request.method).toBe('POST');
+    loginReq.flush({
       success: true,
       data: {
         accessToken: 'token',
         refreshToken: 'refresh',
-        user: { id: '1', email: 'test@example.com', roles: [], permissions: [], schoolId: null },
+        user: {
+          id: '1',
+          email: 'test@example.com',
+          roles: [],
+          permissions: [],
+          schoolId: null,
+          schools: [],
+        },
       },
     });
 
-    expect(navigateSpy).toHaveBeenCalledWith(['/dashboard']);
+    // Flush the chained /auth/me request
+    httpTesting.expectOne('/api/v1/auth/me').flush({
+      success: true,
+      data: {
+        id: '1',
+        email: 'test@example.com',
+        phone: null,
+        isActive: true,
+        lastLoginAt: null,
+        roles: [{ roleId: 'r1', roleName: 'super_admin', schoolId: null, schoolName: null }],
+        permissions: [],
+      },
+    });
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/schools']);
   });
 
   it('should show error on login failure', () => {
@@ -113,6 +135,7 @@ describe('LoginComponent', () => {
       { status: 401, statusText: 'Unauthorized' },
     );
 
+    // No /auth/me request should be made on login failure
     expect(fixture.componentInstance.loading()).toBe(false);
     expect(fixture.componentInstance.errorMessage()).toBe('Invalid email or password');
   });

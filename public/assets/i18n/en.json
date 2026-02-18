@@ -88,7 +88,10 @@
   },
   "SCHOOL": {
     "SELECT": "Select school",
-    "SELECT_PLACEHOLDER": "Select a school..."
+    "SELECT_PLACEHOLDER": "Select a school...",
+    "PICKER_TITLE": "Select a School",
+    "PICKER_SUBTITLE": "Choose a school to continue",
+    "NO_SCHOOLS": "No schools available"
   },
   "VALIDATION": {
     "REQUIRED": "This field is required",

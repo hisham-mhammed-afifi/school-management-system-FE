@@ -15,7 +15,8 @@
       "Bash(dir:*)",
       "Bash(npm run lint:*)",
       "Bash(npm run build:*)",
-      "Bash(npm test:*)"
+      "Bash(npm test:*)",
+      "Bash(perl -pe:*)"
     ]
   }
 }

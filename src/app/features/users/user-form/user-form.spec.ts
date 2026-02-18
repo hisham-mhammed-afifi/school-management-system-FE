@@ -1,7 +1,7 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideRouter, ActivatedRoute } from '@angular/router';
+import { provideRouter, ActivatedRoute, Router } from '@angular/router';
 import { provideTranslateService } from '@ngx-translate/core';
 import { UserFormComponent } from './user-form';
 
@@ -9,6 +9,7 @@ describe('UserFormComponent', () => {
   let fixture: ComponentFixture<UserFormComponent>;
   let component: UserFormComponent;
   let httpTesting: HttpTestingController;
+  let router: Router;
 
   const mockRolesResponse = {
     success: true,
@@ -36,7 +37,7 @@ describe('UserFormComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        provideRouter([]),
+        provideRouter([{ path: 'schools/:schoolId', children: [{ path: '**', children: [] }] }]),
         provideTranslateService({ fallbackLang: 'en' }),
         {
           provide: ActivatedRoute,
@@ -46,13 +47,15 @@ describe('UserFormComponent', () => {
     });
 
     httpTesting = TestBed.inject(HttpTestingController);
-    fixture = TestBed.createComponent(UserFormComponent);
-    component = fixture.componentInstance;
+    router = TestBed.inject(Router);
   }
 
   describe('create mode', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       setupTestBed(null);
+      await router.navigateByUrl('/schools/test-school/users/new');
+      fixture = TestBed.createComponent(UserFormComponent);
+      component = fixture.componentInstance;
       fixture.detectChanges();
     });
 
@@ -89,6 +92,7 @@ describe('UserFormComponent', () => {
 
     it('should submit create request', () => {
       flushRoles();
+      const navigateSpy = vi.spyOn(router, 'navigate').mockReturnValue(Promise.resolve(true));
 
       component.form.patchValue({ email: 'new@test.com', password: 'password123' });
       component.toggleRole('r1');
@@ -103,6 +107,8 @@ describe('UserFormComponent', () => {
         roleIds: ['r1'],
       });
       req.flush({ success: true, data: { id: 'new-id' } });
+
+      expect(navigateSpy).toHaveBeenCalledWith(['/schools', 'test-school', 'users', 'new-id']);
     });
 
     it('should handle create error', () => {
@@ -123,8 +129,11 @@ describe('UserFormComponent', () => {
   });
 
   describe('edit mode', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       setupTestBed('user-1');
+      await router.navigateByUrl('/schools/test-school/users/user-1/edit');
+      fixture = TestBed.createComponent(UserFormComponent);
+      component = fixture.componentInstance;
       fixture.detectChanges();
     });
 
@@ -168,6 +177,7 @@ describe('UserFormComponent', () => {
 
     it('should submit update request', () => {
       flushEditRequests();
+      const navigateSpy = vi.spyOn(router, 'navigate').mockReturnValue(Promise.resolve(true));
 
       component.form.patchValue({ email: 'updated@test.com' });
       component.onSubmit();
@@ -175,6 +185,8 @@ describe('UserFormComponent', () => {
       const req = httpTesting.expectOne('/api/v1/users/user-1');
       expect(req.request.method).toBe('PATCH');
       req.flush({ success: true, data: { id: 'user-1' } });
+
+      expect(navigateSpy).toHaveBeenCalledWith(['/schools', 'test-school', 'users', 'user-1']);
     });
 
     it('should show error when user load fails', () => {

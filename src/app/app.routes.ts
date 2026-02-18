@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from '@core/guards/auth.guard';
 import { guestGuard } from '@core/guards/guest.guard';
+import { schoolContextGuard } from '@core/guards/school-context.guard';
 
 export const routes: Routes = [
   {
@@ -9,65 +10,82 @@ export const routes: Routes = [
     canActivate: [guestGuard],
   },
   {
-    path: '',
-    loadComponent: () => import('@shared/components/layout/layout').then((m) => m.LayoutComponent),
+    path: 'schools',
     canActivate: [authGuard],
     children: [
       {
-        path: 'dashboard',
+        path: '',
         loadComponent: () =>
-          import('./features/dashboard/dashboard').then((m) => m.DashboardComponent),
+          import('./features/school-picker/school-picker').then((m) => m.SchoolPickerComponent),
       },
       {
-        path: 'users',
+        path: ':schoolId',
+        loadComponent: () =>
+          import('@shared/components/layout/layout').then((m) => m.LayoutComponent),
+        canActivate: [schoolContextGuard],
         children: [
           {
-            path: '',
-            loadComponent: () => import('./features/users/users').then((m) => m.UsersComponent),
+            path: 'dashboard',
+            loadComponent: () =>
+              import('./features/dashboard/dashboard').then((m) => m.DashboardComponent),
           },
           {
-            path: 'new',
-            loadComponent: () =>
-              import('./features/users/user-form/user-form').then((m) => m.UserFormComponent),
+            path: 'users',
+            children: [
+              {
+                path: '',
+                loadComponent: () => import('./features/users/users').then((m) => m.UsersComponent),
+              },
+              {
+                path: 'new',
+                loadComponent: () =>
+                  import('./features/users/user-form/user-form').then((m) => m.UserFormComponent),
+              },
+              {
+                path: ':id',
+                loadComponent: () =>
+                  import('./features/users/user-detail/user-detail').then(
+                    (m) => m.UserDetailComponent,
+                  ),
+              },
+              {
+                path: ':id/edit',
+                loadComponent: () =>
+                  import('./features/users/user-form/user-form').then((m) => m.UserFormComponent),
+              },
+            ],
           },
           {
-            path: ':id',
-            loadComponent: () =>
-              import('./features/users/user-detail/user-detail').then((m) => m.UserDetailComponent),
+            path: 'roles',
+            children: [
+              {
+                path: '',
+                loadComponent: () => import('./features/roles/roles').then((m) => m.RolesComponent),
+              },
+              {
+                path: 'new',
+                loadComponent: () =>
+                  import('./features/roles/role-form/role-form').then((m) => m.RoleFormComponent),
+              },
+              {
+                path: ':id',
+                loadComponent: () =>
+                  import('./features/roles/role-detail/role-detail').then(
+                    (m) => m.RoleDetailComponent,
+                  ),
+              },
+              {
+                path: ':id/edit',
+                loadComponent: () =>
+                  import('./features/roles/role-form/role-form').then((m) => m.RoleFormComponent),
+              },
+            ],
           },
-          {
-            path: ':id/edit',
-            loadComponent: () =>
-              import('./features/users/user-form/user-form').then((m) => m.UserFormComponent),
-          },
+          { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
         ],
       },
-      {
-        path: 'roles',
-        children: [
-          {
-            path: '',
-            loadComponent: () => import('./features/roles/roles').then((m) => m.RolesComponent),
-          },
-          {
-            path: 'new',
-            loadComponent: () =>
-              import('./features/roles/role-form/role-form').then((m) => m.RoleFormComponent),
-          },
-          {
-            path: ':id',
-            loadComponent: () =>
-              import('./features/roles/role-detail/role-detail').then((m) => m.RoleDetailComponent),
-          },
-          {
-            path: ':id/edit',
-            loadComponent: () =>
-              import('./features/roles/role-form/role-form').then((m) => m.RoleFormComponent),
-          },
-        ],
-      },
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
+  { path: '', redirectTo: 'schools', pathMatch: 'full' },
   { path: '**', redirectTo: 'login' },
 ];

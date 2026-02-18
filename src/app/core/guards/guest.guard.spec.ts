@@ -23,7 +23,7 @@ describe('guestGuard', () => {
     expect(result).toBe(true);
   });
 
-  it('should redirect to /dashboard when authenticated', () => {
+  it('should redirect to /schools when authenticated', () => {
     localStorage.setItem('access_token', 'some-token');
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
@@ -34,6 +34,6 @@ describe('guestGuard', () => {
     const result = TestBed.runInInjectionContext(() => guestGuard({} as never, {} as never));
 
     expect(result).toBe(false);
-    expect(navigateSpy).toHaveBeenCalledWith(['/dashboard']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/schools']);
   });
 });

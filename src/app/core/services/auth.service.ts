@@ -1,7 +1,7 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap, catchError, throwError } from 'rxjs';
+import { Observable, tap, catchError, throwError, switchMap, map } from 'rxjs';
 
 import type { ApiResponse } from '@core/models/api';
 import type {
@@ -10,7 +10,9 @@ import type {
   LoginResponse,
   RefreshTokenRequest,
   RefreshTokenResponse,
+  UserProfile,
 } from '@core/models/auth';
+import { mapProfileToAuthUser } from '@core/models/auth';
 
 const ACCESS_TOKEN_KEY = 'access_token';
 const REFRESH_TOKEN_KEY = 'refresh_token';
@@ -35,8 +37,8 @@ export class AuthService {
     return this.http.post<ApiResponse<LoginResponse>>('/api/v1/auth/login', credentials).pipe(
       tap((res) => {
         this.storeTokens(res.data.accessToken, res.data.refreshToken);
-        this._user.set(res.data.user);
       }),
+      switchMap((loginRes) => this.fetchCurrentUser().pipe(map(() => loginRes))),
     );
   }
 
@@ -70,10 +72,10 @@ export class AuthService {
     return this._refreshingToken;
   }
 
-  fetchCurrentUser(): Observable<ApiResponse<AuthUser>> {
+  fetchCurrentUser(): Observable<ApiResponse<UserProfile>> {
     return this.http
-      .get<ApiResponse<AuthUser>>('/api/v1/auth/me')
-      .pipe(tap((res) => this._user.set(res.data)));
+      .get<ApiResponse<UserProfile>>('/api/v1/auth/me')
+      .pipe(tap((res) => this._user.set(mapProfileToAuthUser(res.data))));
   }
 
   logout(): void {
@@ -87,7 +89,6 @@ export class AuthService {
     this._user.set(null);
     localStorage.removeItem(ACCESS_TOKEN_KEY);
     localStorage.removeItem(REFRESH_TOKEN_KEY);
-    localStorage.removeItem('selected_school_id');
   }
 
   private storeTokens(accessToken: string, refreshToken: string): void {

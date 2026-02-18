@@ -1,9 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { apiInterceptor } from './api.interceptor';
-import { AuthService } from '@core/services/auth.service';
 
 describe('apiInterceptor', () => {
   let http: HttpClient;
@@ -14,7 +13,10 @@ describe('apiInterceptor', () => {
 
     TestBed.configureTestingModule({
       providers: [
-        provideRouter([]),
+        provideRouter([
+          { path: 'schools/:schoolId', children: [{ path: '**', children: [] }] },
+          { path: '**', children: [] },
+        ]),
         provideHttpClient(withInterceptors([apiInterceptor])),
         provideHttpClientTesting(),
       ],
@@ -41,7 +43,6 @@ describe('apiInterceptor', () => {
   it('should rewrite /api requests to the environment API URL', () => {
     http.get('/api/users').subscribe();
 
-    // environment.apiUrl is 'http://localhost:3000/api' in dev
     const req = httpTesting.expectOne('http://localhost:3000/api/users');
     expect(req.request.url).toBe('http://localhost:3000/api/users');
     req.flush([]);
@@ -58,7 +59,6 @@ describe('apiInterceptor', () => {
   it('should attach Authorization header when token exists', () => {
     localStorage.setItem('access_token', 'my-jwt-token');
 
-    // Re-create TestBed so AuthService picks up the token
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       providers: [
@@ -86,40 +86,9 @@ describe('apiInterceptor', () => {
     req.flush([]);
   });
 
-  it('should attach X-School-Id header when school is selected by super admin', () => {
-    localStorage.setItem('access_token', 'my-jwt-token');
-    localStorage.setItem('selected_school_id', 'school-123');
-
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({
-      providers: [
-        provideRouter([]),
-        provideHttpClient(withInterceptors([apiInterceptor])),
-        provideHttpClientTesting(),
-      ],
-    });
-
-    http = TestBed.inject(HttpClient);
-    httpTesting = TestBed.inject(HttpTestingController);
-
-    // Log in as a super admin (schoolId: null) so currentSchoolId uses the stored value
-    const authService = TestBed.inject(AuthService);
-    authService.login({ email: 'admin@test.com', password: 'pass' }).subscribe();
-    const loginReq = httpTesting.expectOne('http://localhost:3000/api/v1/auth/login');
-    loginReq.flush({
-      success: true,
-      data: {
-        accessToken: 'my-jwt-token',
-        refreshToken: 'refresh',
-        user: {
-          id: 'u1',
-          email: 'admin@test.com',
-          roles: ['super_admin'],
-          permissions: [],
-          schoolId: null,
-        },
-      },
-    });
+  it('should attach X-School-Id header when on a school route', async () => {
+    const router = TestBed.inject(Router);
+    await router.navigateByUrl('/schools/school-123/users');
 
     http.get('/api/users').subscribe();
 
@@ -128,7 +97,7 @@ describe('apiInterceptor', () => {
     req.flush([]);
   });
 
-  it('should not attach X-School-Id header when no school is selected', () => {
+  it('should not attach X-School-Id header when not on a school route', () => {
     http.get('/api/users').subscribe();
 
     const req = httpTesting.expectOne('http://localhost:3000/api/users');

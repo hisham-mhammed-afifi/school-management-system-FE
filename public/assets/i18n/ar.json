@@ -88,7 +88,10 @@
   },
   "SCHOOL": {
     "SELECT": "اختر المدرسة",
-    "SELECT_PLACEHOLDER": "اختر مدرسة..."
+    "SELECT_PLACEHOLDER": "اختر مدرسة...",
+    "PICKER_TITLE": "اختر مدرسة",
+    "PICKER_SUBTITLE": "اختر مدرسة للمتابعة",
+    "NO_SCHOOLS": "لا توجد مدارس متاحة"
   },
   "VALIDATION": {
     "REQUIRED": "هذا الحقل مطلوب",

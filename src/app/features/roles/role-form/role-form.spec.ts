@@ -1,7 +1,7 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideRouter, ActivatedRoute } from '@angular/router';
+import { provideRouter, ActivatedRoute, Router } from '@angular/router';
 import { provideTranslateService } from '@ngx-translate/core';
 import { RoleFormComponent } from './role-form';
 
@@ -9,6 +9,7 @@ describe('RoleFormComponent', () => {
   let fixture: ComponentFixture<RoleFormComponent>;
   let component: RoleFormComponent;
   let httpTesting: HttpTestingController;
+  let router: Router;
 
   function setupTestBed(routeId: string | null): void {
     const paramMap = new Map<string, string>();
@@ -21,7 +22,7 @@ describe('RoleFormComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        provideRouter([]),
+        provideRouter([{ path: 'schools/:schoolId', children: [{ path: '**', children: [] }] }]),
         provideTranslateService({ fallbackLang: 'en' }),
         {
           provide: ActivatedRoute,
@@ -31,13 +32,15 @@ describe('RoleFormComponent', () => {
     });
 
     httpTesting = TestBed.inject(HttpTestingController);
-    fixture = TestBed.createComponent(RoleFormComponent);
-    component = fixture.componentInstance;
+    router = TestBed.inject(Router);
   }
 
   describe('create mode', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       setupTestBed(null);
+      await router.navigateByUrl('/schools/test-school/roles/new');
+      fixture = TestBed.createComponent(RoleFormComponent);
+      component = fixture.componentInstance;
       fixture.detectChanges();
     });
 
@@ -56,6 +59,8 @@ describe('RoleFormComponent', () => {
     });
 
     it('should submit create request', () => {
+      const navigateSpy = vi.spyOn(router, 'navigate').mockReturnValue(Promise.resolve(true));
+
       component.form.patchValue({ name: 'new-role' });
       component.onSubmit();
 
@@ -63,6 +68,8 @@ describe('RoleFormComponent', () => {
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual({ name: 'new-role' });
       req.flush({ success: true, data: { id: 'new-id', name: 'new-role' } });
+
+      expect(navigateSpy).toHaveBeenCalledWith(['/schools', 'test-school', 'roles', 'new-id']);
     });
 
     it('should handle create error', () => {
@@ -81,8 +88,11 @@ describe('RoleFormComponent', () => {
   });
 
   describe('edit mode', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       setupTestBed('role-1');
+      await router.navigateByUrl('/schools/test-school/roles/role-1/edit');
+      fixture = TestBed.createComponent(RoleFormComponent);
+      component = fixture.componentInstance;
       fixture.detectChanges();
     });
 
@@ -122,6 +132,8 @@ describe('RoleFormComponent', () => {
         data: { id: 'role-1', name: 'custom_role', schoolId: null, createdAt: '', updatedAt: '' },
       });
 
+      const navigateSpy = vi.spyOn(router, 'navigate').mockReturnValue(Promise.resolve(true));
+
       component.form.patchValue({ name: 'updated-role' });
       component.onSubmit();
 
@@ -129,6 +141,8 @@ describe('RoleFormComponent', () => {
       expect(updateReq.request.method).toBe('PATCH');
       expect(updateReq.request.body).toEqual({ name: 'updated-role' });
       updateReq.flush({ success: true, data: { id: 'role-1', name: 'updated-role' } });
+
+      expect(navigateSpy).toHaveBeenCalledWith(['/schools', 'test-school', 'roles', 'role-1']);
     });
 
     it('should show error when role load fails', () => {

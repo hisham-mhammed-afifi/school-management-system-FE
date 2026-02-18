@@ -28,6 +28,7 @@ export class LayoutComponent {
 
   readonly user = this.authService.user;
   readonly isSuperAdmin = this.schoolService.isSuperAdmin;
+  readonly showSchoolSwitcher = this.schoolService.hasMultipleSchools;
   readonly sidebarOpen = signal(false);
 
   toggleSidebar(): void {

@@ -4,7 +4,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideRouter, Router } from '@angular/router';
 import { AuthService } from './auth.service';
 import type { ApiResponse } from '@core/models/api';
-import type { LoginResponse, RefreshTokenResponse } from '@core/models/auth';
+import type { LoginResponse, RefreshTokenResponse, UserProfile } from '@core/models/auth';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -22,9 +22,30 @@ describe('AuthService', () => {
         roles: ['teacher'],
         permissions: ['read:students'],
         schoolId: 'school-1',
+        schools: [{ id: 'school-1', name: 'School One' }],
       },
     },
   };
+
+  const mockUserProfile: ApiResponse<UserProfile> = {
+    success: true,
+    data: {
+      id: '1',
+      email: 'test@example.com',
+      phone: null,
+      isActive: true,
+      lastLoginAt: null,
+      roles: [
+        { roleId: 'r1', roleName: 'teacher', schoolId: 'school-1', schoolName: 'School One' },
+      ],
+      permissions: ['read:students'],
+    },
+  };
+
+  function flushLogin(): void {
+    httpTesting.expectOne('/api/v1/auth/login').flush(mockLoginResponse);
+    httpTesting.expectOne('/api/v1/auth/me').flush(mockUserProfile);
+  }
 
   beforeEach(() => {
     localStorage.clear();
@@ -55,7 +76,6 @@ describe('AuthService', () => {
   it('should be authenticated if a token exists in localStorage', () => {
     localStorage.setItem('access_token', 'existing-token');
 
-    // Re-create TestBed so AuthService reads token from localStorage on init
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()],
@@ -69,16 +89,24 @@ describe('AuthService', () => {
   });
 
   describe('login', () => {
-    it('should store tokens and user on successful login', () => {
+    it('should store tokens and fetch user profile on successful login', () => {
       service.login({ email: 'test@example.com', password: 'password' }).subscribe();
 
-      const req = httpTesting.expectOne('/api/v1/auth/login');
-      expect(req.request.method).toBe('POST');
-      expect(req.request.body).toEqual({ email: 'test@example.com', password: 'password' });
-      req.flush(mockLoginResponse);
+      const loginReq = httpTesting.expectOne('/api/v1/auth/login');
+      expect(loginReq.request.method).toBe('POST');
+      expect(loginReq.request.body).toEqual({ email: 'test@example.com', password: 'password' });
+      loginReq.flush(mockLoginResponse);
+
+      const meReq = httpTesting.expectOne('/api/v1/auth/me');
+      expect(meReq.request.method).toBe('GET');
+      meReq.flush(mockUserProfile);
 
       expect(service.isAuthenticated()).toBe(true);
-      expect(service.user()).toEqual(mockLoginResponse.data.user);
+      expect(service.user()!.id).toBe('1');
+      expect(service.user()!.email).toBe('test@example.com');
+      expect(service.user()!.roles).toEqual(['teacher']);
+      expect(service.user()!.schoolId).toBe('school-1');
+      expect(service.user()!.schools).toEqual([{ id: 'school-1', name: 'School One' }]);
       expect(service.accessToken).toBe('test-access-token');
       expect(localStorage.getItem('access_token')).toBe('test-access-token');
       expect(localStorage.getItem('refresh_token')).toBe('test-refresh-token');
@@ -154,13 +182,11 @@ describe('AuthService', () => {
     it('should clear session and navigate to login', () => {
       const navigateSpy = vi.spyOn(router, 'navigate');
 
-      // First login
       service.login({ email: 'test@example.com', password: 'password' }).subscribe();
-      httpTesting.expectOne('/api/v1/auth/login').flush(mockLoginResponse);
+      flushLogin();
 
       expect(service.isAuthenticated()).toBe(true);
 
-      // Then logout
       service.logout();
       httpTesting
         .expectOne('/api/v1/auth/logout')
@@ -174,25 +200,75 @@ describe('AuthService', () => {
   });
 
   describe('fetchCurrentUser', () => {
-    it('should update the user signal', () => {
-      const userResponse = {
-        success: true as const,
-        data: {
-          id: '1',
-          email: 'test@example.com',
-          roles: ['teacher'],
-          permissions: ['read:students'],
-          schoolId: 'school-1',
-        },
-      };
-
+    it('should map UserProfile to AuthUser and update the user signal', () => {
       service.fetchCurrentUser().subscribe();
 
       const req = httpTesting.expectOne('/api/v1/auth/me');
       expect(req.request.method).toBe('GET');
-      req.flush(userResponse);
+      req.flush(mockUserProfile);
 
-      expect(service.user()).toEqual(userResponse.data);
+      const user = service.user()!;
+      expect(user.id).toBe('1');
+      expect(user.email).toBe('test@example.com');
+      expect(user.roles).toEqual(['teacher']);
+      expect(user.permissions).toEqual(['read:students']);
+      expect(user.schoolId).toBe('school-1');
+      expect(user.schools).toEqual([{ id: 'school-1', name: 'School One' }]);
+    });
+
+    it('should set schoolId to null for super admin with no school-scoped roles', () => {
+      const superAdminProfile: ApiResponse<UserProfile> = {
+        success: true,
+        data: {
+          id: '2',
+          email: 'admin@example.com',
+          phone: null,
+          isActive: true,
+          lastLoginAt: null,
+          roles: [{ roleId: 'r1', roleName: 'super_admin', schoolId: null, schoolName: null }],
+          permissions: ['*'],
+        },
+      };
+
+      service.fetchCurrentUser().subscribe();
+      httpTesting.expectOne('/api/v1/auth/me').flush(superAdminProfile);
+
+      const user = service.user()!;
+      expect(user.schoolId).toBeNull();
+      expect(user.schools).toEqual([]);
+    });
+
+    it('should set schoolId to null for multi-school users', () => {
+      const multiSchoolProfile: ApiResponse<UserProfile> = {
+        success: true,
+        data: {
+          id: '3',
+          email: 'teacher@example.com',
+          phone: null,
+          isActive: true,
+          lastLoginAt: null,
+          roles: [
+            { roleId: 'r1', roleName: 'teacher', schoolId: 'school-1', schoolName: 'School One' },
+            {
+              roleId: 'r2',
+              roleName: 'examiner',
+              schoolId: 'school-2',
+              schoolName: 'School Two',
+            },
+          ],
+          permissions: ['read:students'],
+        },
+      };
+
+      service.fetchCurrentUser().subscribe();
+      httpTesting.expectOne('/api/v1/auth/me').flush(multiSchoolProfile);
+
+      const user = service.user()!;
+      expect(user.schoolId).toBeNull();
+      expect(user.schools).toEqual([
+        { id: 'school-1', name: 'School One' },
+        { id: 'school-2', name: 'School Two' },
+      ]);
     });
   });
 });

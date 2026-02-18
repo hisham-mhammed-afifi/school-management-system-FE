@@ -1,0 +1,60 @@
+<div class="min-h-screen bg-bg-primary flex flex-col">
+  <!-- Top bar -->
+  <header class="flex items-center justify-between px-4 py-3 border-b border-border bg-surface">
+    <h1 class="text-lg font-bold text-text-primary">{{ 'COMMON.APP_NAME' | translate }}</h1>
+    <div class="flex items-center gap-3">
+      <app-theme-toggle />
+      <app-language-switcher />
+      <button
+        type="button"
+        (click)="logout()"
+        class="px-3 py-1.5 border border-border rounded-lg bg-transparent text-sm font-medium text-text-secondary cursor-pointer transition-colors hover:bg-surface-hover hover:text-danger-text"
+      >
+        {{ 'AUTH.LOGOUT' | translate }}
+      </button>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <main class="flex-1 flex items-center justify-center p-4">
+    <div class="w-full max-w-lg flex flex-col gap-6 text-center">
+      <div>
+        <h2 class="text-2xl font-bold text-text-primary mb-1">
+          {{ 'SCHOOL.PICKER_TITLE' | translate }}
+        </h2>
+        <p class="text-sm text-text-tertiary">
+          {{ 'SCHOOL.PICKER_SUBTITLE' | translate }}
+        </p>
+      </div>
+
+      @if (loading()) {
+        <div class="flex justify-center py-12">
+          <p class="text-sm text-text-tertiary">{{ 'COMMON.LOADING' | translate }}</p>
+        </div>
+      }
+
+      @if (!loading()) {
+        <div class="flex flex-col gap-3">
+          @for (school of schools(); track school.id) {
+            <a
+              [routerLink]="['/schools', school.id, 'dashboard']"
+              class="flex items-center gap-3 p-4 bg-surface border border-border rounded-xl shadow-card transition-colors hover:bg-surface-hover hover:border-accent no-underline text-start"
+            >
+              <span
+                class="flex items-center justify-center w-10 h-10 rounded-lg bg-bg-secondary text-accent"
+              >
+                <span class="material-icons">school</span>
+              </span>
+              <span class="text-base font-medium text-text-primary">{{ school.name }}</span>
+              <span class="material-icons text-text-tertiary ms-auto">chevron_right</span>
+            </a>
+          }
+        </div>
+
+        @if (schools().length === 0 && !loading()) {
+          <p class="text-sm text-text-tertiary italic">{{ 'SCHOOL.NO_SCHOOLS' | translate }}</p>
+        }
+      }
+    </div>
+  </main>
+</div>

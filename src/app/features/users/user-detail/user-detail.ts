@@ -1,9 +1,10 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { UserService } from '@core/services/user.service';
 import { RoleService } from '@core/services/role.service';
+import { SchoolService } from '@core/services/school.service';
 import type { User } from '@core/models/user';
 import type { Role } from '@core/models/role';
 
@@ -17,7 +18,9 @@ export class UserDetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly userService = inject(UserService);
   private readonly roleService = inject(RoleService);
+  private readonly schoolService = inject(SchoolService);
 
+  readonly usersRoute = computed(() => `/schools/${this.schoolService.currentSchoolId()}/users`);
   readonly user = signal<User | null>(null);
   readonly availableRoles = signal<Role[]>([]);
   readonly loading = signal(false);

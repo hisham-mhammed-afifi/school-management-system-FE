@@ -39,7 +39,12 @@ export class LoginComponent {
     const { email, password } = this.form.getRawValue();
     this.authService.login({ email, password }).subscribe({
       next: () => {
-        this.router.navigate(['/dashboard']);
+        const user = this.authService.user();
+        if (user && user.schools.length === 1) {
+          this.router.navigate(['/schools', user.schools[0].id, 'dashboard']);
+        } else {
+          this.router.navigate(['/schools']);
+        }
       },
       error: (err) => {
         this.loading.set(false);

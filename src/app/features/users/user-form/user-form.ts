@@ -1,10 +1,11 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { UserService } from '@core/services/user.service';
 import { RoleService } from '@core/services/role.service';
+import { SchoolService } from '@core/services/school.service';
 import type { User } from '@core/models/user';
 import type { Role } from '@core/models/role';
 import type { ApiErrorResponse } from '@core/models/api';
@@ -19,9 +20,11 @@ export class UserFormComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly userService = inject(UserService);
   private readonly roleService = inject(RoleService);
+  private readonly schoolService = inject(SchoolService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
+  readonly usersRoute = computed(() => `/schools/${this.schoolService.currentSchoolId()}/users`);
   readonly isEdit = signal(false);
   readonly userId = signal<string | null>(null);
   readonly loading = signal(false);
@@ -80,7 +83,13 @@ export class UserFormComponent implements OnInit {
           isActive: formVal.isActive,
         })
         .subscribe({
-          next: () => this.router.navigate(['/users', this.userId()]),
+          next: () =>
+            this.router.navigate([
+              '/schools',
+              this.schoolService.currentSchoolId(),
+              'users',
+              this.userId(),
+            ]),
           error: (err) => this.handleError(err),
         });
     } else {
@@ -92,7 +101,13 @@ export class UserFormComponent implements OnInit {
           roleIds: [...this.selectedRoleIds()],
         })
         .subscribe({
-          next: (res) => this.router.navigate(['/users', res.data.id]),
+          next: (res) =>
+            this.router.navigate([
+              '/schools',
+              this.schoolService.currentSchoolId(),
+              'users',
+              res.data.id,
+            ]),
           error: (err) => this.handleError(err),
         });
     }
