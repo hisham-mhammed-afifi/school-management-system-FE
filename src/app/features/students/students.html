@@ -107,7 +107,7 @@
                     {{ 'STUDENTS.GENDER_' + student.gender.toUpperCase() | translate }}
                   </td>
                   <td class="px-4 py-3 text-text-secondary">
-                    {{ student.admissionDate }}
+                    {{ student.admissionDate | date: 'mediumDate' }}
                   </td>
                   <td class="px-4 py-3">
                     @switch (student.status) {

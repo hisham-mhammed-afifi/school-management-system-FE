@@ -96,11 +96,11 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
         <div>
           <p class="text-text-tertiary">{{ 'STUDENTS.DATE_OF_BIRTH' | translate }}</p>
-          <p class="text-text-primary font-medium">{{ s.dateOfBirth }}</p>
+          <p class="text-text-primary font-medium">{{ s.dateOfBirth | date: 'mediumDate' }}</p>
         </div>
         <div>
           <p class="text-text-tertiary">{{ 'STUDENTS.ADMISSION_DATE' | translate }}</p>
-          <p class="text-text-primary font-medium">{{ s.admissionDate }}</p>
+          <p class="text-text-primary font-medium">{{ s.admissionDate | date: 'mediumDate' }}</p>
         </div>
         @if (s.nationalId) {
           <div>

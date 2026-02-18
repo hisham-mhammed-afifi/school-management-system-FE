@@ -61,7 +61,11 @@
           </div>
           <div>
             {{ 'USERS.LAST_LOGIN' | translate }}:
-            {{ u.lastLoginAt ?? ('USERS.NEVER' | translate) }}
+            @if (u.lastLoginAt) {
+              {{ u.lastLoginAt | date: 'medium' }}
+            } @else {
+              {{ 'USERS.NEVER' | translate }}
+            }
           </div>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -10,7 +11,7 @@ import type { Role } from '@core/models/role';
 
 @Component({
   selector: 'app-user-detail',
-  imports: [RouterLink, TranslatePipe],
+  imports: [DatePipe, RouterLink, TranslatePipe],
   templateUrl: './user-detail.html',
   styleUrl: './user-detail.css',
 })
