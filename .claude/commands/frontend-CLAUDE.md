@@ -3,7 +3,7 @@
 ## Project Setup
 
 - **Frontend Path**: (this project)
-- **Backend Path**: /absolute/path/to/backend ← REPLACE WITH YOUR ACTUAL PATH
+- **Backend Path**: D:\me\school-management-system
 
 ## Three-Agent Workflow
 

@@ -8,7 +8,7 @@ $ARGUMENTS
 
 1. First check `docs/backend-reference.md` for the answer
 2. If the answer is not there, go scan the actual backend source at:
-   **Path**: /absolute/path/to/backend ← REPLACE WITH YOUR ACTUAL PATH
+   **Path**: D:\me\school-management-system
 3. Look in the relevant controllers, services, DTOs, and models
 4. Provide the answer with exact TypeScript interfaces
 
