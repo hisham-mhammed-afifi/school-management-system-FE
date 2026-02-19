@@ -151,6 +151,37 @@ export const routes: Routes = [
             ],
           },
           {
+            path: 'subjects',
+            children: [
+              {
+                path: '',
+                loadComponent: () =>
+                  import('./features/subjects/subjects').then((m) => m.SubjectsComponent),
+              },
+              {
+                path: 'new',
+                loadComponent: () =>
+                  import('./features/subjects/subject-form/subject-form').then(
+                    (m) => m.SubjectFormComponent,
+                  ),
+              },
+              {
+                path: ':id',
+                loadComponent: () =>
+                  import('./features/subjects/subject-detail/subject-detail').then(
+                    (m) => m.SubjectDetailComponent,
+                  ),
+              },
+              {
+                path: ':id/edit',
+                loadComponent: () =>
+                  import('./features/subjects/subject-form/subject-form').then(
+                    (m) => m.SubjectFormComponent,
+                  ),
+              },
+            ],
+          },
+          {
             path: 'roles',
             children: [
               {
