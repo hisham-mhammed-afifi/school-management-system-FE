@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 
+@import '@fortawesome/fontawesome-svg-core/styles.css';
 @import 'tailwindcss';
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -97,6 +98,11 @@
   .no-transitions *::before,
   .no-transitions *::after {
     transition: none !important;
+  }
+
+  /* Flip directional icons (arrows, chevrons) in RTL layouts */
+  [dir='rtl'] fa-icon.rtl-flip {
+    transform: scaleX(-1);
   }
 }
 

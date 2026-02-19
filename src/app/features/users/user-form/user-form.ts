@@ -2,6 +2,7 @@ import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
+import { IconComponent } from '@shared/components/icon/icon';
 
 import { UserService } from '@core/services/user.service';
 import { RoleService } from '@core/services/role.service';
@@ -12,7 +13,7 @@ import type { ApiErrorResponse } from '@core/models/api';
 
 @Component({
   selector: 'app-user-form',
-  imports: [ReactiveFormsModule, TranslatePipe, RouterLink],
+  imports: [ReactiveFormsModule, TranslatePipe, RouterLink, IconComponent],
   templateUrl: './user-form.html',
   styleUrl: './user-form.css',
 })

@@ -1,8 +1,10 @@
 import { Component, inject } from '@angular/core';
+import { IconComponent } from '@shared/components/icon/icon';
 import { ThemeService } from '@core/services/theme.service';
 
 @Component({
   selector: 'app-theme-toggle',
+  imports: [IconComponent],
   template: `
     <button
       type="button"
@@ -13,9 +15,9 @@ import { ThemeService } from '@core/services/theme.service';
       class="inline-flex items-center p-1 rounded-lg border-0 bg-transparent text-text-secondary cursor-pointer transition-colors hover:bg-surface-hover"
     >
       @if (themeService.theme() === 'dark') {
-        <span class="material-icons text-lg leading-none">dark_mode</span>
+        <fa-icon icon="moon" class="text-lg leading-none" />
       } @else {
-        <span class="material-icons text-lg leading-none">light_mode</span>
+        <fa-icon icon="sun" class="text-lg leading-none" />
       }
     </button>
   `,

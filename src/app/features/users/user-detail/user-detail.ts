@@ -2,6 +2,7 @@ import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
+import { IconComponent } from '@shared/components/icon/icon';
 
 import { UserService } from '@core/services/user.service';
 import { RoleService } from '@core/services/role.service';
@@ -11,7 +12,7 @@ import type { Role } from '@core/models/role';
 
 @Component({
   selector: 'app-user-detail',
-  imports: [DatePipe, RouterLink, TranslatePipe],
+  imports: [DatePipe, RouterLink, TranslatePipe, IconComponent],
   templateUrl: './user-detail.html',
   styleUrl: './user-detail.css',
 })

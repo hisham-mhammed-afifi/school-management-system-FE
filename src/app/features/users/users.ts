@@ -2,6 +2,7 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
+import { IconComponent } from '@shared/components/icon/icon';
 
 import { UserService } from '@core/services/user.service';
 import { RoleService } from '@core/services/role.service';
@@ -12,7 +13,7 @@ import type { PaginationMeta } from '@core/models/api';
 
 @Component({
   selector: 'app-users',
-  imports: [DatePipe, RouterLink, TranslatePipe, PaginationComponent],
+  imports: [DatePipe, RouterLink, TranslatePipe, PaginationComponent, IconComponent],
   templateUrl: './users.html',
   styleUrl: './users.css',
 })

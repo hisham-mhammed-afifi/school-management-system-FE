@@ -2,6 +2,7 @@ import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
+import { IconComponent } from '@shared/components/icon/icon';
 
 import { TeacherService } from '@core/services/teacher.service';
 import { SchoolService } from '@core/services/school.service';
@@ -9,7 +10,7 @@ import type { Teacher } from '@core/models/teacher';
 
 @Component({
   selector: 'app-teacher-detail',
-  imports: [DatePipe, RouterLink, TranslatePipe],
+  imports: [DatePipe, RouterLink, TranslatePipe, IconComponent],
   templateUrl: './teacher-detail.html',
   styleUrl: './teacher-detail.css',
 })

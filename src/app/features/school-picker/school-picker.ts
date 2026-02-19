@@ -2,6 +2,8 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 
+import { IconComponent } from '@shared/components/icon/icon';
+
 import { AuthService } from '@core/services/auth.service';
 import { SchoolService } from '@core/services/school.service';
 import { ThemeToggleComponent } from '@shared/components/theme-toggle/theme-toggle';
@@ -10,7 +12,13 @@ import type { School } from '@core/models/school';
 
 @Component({
   selector: 'app-school-picker',
-  imports: [RouterLink, TranslatePipe, ThemeToggleComponent, LanguageSwitcherComponent],
+  imports: [
+    RouterLink,
+    TranslatePipe,
+    ThemeToggleComponent,
+    LanguageSwitcherComponent,
+    IconComponent,
+  ],
   templateUrl: './school-picker.html',
 })
 export class SchoolPickerComponent implements OnInit {

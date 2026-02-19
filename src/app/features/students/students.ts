@@ -2,6 +2,7 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
+import { IconComponent } from '@shared/components/icon/icon';
 
 import { StudentService } from '@core/services/student.service';
 import { PaginationComponent } from '@shared/components/pagination/pagination';
@@ -10,7 +11,7 @@ import type { PaginationMeta } from '@core/models/api';
 
 @Component({
   selector: 'app-students',
-  imports: [DatePipe, RouterLink, TranslatePipe, PaginationComponent],
+  imports: [DatePipe, RouterLink, TranslatePipe, PaginationComponent, IconComponent],
   templateUrl: './students.html',
   styleUrl: './students.css',
 })

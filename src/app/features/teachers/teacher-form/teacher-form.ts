@@ -2,6 +2,7 @@ import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
+import { IconComponent } from '@shared/components/icon/icon';
 
 import { TeacherService } from '@core/services/teacher.service';
 import { SchoolService } from '@core/services/school.service';
@@ -10,7 +11,7 @@ import type { ApiErrorResponse } from '@core/models/api';
 
 @Component({
   selector: 'app-teacher-form',
-  imports: [ReactiveFormsModule, TranslatePipe, RouterLink],
+  imports: [ReactiveFormsModule, TranslatePipe, RouterLink, IconComponent],
   templateUrl: './teacher-form.html',
   styleUrl: './teacher-form.css',
 })

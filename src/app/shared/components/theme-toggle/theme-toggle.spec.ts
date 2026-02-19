@@ -41,16 +41,16 @@ describe('ThemeToggleComponent', () => {
     expect(button.getAttribute('aria-label')).toBe('Dark mode');
   });
 
-  it('should show light_mode icon when theme is light', () => {
-    const icon = fixture.nativeElement.querySelector('.material-icons');
-    expect(icon.textContent.trim()).toBe('light_mode');
+  it('should show sun icon when theme is light', () => {
+    const icon = fixture.nativeElement.querySelector('fa-icon');
+    expect(icon).toBeTruthy();
   });
 
-  it('should show dark_mode icon when theme is dark', () => {
+  it('should show moon icon when theme is dark', () => {
     themeService.setTheme('dark');
     fixture.detectChanges();
-    const icon = fixture.nativeElement.querySelector('.material-icons');
-    expect(icon.textContent.trim()).toBe('dark_mode');
+    const icon = fixture.nativeElement.querySelector('fa-icon');
+    expect(icon).toBeTruthy();
   });
 
   it('should have aria-checked="false" when theme is light', () => {

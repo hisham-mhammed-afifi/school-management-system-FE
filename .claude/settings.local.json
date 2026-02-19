@@ -16,7 +16,12 @@
       "Bash(npm run lint:*)",
       "Bash(npm run build:*)",
       "Bash(npm test:*)",
-      "Bash(perl -pe:*)"
+      "Bash(perl -pe:*)",
+      "Bash(git stash drop:*)",
+      "Bash(npm install:*)",
+      "Bash(npx vitest:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(npm ls:*)"
     ]
   }
 }

@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
+import { IconComponent } from '@shared/components/icon/icon';
 
 import { SidebarComponent } from '@shared/components/sidebar/sidebar';
 import { ThemeToggleComponent } from '@shared/components/theme-toggle/theme-toggle';
@@ -18,6 +19,7 @@ import { SchoolService } from '@core/services/school.service';
     ThemeToggleComponent,
     LanguageSwitcherComponent,
     SchoolSwitcherComponent,
+    IconComponent,
   ],
   templateUrl: './layout.html',
   styleUrl: './layout.css',

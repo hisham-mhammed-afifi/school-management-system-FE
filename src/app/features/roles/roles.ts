@@ -2,6 +2,8 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 
+import { IconComponent } from '@shared/components/icon/icon';
+
 import { RoleService } from '@core/services/role.service';
 import { PaginationComponent } from '@shared/components/pagination/pagination';
 import { SEED_ROLES } from '@core/models/role';
@@ -10,7 +12,7 @@ import type { PaginationMeta } from '@core/models/api';
 
 @Component({
   selector: 'app-roles',
-  imports: [RouterLink, TranslatePipe, PaginationComponent],
+  imports: [RouterLink, TranslatePipe, PaginationComponent, IconComponent],
   templateUrl: './roles.html',
   styleUrl: './roles.css',
 })

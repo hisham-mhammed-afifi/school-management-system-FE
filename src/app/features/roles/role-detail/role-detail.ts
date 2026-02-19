@@ -2,6 +2,8 @@ import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 
+import { IconComponent } from '@shared/components/icon/icon';
+
 import { RoleService } from '@core/services/role.service';
 import { SchoolService } from '@core/services/school.service';
 import { SEED_ROLES } from '@core/models/role';
@@ -14,7 +16,7 @@ interface PermissionGroup {
 
 @Component({
   selector: 'app-role-detail',
-  imports: [RouterLink, TranslatePipe],
+  imports: [RouterLink, TranslatePipe, IconComponent],
   templateUrl: './role-detail.html',
   styleUrl: './role-detail.css',
 })

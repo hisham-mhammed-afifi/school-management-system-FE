@@ -30,7 +30,7 @@ describe('SidebarComponent', () => {
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
 
-    expect(el.querySelector('h2')).toBeTruthy();
+    expect(el.querySelector('h3')).toBeTruthy();
   });
 
   it('should emit closed event on close', () => {

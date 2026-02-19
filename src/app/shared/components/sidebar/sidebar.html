@@ -20,7 +20,7 @@
         (click)="close()"
         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-text-secondary transition-colors hover:bg-surface-hover hover:text-text-primary no-underline"
       >
-        <span class="material-icons text-xl leading-none" aria-hidden="true">{{ item.icon }}</span>
+        <fa-icon [icon]="item.icon" class="text-xl leading-none" />
         {{ item.labelKey | translate }}
       </a>
     }

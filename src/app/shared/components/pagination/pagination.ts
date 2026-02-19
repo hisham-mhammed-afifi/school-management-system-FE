@@ -1,9 +1,10 @@
 import { Component, input, output, computed } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
+import { IconComponent } from '@shared/components/icon/icon';
 
 @Component({
   selector: 'app-pagination',
-  imports: [TranslatePipe],
+  imports: [TranslatePipe, IconComponent],
   template: `
     @if (totalPages() > 1) {
       <nav
@@ -21,7 +22,7 @@ import { TranslatePipe } from '@ngx-translate/core';
             class="p-2 rounded-lg border-0 bg-transparent text-text-secondary cursor-pointer transition-colors hover:bg-surface-hover disabled:opacity-40 disabled:cursor-not-allowed"
             [attr.aria-label]="'COMMON.PREVIOUS' | translate"
           >
-            <span class="material-icons text-xl leading-none">chevron_left</span>
+            <fa-icon icon="chevron-left" class="text-xl leading-none" />
           </button>
           @for (p of visiblePages(); track p) {
             @if (p === -1) {
@@ -49,7 +50,7 @@ import { TranslatePipe } from '@ngx-translate/core';
             class="p-2 rounded-lg border-0 bg-transparent text-text-secondary cursor-pointer transition-colors hover:bg-surface-hover disabled:opacity-40 disabled:cursor-not-allowed"
             [attr.aria-label]="'COMMON.NEXT' | translate"
           >
-            <span class="material-icons text-xl leading-none">chevron_right</span>
+            <fa-icon icon="chevron-right" class="text-xl leading-none" />
           </button>
         </div>
       </nav>

@@ -7,7 +7,7 @@
         class="inline-flex items-center p-2 rounded-lg bg-transparent text-text-secondary transition-colors hover:bg-surface-hover no-underline"
         [attr.aria-label]="'COMMON.BACK' | translate"
       >
-        <span class="material-icons text-xl leading-none">arrow_back</span>
+        <fa-icon icon="arrow-left" class="text-xl leading-none" />
       </a>
       <h1 class="text-xl font-bold text-text-primary">{{ 'TEACHERS.DETAIL' | translate }}</h1>
     </div>
@@ -17,7 +17,7 @@
           [routerLink]="['edit']"
           class="inline-flex items-center gap-2 px-4 py-2 border-0 bg-accent text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-accent-hover no-underline"
         >
-          <span class="material-icons text-lg leading-none">edit</span>
+          <fa-icon icon="pen-to-square" class="text-lg leading-none" />
           {{ 'COMMON.EDIT' | translate }}
         </a>
         <button
@@ -25,7 +25,7 @@
           (click)="confirmDelete()"
           class="inline-flex items-center gap-2 px-4 py-2 border-0 bg-danger text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-danger-hover"
         >
-          <span class="material-icons text-lg leading-none">delete</span>
+          <fa-icon icon="trash" class="text-lg leading-none" />
           {{ 'COMMON.DELETE' | translate }}
         </button>
       </div>
@@ -51,7 +51,7 @@
     <div class="bg-surface rounded-xl p-5 shadow-card border border-border">
       <div class="flex flex-col gap-3">
         <div class="flex items-center gap-3">
-          <span class="material-icons text-3xl text-text-tertiary">person</span>
+          <fa-icon icon="user" class="text-3xl text-text-tertiary" />
           <div>
             <p class="text-lg font-semibold text-text-primary">
               {{ t.firstName }} {{ t.lastName }}
@@ -63,19 +63,19 @@
           <div class="flex items-center gap-1">
             @switch (t.status) {
               @case ('active') {
-                <span class="material-icons text-sm text-success-text">check_circle</span>
+                <fa-icon icon="circle-check" class="text-sm text-success-text" />
                 <span class="text-success-text">{{ 'TEACHERS.STATUS_ACTIVE' | translate }}</span>
               }
               @case ('on_leave') {
-                <span class="material-icons text-sm text-info-text">event_busy</span>
+                <fa-icon icon="calendar-xmark" class="text-sm text-info-text" />
                 <span class="text-info-text">{{ 'TEACHERS.STATUS_ON_LEAVE' | translate }}</span>
               }
               @case ('resigned') {
-                <span class="material-icons text-sm">exit_to_app</span>
+                <fa-icon icon="right-from-bracket" class="text-sm" />
                 {{ 'TEACHERS.STATUS_RESIGNED' | translate }}
               }
               @case ('terminated') {
-                <span class="material-icons text-sm text-error-text">block</span>
+                <fa-icon icon="ban" class="text-sm text-error-text" />
                 <span class="text-error-text">{{ 'TEACHERS.STATUS_TERMINATED' | translate }}</span>
               }
             }

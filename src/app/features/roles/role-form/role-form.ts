@@ -3,6 +3,8 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 
+import { IconComponent } from '@shared/components/icon/icon';
+
 import { RoleService } from '@core/services/role.service';
 import { SchoolService } from '@core/services/school.service';
 import { SEED_ROLES } from '@core/models/role';
@@ -10,7 +12,7 @@ import type { ApiErrorResponse } from '@core/models/api';
 
 @Component({
   selector: 'app-role-form',
-  imports: [ReactiveFormsModule, TranslatePipe, RouterLink],
+  imports: [ReactiveFormsModule, TranslatePipe, RouterLink, IconComponent],
   templateUrl: './role-form.html',
   styleUrl: './role-form.css',
 })
