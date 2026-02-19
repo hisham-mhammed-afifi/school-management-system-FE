@@ -1,3 +1,23 @@
 :host {
   display: block;
 }
+
+.sidebar {
+  --_hide-x: -100%;
+  transform: translateX(var(--_hide-x));
+  transition: transform 200ms ease;
+}
+
+:host-context([dir='rtl']) .sidebar {
+  --_hide-x: 100%;
+}
+
+.sidebar.open {
+  transform: translateX(0);
+}
+
+@media (min-width: 1024px) {
+  .sidebar {
+    transform: translateX(0);
+  }
+}
