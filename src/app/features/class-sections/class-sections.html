@@ -1,0 +1,138 @@
+<div class="flex flex-col gap-4">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <h1 class="text-xl font-bold text-text-primary">{{ 'CLASS_SECTIONS.TITLE' | translate }}</h1>
+    <a
+      routerLink="new"
+      class="inline-flex items-center gap-2 px-4 py-2 border-0 bg-accent text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-accent-hover no-underline"
+    >
+      <fa-icon icon="plus" class="text-lg leading-none" />
+      {{ 'CLASS_SECTIONS.ADD' | translate }}
+    </a>
+  </div>
+
+  <!-- Filters -->
+  <div class="flex flex-wrap gap-3">
+    <div>
+      <label for="year-filter" class="sr-only">{{
+        'CLASS_SECTIONS.FILTER_YEAR' | translate
+      }}</label>
+      <select
+        id="year-filter"
+        (change)="onYearFilter($event)"
+        class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+      >
+        <option value="">{{ 'CLASS_SECTIONS.ALL_YEARS' | translate }}</option>
+        @for (year of academicYears(); track year.id) {
+          <option [value]="year.id">{{ year.name }}</option>
+        }
+      </select>
+    </div>
+    <div>
+      <label for="grade-filter" class="sr-only">{{
+        'CLASS_SECTIONS.FILTER_GRADE' | translate
+      }}</label>
+      <select
+        id="grade-filter"
+        (change)="onGradeFilter($event)"
+        class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+      >
+        <option value="">{{ 'CLASS_SECTIONS.ALL_GRADES' | translate }}</option>
+        @for (grade of grades(); track grade.id) {
+          <option [value]="grade.id">{{ grade.name }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <!-- Error -->
+  @if (error()) {
+    <div role="alert" class="px-3 py-2 rounded-md text-sm font-medium bg-error-bg text-error-text">
+      {{ error()! | translate }}
+    </div>
+  }
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="flex justify-center py-12">
+      <p class="text-sm text-text-tertiary">{{ 'COMMON.LOADING' | translate }}</p>
+    </div>
+  }
+
+  <!-- Sections table -->
+  @if (!loading() && !error()) {
+    @if (sections().length === 0) {
+      <div class="text-center py-12">
+        <fa-icon icon="layer-group" class="text-4xl text-text-tertiary mb-2" />
+        <p class="text-sm text-text-tertiary">{{ 'COMMON.NO_RESULTS' | translate }}</p>
+      </div>
+    } @else {
+      <div class="bg-surface rounded-xl shadow-card border border-border overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border bg-bg-secondary">
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'CLASS_SECTIONS.NAME' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'CLASS_SECTIONS.GRADE' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'CLASS_SECTIONS.ACADEMIC_YEAR' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'CLASS_SECTIONS.CAPACITY' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'CLASS_SECTIONS.HOMEROOM_TEACHER' | translate }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (section of sections(); track section.id) {
+                <tr
+                  class="border-b border-border last:border-b-0 transition-colors hover:bg-surface-hover"
+                >
+                  <td class="px-4 py-3">
+                    <a
+                      [routerLink]="[section.id]"
+                      class="text-accent font-medium hover:underline no-underline"
+                    >
+                      {{ section.name }}
+                    </a>
+                  </td>
+                  <td class="px-4 py-3 text-text-secondary">
+                    {{ section.grade?.name ?? '-' }}
+                  </td>
+                  <td class="px-4 py-3 text-text-secondary">
+                    {{ section.academicYear?.name ?? '-' }}
+                  </td>
+                  <td class="px-4 py-3 text-text-secondary">
+                    {{ section.capacity }}
+                  </td>
+                  <td class="px-4 py-3 text-text-secondary">
+                    @if (section.homeroomTeacher) {
+                      {{ section.homeroomTeacher.firstName }} {{ section.homeroomTeacher.lastName }}
+                    } @else {
+                      <span class="text-text-tertiary italic">
+                        {{ 'CLASS_SECTIONS.NONE_ASSIGNED' | translate }}
+                      </span>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <app-pagination
+        [page]="meta().page"
+        [limit]="meta().limit"
+        [total]="meta().total"
+        (pageChange)="onPageChange($event)"
+      />
+    }
+  }
+</div>

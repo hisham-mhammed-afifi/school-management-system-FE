@@ -118,6 +118,39 @@ export const routes: Routes = [
             ],
           },
           {
+            path: 'class-sections',
+            children: [
+              {
+                path: '',
+                loadComponent: () =>
+                  import('./features/class-sections/class-sections').then(
+                    (m) => m.ClassSectionsComponent,
+                  ),
+              },
+              {
+                path: 'new',
+                loadComponent: () =>
+                  import('./features/class-sections/class-section-form/class-section-form').then(
+                    (m) => m.ClassSectionFormComponent,
+                  ),
+              },
+              {
+                path: ':id',
+                loadComponent: () =>
+                  import('./features/class-sections/class-section-detail/class-section-detail').then(
+                    (m) => m.ClassSectionDetailComponent,
+                  ),
+              },
+              {
+                path: ':id/edit',
+                loadComponent: () =>
+                  import('./features/class-sections/class-section-form/class-section-form').then(
+                    (m) => m.ClassSectionFormComponent,
+                  ),
+              },
+            ],
+          },
+          {
             path: 'roles',
             children: [
               {

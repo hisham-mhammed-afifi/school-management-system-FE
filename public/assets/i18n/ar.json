@@ -38,7 +38,8 @@
     "USERS": "المستخدمون",
     "STUDENTS": "الطلاب",
     "TEACHERS": "المعلمون",
-    "ROLES": "الأدوار"
+    "ROLES": "الأدوار",
+    "CLASSES": "الفصول"
   },
   "LAYOUT": {
     "SIDEBAR": "القائمة الرئيسية",
@@ -172,6 +173,27 @@
     "DELETE_CONFIRM": "حذف المعلم",
     "DELETE_MESSAGE": "هل أنت متأكد من حذف هذا المعلم؟ لا يمكن التراجع عن هذا الإجراء.",
     "LOAD_ERROR": "فشل تحميل المعلمين"
+  },
+  "CLASS_SECTIONS": {
+    "TITLE": "الفصول والشُعب",
+    "ADD": "إضافة شعبة",
+    "CREATE": "إنشاء شعبة",
+    "EDIT": "تعديل الشعبة",
+    "DETAIL": "تفاصيل الشعبة",
+    "NAME": "اسم الشعبة",
+    "CAPACITY": "السعة",
+    "ACADEMIC_YEAR": "السنة الدراسية",
+    "GRADE": "المرحلة",
+    "HOMEROOM_TEACHER": "معلم الفصل",
+    "NONE_ASSIGNED": "غير محدد",
+    "STUDENTS_COUNT": "الطلاب",
+    "FILTER_YEAR": "تصفية حسب السنة",
+    "FILTER_GRADE": "تصفية حسب المرحلة",
+    "ALL_YEARS": "جميع السنوات",
+    "ALL_GRADES": "جميع المراحل",
+    "DELETE_CONFIRM": "حذف الشعبة",
+    "DELETE_MESSAGE": "هل أنت متأكد من حذف هذه الشعبة؟ لا يمكن التراجع عن هذا الإجراء.",
+    "LOAD_ERROR": "فشل تحميل الفصول"
   },
   "SCHOOL": {
     "SELECT": "اختر المدرسة",

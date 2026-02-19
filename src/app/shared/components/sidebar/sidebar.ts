@@ -31,6 +31,7 @@ export class SidebarComponent {
       { labelKey: 'NAV.USERS', route: `${prefix}/users`, icon: 'users' },
       { labelKey: 'NAV.STUDENTS', route: `${prefix}/students`, icon: 'graduation-cap' },
       { labelKey: 'NAV.TEACHERS', route: `${prefix}/teachers`, icon: 'chalkboard-user' },
+      { labelKey: 'NAV.CLASSES', route: `${prefix}/class-sections`, icon: 'layer-group' },
       { labelKey: 'NAV.ROLES', route: `${prefix}/roles`, icon: 'shield-halved' },
     ];
   });
