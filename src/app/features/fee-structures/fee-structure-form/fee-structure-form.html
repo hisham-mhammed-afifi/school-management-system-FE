@@ -1,0 +1,218 @@
+<div class="flex flex-col gap-4">
+  <!-- Header -->
+  <div class="flex items-center gap-3">
+    <a
+      [routerLink]="listRoute()"
+      class="inline-flex items-center p-2 rounded-lg bg-transparent text-text-secondary transition-colors hover:bg-surface-hover no-underline"
+      [attr.aria-label]="'COMMON.BACK' | translate"
+    >
+      <fa-icon icon="arrow-left" class="text-xl leading-none" />
+    </a>
+    <h1 class="text-xl font-bold text-text-primary">
+      @if (isEdit()) {
+        {{ 'FEE_STRUCTURES.EDIT' | translate }}
+      } @else {
+        {{ 'FEE_STRUCTURES.CREATE' | translate }}
+      }
+    </h1>
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="flex justify-center py-12">
+      <p class="text-sm text-text-tertiary">{{ 'COMMON.LOADING' | translate }}</p>
+    </div>
+  }
+
+  @if (!loading()) {
+    <!-- Error -->
+    @if (errorMessage()) {
+      <div
+        role="alert"
+        class="px-3 py-2 rounded-md text-sm font-medium bg-error-bg text-error-text"
+      >
+        {{ errorMessage()! | translate }}
+      </div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4 max-w-3xl">
+      <!-- Basic info -->
+      <div class="bg-surface rounded-xl p-5 shadow-card border border-border flex flex-col gap-4">
+        <h2 class="text-base font-semibold text-text-primary">
+          {{ 'FEE_STRUCTURES.DETAIL' | translate }}
+        </h2>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Name -->
+          <div class="flex flex-col gap-1 sm:col-span-2">
+            <label for="fs-name" class="text-sm font-medium text-text-secondary">
+              {{ 'FEE_STRUCTURES.NAME' | translate }}
+            </label>
+            <input
+              id="fs-name"
+              type="text"
+              formControlName="name"
+              class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+            />
+            @if (form.controls.name.touched && form.controls.name.errors) {
+              <span class="text-xs text-danger-text">
+                @if (form.controls.name.errors['required']) {
+                  {{ 'VALIDATION.REQUIRED' | translate }}
+                }
+              </span>
+            }
+          </div>
+
+          <!-- Academic Year -->
+          <div class="flex flex-col gap-1">
+            <label for="fs-year" class="text-sm font-medium text-text-secondary">
+              {{ 'FEE_STRUCTURES.ACADEMIC_YEAR' | translate }}
+            </label>
+            <select
+              id="fs-year"
+              formControlName="academicYearId"
+              class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+            >
+              <option value="">--</option>
+              @for (year of academicYears(); track year.id) {
+                <option [value]="year.id">{{ year.name }}</option>
+              }
+            </select>
+            @if (form.controls.academicYearId.touched && form.controls.academicYearId.errors) {
+              <span class="text-xs text-danger-text">{{ 'VALIDATION.REQUIRED' | translate }}</span>
+            }
+          </div>
+
+          <!-- Grade -->
+          <div class="flex flex-col gap-1">
+            <label for="fs-grade" class="text-sm font-medium text-text-secondary">
+              {{ 'FEE_STRUCTURES.GRADE' | translate }}
+            </label>
+            <select
+              id="fs-grade"
+              formControlName="gradeId"
+              class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+            >
+              <option value="">--</option>
+              @for (grade of grades(); track grade.id) {
+                <option [value]="grade.id">{{ grade.name }}</option>
+              }
+            </select>
+            @if (form.controls.gradeId.touched && form.controls.gradeId.errors) {
+              <span class="text-xs text-danger-text">{{ 'VALIDATION.REQUIRED' | translate }}</span>
+            }
+          </div>
+
+          <!-- Category -->
+          <div class="flex flex-col gap-1">
+            <label for="fs-category" class="text-sm font-medium text-text-secondary">
+              {{ 'FEE_STRUCTURES.CATEGORY' | translate }}
+            </label>
+            <select
+              id="fs-category"
+              formControlName="feeCategoryId"
+              class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+            >
+              <option value="">--</option>
+              @for (cat of categories(); track cat.id) {
+                <option [value]="cat.id">{{ cat.name }}</option>
+              }
+            </select>
+            @if (form.controls.feeCategoryId.touched && form.controls.feeCategoryId.errors) {
+              <span class="text-xs text-danger-text">{{ 'VALIDATION.REQUIRED' | translate }}</span>
+            }
+          </div>
+
+          <!-- Amount -->
+          <div class="flex flex-col gap-1">
+            <label for="fs-amount" class="text-sm font-medium text-text-secondary">
+              {{ 'FEE_STRUCTURES.AMOUNT' | translate }}
+            </label>
+            <input
+              id="fs-amount"
+              type="number"
+              dir="ltr"
+              step="0.01"
+              formControlName="amount"
+              class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+            />
+            @if (form.controls.amount.touched && form.controls.amount.errors) {
+              <span class="text-xs text-danger-text">{{ 'VALIDATION.REQUIRED' | translate }}</span>
+            }
+          </div>
+
+          <!-- Due Date -->
+          <div class="flex flex-col gap-1">
+            <label for="fs-due" class="text-sm font-medium text-text-secondary">
+              {{ 'FEE_STRUCTURES.DUE_DATE' | translate }}
+            </label>
+            <input
+              id="fs-due"
+              type="date"
+              dir="ltr"
+              formControlName="dueDate"
+              class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+            />
+          </div>
+
+          <!-- Recurring -->
+          <div class="flex flex-col gap-1">
+            <label for="fs-recurring" class="flex items-center gap-2 cursor-pointer pt-6">
+              <input
+                id="fs-recurring"
+                type="checkbox"
+                formControlName="isRecurring"
+                class="accent-accent"
+              />
+              <span class="text-sm font-medium text-text-primary">{{
+                'FEE_STRUCTURES.RECURRING' | translate
+              }}</span>
+            </label>
+          </div>
+
+          <!-- Recurrence type -->
+          @if (form.controls.isRecurring.value) {
+            <div class="flex flex-col gap-1">
+              <label for="fs-recurrence" class="text-sm font-medium text-text-secondary">
+                {{ 'FEE_STRUCTURES.RECURRENCE' | translate }}
+              </label>
+              <select
+                id="fs-recurrence"
+                formControlName="recurrence"
+                class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+              >
+                <option value="">--</option>
+                @for (opt of recurrenceOptions; track opt) {
+                  <option [value]="opt">
+                    {{ 'FEE_STRUCTURES.RECURRENCE_' + opt.toUpperCase() | translate }}
+                  </option>
+                }
+              </select>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex gap-3">
+        <button
+          type="submit"
+          [disabled]="saving()"
+          class="px-4 py-2 border-0 bg-accent text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          @if (saving()) {
+            {{ 'COMMON.LOADING' | translate }}
+          } @else {
+            {{ 'COMMON.SAVE' | translate }}
+          }
+        </button>
+        <a
+          [routerLink]="listRoute()"
+          class="px-4 py-2 border-0 bg-bg-secondary text-text-primary rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-surface-hover no-underline inline-flex items-center"
+        >
+          {{ 'COMMON.CANCEL' | translate }}
+        </a>
+      </div>
+    </form>
+  }
+</div>

@@ -1,0 +1,186 @@
+<div class="flex flex-col gap-4">
+  <!-- Header -->
+  <div class="flex items-center gap-3">
+    <a
+      [routerLink]="listRoute()"
+      class="inline-flex items-center p-2 rounded-lg bg-transparent text-text-secondary transition-colors hover:bg-surface-hover no-underline"
+      [attr.aria-label]="'COMMON.BACK' | translate"
+    >
+      <fa-icon icon="arrow-left" class="text-xl leading-none" />
+    </a>
+    <h1 class="text-xl font-bold text-text-primary">
+      {{ 'FEE_INVOICES.CREATE' | translate }}
+    </h1>
+  </div>
+
+  <!-- Error -->
+  @if (errorMessage()) {
+    <div role="alert" class="px-3 py-2 rounded-md text-sm font-medium bg-error-bg text-error-text">
+      {{ errorMessage()! | translate }}
+    </div>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4 max-w-3xl">
+    <!-- Invoice header info -->
+    <div class="bg-surface rounded-xl p-5 shadow-card border border-border flex flex-col gap-4">
+      <h2 class="text-base font-semibold text-text-primary">
+        {{ 'FEE_INVOICES.DETAIL' | translate }}
+      </h2>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- Student -->
+        <div class="flex flex-col gap-1">
+          <label for="inv-student" class="text-sm font-medium text-text-secondary">
+            {{ 'FEE_INVOICES.STUDENT' | translate }}
+          </label>
+          <select
+            id="inv-student"
+            formControlName="studentId"
+            class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+          >
+            <option value="">--</option>
+            @for (student of students(); track student.id) {
+              <option [value]="student.id">
+                {{ student.firstName }} {{ student.lastName }} ({{ student.studentCode }})
+              </option>
+            }
+          </select>
+          @if (form.controls.studentId.touched && form.controls.studentId.errors) {
+            <span class="text-xs text-danger-text">{{ 'VALIDATION.REQUIRED' | translate }}</span>
+          }
+        </div>
+
+        <!-- Due Date -->
+        <div class="flex flex-col gap-1">
+          <label for="inv-due" class="text-sm font-medium text-text-secondary">
+            {{ 'FEE_INVOICES.DUE_DATE' | translate }}
+          </label>
+          <input
+            id="inv-due"
+            type="date"
+            dir="ltr"
+            formControlName="dueDate"
+            class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+          />
+          @if (form.controls.dueDate.touched && form.controls.dueDate.errors) {
+            <span class="text-xs text-danger-text">{{ 'VALIDATION.REQUIRED' | translate }}</span>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Invoice items -->
+    <div class="bg-surface rounded-xl p-5 shadow-card border border-border flex flex-col gap-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-base font-semibold text-text-primary">
+          {{ 'FEE_INVOICES.ITEMS' | translate }}
+        </h2>
+        <button
+          type="button"
+          (click)="addItem()"
+          class="inline-flex items-center gap-1 px-3 py-1.5 border-0 bg-accent text-white rounded-lg text-xs font-semibold cursor-pointer transition-colors hover:bg-accent-hover"
+        >
+          <fa-icon icon="plus" class="text-sm leading-none" />
+          {{ 'FEE_INVOICES.ADD_ITEM' | translate }}
+        </button>
+      </div>
+
+      @if (items.length === 0) {
+        <p class="text-text-tertiary italic text-sm">
+          {{ 'FEE_INVOICES.NO_ITEMS' | translate }}
+        </p>
+      }
+
+      <div formArrayName="items" class="flex flex-col gap-3">
+        @for (item of items.controls; track $index; let i = $index) {
+          <div
+            [formGroupName]="i"
+            class="flex flex-wrap items-end gap-3 p-3 rounded-lg bg-bg-secondary border border-border"
+          >
+            <div class="flex flex-col gap-1 flex-1 min-w-40">
+              <label [for]="'item-fs-' + i" class="text-xs font-medium text-text-secondary">
+                {{ 'FEE_INVOICES.FEE_STRUCTURE' | translate }}
+              </label>
+              <select
+                [id]="'item-fs-' + i"
+                formControlName="feeStructureId"
+                (change)="onFeeStructureChange(i)"
+                class="px-2 py-1.5 border border-border bg-bg-primary text-text-primary rounded-md text-sm transition-colors focus:border-accent focus:outline-none"
+              >
+                <option value="">--</option>
+                @for (fs of feeStructures(); track fs.id) {
+                  <option [value]="fs.id">{{ fs.name }}</option>
+                }
+              </select>
+            </div>
+            <div class="flex flex-col gap-1 flex-1 min-w-24">
+              <label [for]="'item-desc-' + i" class="text-xs font-medium text-text-secondary">
+                {{ 'FEE_INVOICES.ITEM_DESCRIPTION' | translate }}
+              </label>
+              <input
+                [id]="'item-desc-' + i"
+                type="text"
+                formControlName="description"
+                class="px-2 py-1.5 border border-border bg-bg-primary text-text-primary rounded-md text-sm transition-colors focus:border-accent focus:outline-none"
+              />
+            </div>
+            <div class="flex flex-col gap-1 w-20">
+              <label [for]="'item-qty-' + i" class="text-xs font-medium text-text-secondary">
+                {{ 'FEE_INVOICES.ITEM_QUANTITY' | translate }}
+              </label>
+              <input
+                [id]="'item-qty-' + i"
+                type="number"
+                dir="ltr"
+                formControlName="quantity"
+                class="px-2 py-1.5 border border-border bg-bg-primary text-text-primary rounded-md text-sm transition-colors focus:border-accent focus:outline-none"
+              />
+            </div>
+            <div class="flex flex-col gap-1 w-28">
+              <label [for]="'item-unit-' + i" class="text-xs font-medium text-text-secondary">
+                {{ 'FEE_INVOICES.ITEM_UNIT_AMOUNT' | translate }}
+              </label>
+              <input
+                [id]="'item-unit-' + i"
+                type="number"
+                dir="ltr"
+                step="0.01"
+                formControlName="unitAmount"
+                class="px-2 py-1.5 border border-border bg-bg-primary text-text-primary rounded-md text-sm transition-colors focus:border-accent focus:outline-none"
+              />
+            </div>
+            <button
+              type="button"
+              (click)="removeItem(i)"
+              class="inline-flex items-center p-2 border-0 bg-transparent text-danger-text rounded-lg cursor-pointer transition-colors hover:bg-danger-bg"
+              [attr.aria-label]="'FEE_INVOICES.REMOVE_ITEM' | translate"
+            >
+              <fa-icon icon="trash" class="text-sm leading-none" />
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex gap-3">
+      <button
+        type="submit"
+        [disabled]="saving()"
+        class="px-4 py-2 border-0 bg-accent text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        @if (saving()) {
+          {{ 'COMMON.LOADING' | translate }}
+        } @else {
+          {{ 'COMMON.SAVE' | translate }}
+        }
+      </button>
+      <a
+        [routerLink]="listRoute()"
+        class="px-4 py-2 border-0 bg-bg-secondary text-text-primary rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-surface-hover no-underline inline-flex items-center"
+      >
+        {{ 'COMMON.CANCEL' | translate }}
+      </a>
+    </div>
+  </form>
+</div>

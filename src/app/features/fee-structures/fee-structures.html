@@ -1,0 +1,142 @@
+<div class="flex flex-col gap-4">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <h1 class="text-xl font-bold text-text-primary">{{ 'FEE_STRUCTURES.TITLE' | translate }}</h1>
+    <a
+      routerLink="new"
+      class="inline-flex items-center gap-2 px-4 py-2 border-0 bg-accent text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-accent-hover no-underline"
+    >
+      <fa-icon icon="plus" class="text-lg leading-none" />
+      {{ 'FEE_STRUCTURES.ADD' | translate }}
+    </a>
+  </div>
+
+  <!-- Filters -->
+  <div class="flex flex-wrap gap-3">
+    <select
+      (change)="onFilterYear($event)"
+      [attr.aria-label]="'FEE_STRUCTURES.FILTER_YEAR' | translate"
+      class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+    >
+      <option value="">{{ 'FEE_STRUCTURES.ALL_YEARS' | translate }}</option>
+      @for (year of academicYears(); track year.id) {
+        <option [value]="year.id">{{ year.name }}</option>
+      }
+    </select>
+
+    <select
+      (change)="onFilterGrade($event)"
+      [attr.aria-label]="'FEE_STRUCTURES.FILTER_GRADE' | translate"
+      class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+    >
+      <option value="">{{ 'FEE_STRUCTURES.ALL_GRADES' | translate }}</option>
+      @for (grade of grades(); track grade.id) {
+        <option [value]="grade.id">{{ grade.name }}</option>
+      }
+    </select>
+
+    <select
+      (change)="onFilterCategory($event)"
+      [attr.aria-label]="'FEE_STRUCTURES.FILTER_CATEGORY' | translate"
+      class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+    >
+      <option value="">{{ 'FEE_STRUCTURES.ALL_CATEGORIES' | translate }}</option>
+      @for (cat of categories(); track cat.id) {
+        <option [value]="cat.id">{{ cat.name }}</option>
+      }
+    </select>
+  </div>
+
+  <!-- Error -->
+  @if (error()) {
+    <div role="alert" class="px-3 py-2 rounded-md text-sm font-medium bg-error-bg text-error-text">
+      {{ error()! | translate }}
+    </div>
+  }
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="flex justify-center py-12">
+      <p class="text-sm text-text-tertiary">{{ 'COMMON.LOADING' | translate }}</p>
+    </div>
+  }
+
+  <!-- Table -->
+  @if (!loading() && !error()) {
+    @if (structures().length === 0) {
+      <div class="text-center py-12">
+        <fa-icon icon="money-bill-wave" class="text-4xl text-text-tertiary mb-2" />
+        <p class="text-sm text-text-tertiary">{{ 'COMMON.NO_RESULTS' | translate }}</p>
+      </div>
+    } @else {
+      <div class="bg-surface rounded-xl shadow-card border border-border overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border bg-bg-secondary">
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'FEE_STRUCTURES.NAME' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'FEE_STRUCTURES.CATEGORY' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'FEE_STRUCTURES.GRADE' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'FEE_STRUCTURES.AMOUNT' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'FEE_STRUCTURES.RECURRING' | translate }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (fs of structures(); track fs.id) {
+                <tr
+                  class="border-b border-border last:border-b-0 transition-colors hover:bg-surface-hover"
+                >
+                  <td class="px-4 py-3">
+                    <a
+                      [routerLink]="[fs.id]"
+                      class="text-accent font-medium hover:underline no-underline"
+                    >
+                      {{ fs.name }}
+                    </a>
+                  </td>
+                  <td class="px-4 py-3 text-text-secondary">
+                    {{ fs.feeCategory?.name ?? '-' }}
+                  </td>
+                  <td class="px-4 py-3 text-text-secondary">
+                    {{ fs.grade?.name ?? '-' }}
+                  </td>
+                  <td class="px-4 py-3 text-text-secondary" dir="ltr">
+                    {{ fs.amount | number: '1.2-2' }}
+                  </td>
+                  <td class="px-4 py-3 text-text-secondary">
+                    @if (fs.isRecurring && fs.recurrence) {
+                      <span
+                        class="inline-block px-2 py-0.5 text-xs rounded-full bg-bg-secondary text-text-secondary"
+                      >
+                        {{ 'FEE_STRUCTURES.RECURRENCE_' + fs.recurrence.toUpperCase() | translate }}
+                      </span>
+                    } @else {
+                      <span class="text-text-tertiary">-</span>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <app-pagination
+        [page]="meta().page"
+        [limit]="meta().limit"
+        [total]="meta().total"
+        (pageChange)="onPageChange($event)"
+      />
+    }
+  }
+</div>

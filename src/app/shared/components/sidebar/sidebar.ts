@@ -39,6 +39,16 @@ export class SidebarComponent {
       { labelKey: 'NAV.EXAMS', route: `${prefix}/exams`, icon: 'file-pen' },
       { labelKey: 'NAV.GRADE_ENTRY', route: `${prefix}/grade-entry`, icon: 'keyboard' },
       { labelKey: 'NAV.REPORT_CARDS', route: `${prefix}/report-cards`, icon: 'file-lines' },
+      {
+        labelKey: 'NAV.FEE_STRUCTURES',
+        route: `${prefix}/fee-structures`,
+        icon: 'money-bill-wave',
+      },
+      {
+        labelKey: 'NAV.FEE_INVOICES',
+        route: `${prefix}/fee-invoices`,
+        icon: 'file-invoice-dollar',
+      },
       { labelKey: 'NAV.ROLES', route: `${prefix}/roles`, icon: 'shield-halved' },
     ];
   });

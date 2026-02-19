@@ -1,0 +1,447 @@
+<div class="flex flex-col gap-4">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <a
+        [routerLink]="listRoute()"
+        class="inline-flex items-center p-2 rounded-lg bg-transparent text-text-secondary transition-colors hover:bg-surface-hover no-underline"
+        [attr.aria-label]="'COMMON.BACK' | translate"
+      >
+        <fa-icon icon="arrow-left" class="text-xl leading-none" />
+      </a>
+      <h1 class="text-xl font-bold text-text-primary">{{ 'FEE_INVOICES.DETAIL' | translate }}</h1>
+    </div>
+    @if (invoice(); as inv) {
+      <div class="flex items-center gap-2">
+        @if (inv.status === 'draft') {
+          <button
+            type="button"
+            (click)="openIssueModal()"
+            class="inline-flex items-center gap-2 px-4 py-2 border-0 bg-accent text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-accent-hover"
+          >
+            {{ 'FEE_INVOICES.ISSUE' | translate }}
+          </button>
+        }
+        @if (inv.status !== 'cancelled' && inv.status !== 'paid' && inv.paidAmount === 0) {
+          <button
+            type="button"
+            (click)="openCancelModal()"
+            class="inline-flex items-center gap-2 px-4 py-2 border-0 bg-danger text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-danger-hover"
+          >
+            {{ 'FEE_INVOICES.CANCEL_INVOICE' | translate }}
+          </button>
+        }
+        @if (
+          inv.status === 'issued' || inv.status === 'partially_paid' || inv.status === 'overdue'
+        ) {
+          <button
+            type="button"
+            (click)="openPaymentModal()"
+            class="inline-flex items-center gap-2 px-4 py-2 border-0 bg-success-bg text-success-text rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:opacity-80"
+          >
+            {{ 'FEE_INVOICES.RECORD_PAYMENT' | translate }}
+          </button>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="flex justify-center py-12">
+      <p class="text-sm text-text-tertiary">{{ 'COMMON.LOADING' | translate }}</p>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (error()) {
+    <div role="alert" class="px-3 py-2 rounded-md text-sm font-medium bg-error-bg text-error-text">
+      {{ error()! | translate }}
+    </div>
+  }
+
+  @if (invoice(); as inv) {
+    <!-- Invoice info card -->
+    <div class="bg-surface rounded-xl p-5 shadow-card border border-border">
+      <div class="flex items-center gap-3 mb-4">
+        <fa-icon icon="file-invoice-dollar" class="text-3xl text-text-tertiary" />
+        <div>
+          <p class="text-lg font-semibold text-text-primary">{{ inv.invoiceNumber }}</p>
+          <span
+            class="inline-block px-2 py-0.5 text-xs rounded-full font-medium"
+            [ngClass]="statusClass(inv.status)"
+          >
+            {{ 'FEE_INVOICES.STATUS_' + inv.status.toUpperCase() | translate }}
+          </span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div>
+          <p class="text-xs font-medium text-text-tertiary">
+            {{ 'FEE_INVOICES.STUDENT' | translate }}
+          </p>
+          <p class="text-sm text-text-primary">
+            @if (inv.student) {
+              {{ inv.student.firstName }} {{ inv.student.lastName }} ({{ inv.student.studentCode }})
+            } @else {
+              -
+            }
+          </p>
+        </div>
+        <div>
+          <p class="text-xs font-medium text-text-tertiary">
+            {{ 'FEE_INVOICES.DUE_DATE' | translate }}
+          </p>
+          <p class="text-sm text-text-primary">{{ inv.dueDate | date: 'mediumDate' }}</p>
+        </div>
+        <div>
+          <p class="text-xs font-medium text-text-tertiary">
+            {{ 'FEE_INVOICES.TOTAL_AMOUNT' | translate }}
+          </p>
+          <p class="text-sm text-text-primary" dir="ltr">{{ inv.totalAmount | number: '1.2-2' }}</p>
+        </div>
+        <div>
+          <p class="text-xs font-medium text-text-tertiary">
+            {{ 'FEE_INVOICES.DISCOUNT_AMOUNT' | translate }}
+          </p>
+          <p class="text-sm text-text-primary" dir="ltr">
+            {{ inv.totalDiscountAmount | number: '1.2-2' }}
+          </p>
+        </div>
+        <div>
+          <p class="text-xs font-medium text-text-tertiary">
+            {{ 'FEE_INVOICES.NET_AMOUNT' | translate }}
+          </p>
+          <p class="text-sm font-semibold text-text-primary" dir="ltr">
+            {{ inv.netAmount | number: '1.2-2' }}
+          </p>
+        </div>
+        <div>
+          <p class="text-xs font-medium text-text-tertiary">
+            {{ 'FEE_INVOICES.PAID_AMOUNT' | translate }}
+          </p>
+          <p class="text-sm text-text-primary" dir="ltr">{{ inv.paidAmount | number: '1.2-2' }}</p>
+        </div>
+        <div>
+          <p class="text-xs font-medium text-text-tertiary">
+            {{ 'FEE_INVOICES.BALANCE' | translate }}
+          </p>
+          <p class="text-sm font-semibold text-text-primary" dir="ltr">
+            {{ inv.netAmount - inv.paidAmount | number: '1.2-2' }}
+          </p>
+        </div>
+        @if (inv.cancelReason) {
+          <div class="sm:col-span-2">
+            <p class="text-xs font-medium text-text-tertiary">
+              {{ 'FEE_INVOICES.CANCEL_REASON' | translate }}
+            </p>
+            <p class="text-sm text-danger-text">{{ inv.cancelReason }}</p>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Invoice items -->
+    @if (inv.items && inv.items.length > 0) {
+      <div class="bg-surface rounded-xl p-5 shadow-card border border-border flex flex-col gap-3">
+        <h2 class="text-base font-semibold text-text-primary">
+          {{ 'FEE_INVOICES.ITEMS' | translate }}
+        </h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border bg-bg-secondary">
+                <th class="text-start px-4 py-2 font-semibold text-text-secondary">
+                  {{ 'FEE_INVOICES.FEE_STRUCTURE' | translate }}
+                </th>
+                <th class="text-start px-4 py-2 font-semibold text-text-secondary">
+                  {{ 'FEE_INVOICES.ITEM_DESCRIPTION' | translate }}
+                </th>
+                <th class="text-start px-4 py-2 font-semibold text-text-secondary">
+                  {{ 'FEE_INVOICES.ITEM_QUANTITY' | translate }}
+                </th>
+                <th class="text-start px-4 py-2 font-semibold text-text-secondary">
+                  {{ 'FEE_INVOICES.ITEM_UNIT_AMOUNT' | translate }}
+                </th>
+                <th class="text-start px-4 py-2 font-semibold text-text-secondary">
+                  {{ 'FEE_INVOICES.ITEM_TOTAL' | translate }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of inv.items; track item.id) {
+                <tr class="border-b border-border last:border-b-0">
+                  <td class="px-4 py-2 text-text-primary">{{ item.feeStructure?.name ?? '-' }}</td>
+                  <td class="px-4 py-2 text-text-secondary">{{ item.description ?? '-' }}</td>
+                  <td class="px-4 py-2 text-text-secondary" dir="ltr">{{ item.quantity }}</td>
+                  <td class="px-4 py-2 text-text-secondary" dir="ltr">
+                    {{ item.unitAmount | number: '1.2-2' }}
+                  </td>
+                  <td class="px-4 py-2 text-text-secondary" dir="ltr">
+                    {{ item.totalAmount | number: '1.2-2' }}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+
+    <!-- Payments -->
+    <div class="bg-surface rounded-xl p-5 shadow-card border border-border flex flex-col gap-3">
+      <h2 class="text-base font-semibold text-text-primary">
+        {{ 'FEE_INVOICES.PAYMENTS' | translate }}
+      </h2>
+
+      @if (payments().length > 0) {
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border bg-bg-secondary">
+                <th class="text-start px-4 py-2 font-semibold text-text-secondary">
+                  {{ 'FEE_INVOICES.PAYMENT_DATE' | translate }}
+                </th>
+                <th class="text-start px-4 py-2 font-semibold text-text-secondary">
+                  {{ 'FEE_INVOICES.PAYMENT_AMOUNT' | translate }}
+                </th>
+                <th class="text-start px-4 py-2 font-semibold text-text-secondary">
+                  {{ 'FEE_INVOICES.PAYMENT_METHOD' | translate }}
+                </th>
+                <th class="text-start px-4 py-2 font-semibold text-text-secondary">
+                  {{ 'FEE_INVOICES.REFERENCE_NUMBER' | translate }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (p of payments(); track p.id) {
+                <tr class="border-b border-border last:border-b-0">
+                  <td class="px-4 py-2 text-text-secondary">
+                    {{ p.paymentDate | date: 'mediumDate' }}
+                  </td>
+                  <td class="px-4 py-2 text-text-secondary" dir="ltr">
+                    {{ p.amountPaid | number: '1.2-2' }}
+                  </td>
+                  <td class="px-4 py-2 text-text-secondary">
+                    {{ 'FEE_INVOICES.METHOD_' + p.paymentMethod.toUpperCase() | translate }}
+                  </td>
+                  <td class="px-4 py-2 text-text-secondary">{{ p.referenceNumber ?? '-' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <p class="text-text-tertiary italic text-sm">
+          {{ 'FEE_INVOICES.NO_PAYMENTS' | translate }}
+        </p>
+      }
+    </div>
+  }
+
+  <!-- Issue modal -->
+  @if (showIssueModal()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div
+        class="bg-surface rounded-xl p-6 shadow-card border border-border max-w-sm w-full mx-4 flex flex-col gap-4"
+        role="alertdialog"
+        aria-modal="true"
+        [attr.aria-label]="'FEE_INVOICES.ISSUE_CONFIRM' | translate"
+      >
+        <h3 class="text-lg font-semibold text-text-primary">
+          {{ 'FEE_INVOICES.ISSUE_CONFIRM' | translate }}
+        </h3>
+        <p class="text-sm text-text-secondary">
+          {{ 'FEE_INVOICES.ISSUE_MESSAGE' | translate }}
+        </p>
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            [checked]="notifyGuardian()"
+            (change)="notifyGuardian.set(!notifyGuardian())"
+            class="accent-accent"
+          />
+          <span class="text-sm text-text-primary">{{
+            'FEE_INVOICES.NOTIFY_GUARDIAN' | translate
+          }}</span>
+        </label>
+        <div class="flex justify-end gap-3">
+          <button
+            type="button"
+            (click)="closeIssueModal()"
+            class="px-4 py-2 border-0 bg-bg-secondary text-text-primary rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-surface-hover"
+          >
+            {{ 'COMMON.CANCEL' | translate }}
+          </button>
+          <button
+            type="button"
+            (click)="issueInvoice()"
+            [disabled]="issuing()"
+            class="px-4 py-2 border-0 bg-accent text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            @if (issuing()) {
+              {{ 'COMMON.LOADING' | translate }}
+            } @else {
+              {{ 'FEE_INVOICES.ISSUE' | translate }}
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Cancel modal -->
+  @if (showCancelModal()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div
+        class="bg-surface rounded-xl p-6 shadow-card border border-border max-w-sm w-full mx-4 flex flex-col gap-4"
+        role="alertdialog"
+        aria-modal="true"
+        [attr.aria-label]="'FEE_INVOICES.CANCEL_CONFIRM' | translate"
+      >
+        <h3 class="text-lg font-semibold text-text-primary">
+          {{ 'FEE_INVOICES.CANCEL_CONFIRM' | translate }}
+        </h3>
+        <p class="text-sm text-text-secondary">
+          {{ 'FEE_INVOICES.CANCEL_MESSAGE' | translate }}
+        </p>
+        <div class="flex flex-col gap-1">
+          <label for="cancel-reason" class="text-sm font-medium text-text-secondary">
+            {{ 'FEE_INVOICES.CANCEL_REASON' | translate }}
+          </label>
+          <input
+            id="cancel-reason"
+            type="text"
+            [value]="cancelReason()"
+            (input)="cancelReason.set($any($event.target).value)"
+            class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+          />
+        </div>
+        <div class="flex justify-end gap-3">
+          <button
+            type="button"
+            (click)="closeCancelModal()"
+            class="px-4 py-2 border-0 bg-bg-secondary text-text-primary rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-surface-hover"
+          >
+            {{ 'COMMON.CANCEL' | translate }}
+          </button>
+          <button
+            type="button"
+            (click)="cancelInvoice()"
+            [disabled]="cancelling()"
+            class="px-4 py-2 border-0 bg-danger text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-danger-hover disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            @if (cancelling()) {
+              {{ 'COMMON.LOADING' | translate }}
+            } @else {
+              {{ 'FEE_INVOICES.CANCEL_INVOICE' | translate }}
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Record payment modal -->
+  @if (showPaymentModal()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div
+        class="bg-surface rounded-xl p-6 shadow-card border border-border max-w-md w-full mx-4 flex flex-col gap-4"
+        role="dialog"
+        aria-modal="true"
+        [attr.aria-label]="'FEE_INVOICES.RECORD_PAYMENT' | translate"
+      >
+        <h3 class="text-lg font-semibold text-text-primary">
+          {{ 'FEE_INVOICES.RECORD_PAYMENT' | translate }}
+        </h3>
+        <form [formGroup]="paymentForm" (ngSubmit)="submitPayment()" class="flex flex-col gap-3">
+          <div class="flex flex-col gap-1">
+            <label for="pay-amount" class="text-sm font-medium text-text-secondary">
+              {{ 'FEE_INVOICES.PAYMENT_AMOUNT' | translate }}
+            </label>
+            <input
+              id="pay-amount"
+              type="number"
+              dir="ltr"
+              step="0.01"
+              formControlName="amountPaid"
+              class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+            />
+          </div>
+          <div class="flex flex-col gap-1">
+            <label for="pay-date" class="text-sm font-medium text-text-secondary">
+              {{ 'FEE_INVOICES.PAYMENT_DATE' | translate }}
+            </label>
+            <input
+              id="pay-date"
+              type="date"
+              dir="ltr"
+              formControlName="paymentDate"
+              class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+            />
+          </div>
+          <div class="flex flex-col gap-1">
+            <label for="pay-method" class="text-sm font-medium text-text-secondary">
+              {{ 'FEE_INVOICES.PAYMENT_METHOD' | translate }}
+            </label>
+            <select
+              id="pay-method"
+              formControlName="paymentMethod"
+              class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+            >
+              @for (m of paymentMethods; track m) {
+                <option [value]="m">
+                  {{ 'FEE_INVOICES.METHOD_' + m.toUpperCase() | translate }}
+                </option>
+              }
+            </select>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label for="pay-ref" class="text-sm font-medium text-text-secondary">
+              {{ 'FEE_INVOICES.REFERENCE_NUMBER' | translate }}
+            </label>
+            <input
+              id="pay-ref"
+              type="text"
+              dir="ltr"
+              formControlName="referenceNumber"
+              class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+            />
+          </div>
+          <div class="flex flex-col gap-1">
+            <label for="pay-notes" class="text-sm font-medium text-text-secondary">
+              {{ 'FEE_INVOICES.PAYMENT_NOTES' | translate }}
+            </label>
+            <input
+              id="pay-notes"
+              type="text"
+              formControlName="notes"
+              class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+            />
+          </div>
+          <div class="flex justify-end gap-3 pt-2">
+            <button
+              type="button"
+              (click)="closePaymentModal()"
+              class="px-4 py-2 border-0 bg-bg-secondary text-text-primary rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-surface-hover"
+            >
+              {{ 'COMMON.CANCEL' | translate }}
+            </button>
+            <button
+              type="submit"
+              [disabled]="savingPayment()"
+              class="px-4 py-2 border-0 bg-accent text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              @if (savingPayment()) {
+                {{ 'COMMON.LOADING' | translate }}
+              } @else {
+                {{ 'COMMON.SAVE' | translate }}
+              }
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>

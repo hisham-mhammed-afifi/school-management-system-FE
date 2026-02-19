@@ -275,6 +275,65 @@ export const routes: Routes = [
             ],
           },
           {
+            path: 'fee-structures',
+            children: [
+              {
+                path: '',
+                loadComponent: () =>
+                  import('./features/fee-structures/fee-structures').then(
+                    (m) => m.FeeStructuresComponent,
+                  ),
+              },
+              {
+                path: 'new',
+                loadComponent: () =>
+                  import('./features/fee-structures/fee-structure-form/fee-structure-form').then(
+                    (m) => m.FeeStructureFormComponent,
+                  ),
+              },
+              {
+                path: ':id',
+                loadComponent: () =>
+                  import('./features/fee-structures/fee-structure-detail/fee-structure-detail').then(
+                    (m) => m.FeeStructureDetailComponent,
+                  ),
+              },
+              {
+                path: ':id/edit',
+                loadComponent: () =>
+                  import('./features/fee-structures/fee-structure-form/fee-structure-form').then(
+                    (m) => m.FeeStructureFormComponent,
+                  ),
+              },
+            ],
+          },
+          {
+            path: 'fee-invoices',
+            children: [
+              {
+                path: '',
+                loadComponent: () =>
+                  import('./features/fee-invoices/fee-invoices').then(
+                    (m) => m.FeeInvoicesComponent,
+                  ),
+              },
+              {
+                path: 'new',
+                loadComponent: () =>
+                  import('./features/fee-invoices/fee-invoice-form/fee-invoice-form').then(
+                    (m) => m.FeeInvoiceFormComponent,
+                  ),
+              },
+              {
+                path: ':id',
+                loadComponent: () =>
+                  import('./features/fee-invoices/fee-invoice-detail/fee-invoice-detail').then(
+                    (m) => m.FeeInvoiceDetailComponent,
+                  ),
+              },
+            ],
+          },
+          {
             path: 'roles',
             children: [
               {
