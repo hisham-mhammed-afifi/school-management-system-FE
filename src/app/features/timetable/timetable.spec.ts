@@ -178,7 +178,7 @@ describe('TimetableComponent', () => {
           updatedAt: '',
         },
       ],
-      meta: { page: 1, limit: 200, total: 1, totalPages: 1 },
+      meta: { page: 1, limit: 100, total: 1, totalPages: 1 },
     });
 
     expect(component.selectedViewType()).toBe('teacher');
@@ -209,7 +209,7 @@ describe('TimetableComponent', () => {
           updatedAt: '',
         },
       ],
-      meta: { page: 1, limit: 200, total: 1, totalPages: 1 },
+      meta: { page: 1, limit: 100, total: 1, totalPages: 1 },
     });
 
     expect(component.entities()[0].label).toBe('Section A');
@@ -238,7 +238,7 @@ describe('TimetableComponent', () => {
           updatedAt: '',
         },
       ],
-      meta: { page: 1, limit: 200, total: 1, totalPages: 1 },
+      meta: { page: 1, limit: 100, total: 1, totalPages: 1 },
     });
 
     expect(component.entities()[0].label).toBe('Room 101');

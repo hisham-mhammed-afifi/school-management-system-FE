@@ -21,7 +21,12 @@
       "Bash(npm install:*)",
       "Bash(npx vitest:*)",
       "Bash(npm uninstall:*)",
-      "Bash(npm ls:*)"
+      "Bash(npm ls:*)",
+      "Bash(cmd.exe /c \"dir d:\\\\me\\\\ /b\")",
+      "Bash(cmd.exe /c \"dir d:\\\\me /b\")",
+      "Bash(powershell -Command \"Get-ChildItem ''d:\\\\me'' -Name\")",
+      "Bash(powershell -Command \"Get-ChildItem ''d:\\\\me\\\\school-management-system'' -Name\")",
+      "Bash(powershell -Command:*)"
     ]
   }
 }

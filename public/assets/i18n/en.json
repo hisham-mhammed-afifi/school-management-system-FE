@@ -41,7 +41,8 @@
     "ROLES": "Roles",
     "CLASSES": "Classes",
     "SUBJECTS": "Subjects",
-    "TIMETABLE": "Timetable"
+    "TIMETABLE": "Timetable",
+    "ATTENDANCE": "Attendance"
   },
   "LAYOUT": {
     "SIDEBAR": "Main navigation",
@@ -248,6 +249,38 @@
     "DAY_5": "Friday",
     "DAY_6": "Saturday",
     "LOAD_ERROR": "Failed to load timetable"
+  },
+  "ATTENDANCE": {
+    "TITLE": "Attendance",
+    "TAB_STUDENTS": "Students",
+    "TAB_TEACHERS": "Teachers",
+    "DATE": "Date",
+    "SELECT_DATE": "Select date",
+    "SELECT_CLASS": "Select class section",
+    "STATUS": "Status",
+    "NOTES": "Notes",
+    "NOTES_PLACEHOLDER": "Optional notes...",
+    "CHECK_IN": "Check In",
+    "CHECK_OUT": "Check Out",
+    "PRESENT": "Present",
+    "ABSENT": "Absent",
+    "LATE": "Late",
+    "EXCUSED": "Excused",
+    "ON_LEAVE": "On Leave",
+    "MARK_ALL": "Mark All",
+    "SAVE_ATTENDANCE": "Save Attendance",
+    "SAVING": "Saving...",
+    "SAVED": "Attendance saved successfully",
+    "NO_STUDENTS": "No students enrolled in this class section",
+    "NO_TEACHERS": "No active teachers found",
+    "SELECT_CLASS_AND_DATE": "Select a class section and date to take attendance",
+    "SELECT_DATE_FIRST": "Select a date to take teacher attendance",
+    "STUDENT_NAME": "Student Name",
+    "STUDENT_CODE": "Student Code",
+    "TEACHER_NAME": "Teacher Name",
+    "TEACHER_CODE": "Teacher Code",
+    "LOAD_ERROR": "Failed to load attendance data",
+    "SAVE_ERROR": "Failed to save attendance"
   },
   "SCHOOL": {
     "SELECT": "Select school",

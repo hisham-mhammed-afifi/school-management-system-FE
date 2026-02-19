@@ -34,6 +34,7 @@ export class SidebarComponent {
       { labelKey: 'NAV.CLASSES', route: `${prefix}/class-sections`, icon: 'layer-group' },
       { labelKey: 'NAV.SUBJECTS', route: `${prefix}/subjects`, icon: 'microscope' },
       { labelKey: 'NAV.TIMETABLE', route: `${prefix}/timetable`, icon: 'calendar-days' },
+      { labelKey: 'NAV.ATTENDANCE', route: `${prefix}/attendance`, icon: 'clipboard-check' },
       { labelKey: 'NAV.ROLES', route: `${prefix}/roles`, icon: 'shield-halved' },
     ];
   });

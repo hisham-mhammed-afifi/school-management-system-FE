@@ -41,7 +41,8 @@
     "ROLES": "الأدوار",
     "CLASSES": "الفصول",
     "SUBJECTS": "المواد",
-    "TIMETABLE": "الجدول الدراسي"
+    "TIMETABLE": "الجدول الدراسي",
+    "ATTENDANCE": "الحضور"
   },
   "LAYOUT": {
     "SIDEBAR": "القائمة الرئيسية",
@@ -248,6 +249,38 @@
     "DAY_5": "الجمعة",
     "DAY_6": "السبت",
     "LOAD_ERROR": "فشل تحميل الجدول الدراسي"
+  },
+  "ATTENDANCE": {
+    "TITLE": "الحضور",
+    "TAB_STUDENTS": "الطلاب",
+    "TAB_TEACHERS": "المعلمون",
+    "DATE": "التاريخ",
+    "SELECT_DATE": "اختر التاريخ",
+    "SELECT_CLASS": "اختر الشعبة",
+    "STATUS": "الحالة",
+    "NOTES": "ملاحظات",
+    "NOTES_PLACEHOLDER": "ملاحظات اختيارية...",
+    "CHECK_IN": "وقت الحضور",
+    "CHECK_OUT": "وقت الانصراف",
+    "PRESENT": "حاضر",
+    "ABSENT": "غائب",
+    "LATE": "متأخر",
+    "EXCUSED": "بعذر",
+    "ON_LEAVE": "في إجازة",
+    "MARK_ALL": "تحديد الكل",
+    "SAVE_ATTENDANCE": "حفظ الحضور",
+    "SAVING": "جارٍ الحفظ...",
+    "SAVED": "تم حفظ الحضور بنجاح",
+    "NO_STUDENTS": "لا يوجد طلاب مسجلون في هذه الشعبة",
+    "NO_TEACHERS": "لا يوجد معلمون نشطون",
+    "SELECT_CLASS_AND_DATE": "اختر الشعبة والتاريخ لتسجيل الحضور",
+    "SELECT_DATE_FIRST": "اختر التاريخ لتسجيل حضور المعلمين",
+    "STUDENT_NAME": "اسم الطالب",
+    "STUDENT_CODE": "رقم الطالب",
+    "TEACHER_NAME": "اسم المعلم",
+    "TEACHER_CODE": "رقم المعلم",
+    "LOAD_ERROR": "فشل تحميل بيانات الحضور",
+    "SAVE_ERROR": "فشل حفظ الحضور"
   },
   "SCHOOL": {
     "SELECT": "اختر المدرسة",

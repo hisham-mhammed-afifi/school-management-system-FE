@@ -1,0 +1,156 @@
+<div class="flex flex-col gap-4">
+  <!-- Date selector -->
+  <div class="flex flex-wrap gap-3">
+    <div>
+      <label for="teacher-date-select" class="sr-only">
+        {{ 'ATTENDANCE.SELECT_DATE' | translate }}
+      </label>
+      <input
+        id="teacher-date-select"
+        type="date"
+        dir="ltr"
+        [value]="selectedDate()"
+        (change)="onDateChange($event)"
+        class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+      />
+    </div>
+  </div>
+
+  <!-- Error -->
+  @if (error()) {
+    <div role="alert" class="px-3 py-2 rounded-md text-sm font-medium bg-error-bg text-error-text">
+      {{ error()! | translate }}
+    </div>
+  }
+
+  <!-- Saved message -->
+  @if (saved()) {
+    <div class="px-3 py-2 rounded-md text-sm font-medium bg-success-bg text-success-text">
+      {{ 'ATTENDANCE.SAVED' | translate }}
+    </div>
+  }
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="flex justify-center py-12">
+      <p class="text-sm text-text-tertiary">{{ 'COMMON.LOADING' | translate }}</p>
+    </div>
+  }
+
+  <!-- Empty state: no date selected -->
+  @if (!loading() && !error() && !selectedDate()) {
+    <div class="text-center py-12">
+      <fa-icon icon="clipboard-check" class="text-4xl text-text-tertiary mb-2" />
+      <p class="text-sm text-text-tertiary">{{ 'ATTENDANCE.SELECT_DATE_FIRST' | translate }}</p>
+    </div>
+  }
+
+  <!-- Attendance table -->
+  @if (!loading() && !error() && selectedDate()) {
+    @if (rows().length === 0) {
+      <div class="text-center py-12">
+        <fa-icon icon="users-slash" class="text-4xl text-text-tertiary mb-2" />
+        <p class="text-sm text-text-tertiary">{{ 'ATTENDANCE.NO_TEACHERS' | translate }}</p>
+      </div>
+    } @else {
+      <!-- Save button -->
+      <div class="flex">
+        <button
+          (click)="save()"
+          [disabled]="saving()"
+          class="inline-flex items-center gap-2 px-4 py-2 border-0 bg-accent text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <fa-icon icon="floppy-disk" class="text-lg leading-none" />
+          @if (saving()) {
+            {{ 'ATTENDANCE.SAVING' | translate }}
+          } @else {
+            {{ 'ATTENDANCE.SAVE_ATTENDANCE' | translate }}
+          }
+        </button>
+      </div>
+
+      <div class="bg-surface rounded-xl shadow-card border border-border overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border bg-bg-secondary">
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'ATTENDANCE.TEACHER_CODE' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'ATTENDANCE.TEACHER_NAME' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'ATTENDANCE.STATUS' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'ATTENDANCE.CHECK_IN' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'ATTENDANCE.CHECK_OUT' | translate }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of rows(); track row.teacherId; let i = $index) {
+                <tr
+                  class="border-b border-border last:border-b-0 transition-colors hover:bg-surface-hover"
+                >
+                  <td class="px-4 py-3 text-text-secondary font-mono text-xs">
+                    {{ row.teacherCode }}
+                  </td>
+                  <td class="px-4 py-3 text-text-primary font-medium">
+                    {{ row.firstName }} {{ row.lastName }}
+                  </td>
+                  <td class="px-4 py-3">
+                    <label [for]="'teacher-status-' + i" class="sr-only">
+                      {{ 'ATTENDANCE.STATUS' | translate }}
+                    </label>
+                    <select
+                      [id]="'teacher-status-' + i"
+                      [value]="row.status"
+                      (change)="onStatusChange(i, $event)"
+                      class="px-2 py-1 border border-border bg-bg-primary text-text-primary rounded-md text-sm transition-colors focus:border-accent focus:outline-none"
+                    >
+                      @for (status of statuses; track status) {
+                        <option [value]="status" [selected]="row.status === status">
+                          {{ 'ATTENDANCE.' + status.toUpperCase() | translate }}
+                        </option>
+                      }
+                    </select>
+                  </td>
+                  <td class="px-4 py-3">
+                    <label [for]="'checkin-' + i" class="sr-only">
+                      {{ 'ATTENDANCE.CHECK_IN' | translate }}
+                    </label>
+                    <input
+                      [id]="'checkin-' + i"
+                      type="time"
+                      dir="ltr"
+                      [value]="row.checkIn"
+                      (change)="onCheckInChange(i, $event)"
+                      class="px-2 py-1 border border-border bg-bg-primary text-text-primary rounded-md text-sm transition-colors focus:border-accent focus:outline-none"
+                    />
+                  </td>
+                  <td class="px-4 py-3">
+                    <label [for]="'checkout-' + i" class="sr-only">
+                      {{ 'ATTENDANCE.CHECK_OUT' | translate }}
+                    </label>
+                    <input
+                      [id]="'checkout-' + i"
+                      type="time"
+                      dir="ltr"
+                      [value]="row.checkOut"
+                      (change)="onCheckOutChange(i, $event)"
+                      class="px-2 py-1 border border-border bg-bg-primary text-text-primary rounded-md text-sm transition-colors focus:border-accent focus:outline-none"
+                    />
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+  }
+</div>

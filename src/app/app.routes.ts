@@ -187,6 +187,11 @@ export const routes: Routes = [
               import('./features/timetable/timetable').then((m) => m.TimetableComponent),
           },
           {
+            path: 'attendance',
+            loadComponent: () =>
+              import('./features/attendance/attendance').then((m) => m.AttendanceComponent),
+          },
+          {
             path: 'roles',
             children: [
               {

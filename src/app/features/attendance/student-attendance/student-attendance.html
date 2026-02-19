@@ -1,0 +1,166 @@
+<div class="flex flex-col gap-4">
+  <!-- Selectors -->
+  <div class="flex flex-wrap gap-3">
+    <div>
+      <label for="class-select" class="sr-only">{{ 'ATTENDANCE.SELECT_CLASS' | translate }}</label>
+      <select
+        id="class-select"
+        (change)="onClassChange($event)"
+        class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+      >
+        <option value="">{{ 'ATTENDANCE.SELECT_CLASS' | translate }}</option>
+        @for (cs of classSections(); track cs.id) {
+          <option [value]="cs.id">{{ cs.name }}</option>
+        }
+      </select>
+    </div>
+    <div>
+      <label for="date-select" class="sr-only">{{ 'ATTENDANCE.SELECT_DATE' | translate }}</label>
+      <input
+        id="date-select"
+        type="date"
+        dir="ltr"
+        [value]="selectedDate()"
+        (change)="onDateChange($event)"
+        class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+      />
+    </div>
+  </div>
+
+  <!-- Error -->
+  @if (error()) {
+    <div role="alert" class="px-3 py-2 rounded-md text-sm font-medium bg-error-bg text-error-text">
+      {{ error()! | translate }}
+    </div>
+  }
+
+  <!-- Saved message -->
+  @if (saved()) {
+    <div class="px-3 py-2 rounded-md text-sm font-medium bg-success-bg text-success-text">
+      {{ 'ATTENDANCE.SAVED' | translate }}
+    </div>
+  }
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="flex justify-center py-12">
+      <p class="text-sm text-text-tertiary">{{ 'COMMON.LOADING' | translate }}</p>
+    </div>
+  }
+
+  <!-- Empty state: no class/date selected -->
+  @if (!loading() && !error() && (!selectedClassId() || !selectedDate())) {
+    <div class="text-center py-12">
+      <fa-icon icon="clipboard-check" class="text-4xl text-text-tertiary mb-2" />
+      <p class="text-sm text-text-tertiary">{{ 'ATTENDANCE.SELECT_CLASS_AND_DATE' | translate }}</p>
+    </div>
+  }
+
+  <!-- Attendance table -->
+  @if (!loading() && !error() && selectedClassId() && selectedDate()) {
+    @if (rows().length === 0) {
+      <div class="text-center py-12">
+        <fa-icon icon="users-slash" class="text-4xl text-text-tertiary mb-2" />
+        <p class="text-sm text-text-tertiary">{{ 'ATTENDANCE.NO_STUDENTS' | translate }}</p>
+      </div>
+    } @else {
+      <!-- Actions row -->
+      <div class="flex flex-wrap items-center gap-3">
+        <div>
+          <label for="mark-all" class="sr-only">{{ 'ATTENDANCE.MARK_ALL' | translate }}</label>
+          <select
+            id="mark-all"
+            (change)="markAll($event)"
+            class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+          >
+            <option value="">{{ 'ATTENDANCE.MARK_ALL' | translate }}</option>
+            @for (status of statuses; track status) {
+              <option [value]="status">
+                {{ 'ATTENDANCE.' + status.toUpperCase() | translate }}
+              </option>
+            }
+          </select>
+        </div>
+        <button
+          (click)="save()"
+          [disabled]="saving()"
+          class="inline-flex items-center gap-2 px-4 py-2 border-0 bg-accent text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <fa-icon icon="floppy-disk" class="text-lg leading-none" />
+          @if (saving()) {
+            {{ 'ATTENDANCE.SAVING' | translate }}
+          } @else {
+            {{ 'ATTENDANCE.SAVE_ATTENDANCE' | translate }}
+          }
+        </button>
+      </div>
+
+      <div class="bg-surface rounded-xl shadow-card border border-border overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border bg-bg-secondary">
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'ATTENDANCE.STUDENT_CODE' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'ATTENDANCE.STUDENT_NAME' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'ATTENDANCE.STATUS' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'ATTENDANCE.NOTES' | translate }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of rows(); track row.studentId; let i = $index) {
+                <tr
+                  class="border-b border-border last:border-b-0 transition-colors hover:bg-surface-hover"
+                >
+                  <td class="px-4 py-3 text-text-secondary font-mono text-xs">
+                    {{ row.studentCode }}
+                  </td>
+                  <td class="px-4 py-3 text-text-primary font-medium">
+                    {{ row.firstName }} {{ row.lastName }}
+                  </td>
+                  <td class="px-4 py-3">
+                    <label [for]="'status-' + i" class="sr-only">
+                      {{ 'ATTENDANCE.STATUS' | translate }}
+                    </label>
+                    <select
+                      [id]="'status-' + i"
+                      [value]="row.status"
+                      (change)="onStatusChange(i, $event)"
+                      class="px-2 py-1 border border-border bg-bg-primary text-text-primary rounded-md text-sm transition-colors focus:border-accent focus:outline-none"
+                    >
+                      @for (status of statuses; track status) {
+                        <option [value]="status" [selected]="row.status === status">
+                          {{ 'ATTENDANCE.' + status.toUpperCase() | translate }}
+                        </option>
+                      }
+                    </select>
+                  </td>
+                  <td class="px-4 py-3">
+                    <label [for]="'notes-' + i" class="sr-only">
+                      {{ 'ATTENDANCE.NOTES' | translate }}
+                    </label>
+                    <input
+                      [id]="'notes-' + i"
+                      type="text"
+                      [value]="row.notes"
+                      (input)="onNotesChange(i, $event)"
+                      [placeholder]="'ATTENDANCE.NOTES_PLACEHOLDER' | translate"
+                      class="w-full px-2 py-1 border border-border bg-bg-primary text-text-primary rounded-md text-sm transition-colors focus:border-accent focus:outline-none"
+                    />
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+  }
+</div>

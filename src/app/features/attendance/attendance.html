@@ -1,0 +1,44 @@
+<div class="flex flex-col gap-4">
+  <!-- Header -->
+  <h1 class="text-xl font-bold text-text-primary">{{ 'ATTENDANCE.TITLE' | translate }}</h1>
+
+  <!-- Tab buttons -->
+  <div class="flex rounded-lg border border-border overflow-hidden" role="tablist">
+    <button
+      role="tab"
+      [attr.aria-selected]="activeTab() === 'students'"
+      (click)="switchTab('students')"
+      class="px-4 py-2 text-sm font-medium transition-colors"
+      [class]="
+        activeTab() === 'students'
+          ? 'bg-accent text-white'
+          : 'bg-bg-primary text-text-secondary hover:bg-surface-hover'
+      "
+    >
+      {{ 'ATTENDANCE.TAB_STUDENTS' | translate }}
+    </button>
+    <button
+      role="tab"
+      [attr.aria-selected]="activeTab() === 'teachers'"
+      (click)="switchTab('teachers')"
+      class="px-4 py-2 text-sm font-medium transition-colors border-s border-border"
+      [class]="
+        activeTab() === 'teachers'
+          ? 'bg-accent text-white'
+          : 'bg-bg-primary text-text-secondary hover:bg-surface-hover'
+      "
+    >
+      {{ 'ATTENDANCE.TAB_TEACHERS' | translate }}
+    </button>
+  </div>
+
+  <!-- Tab content -->
+  @switch (activeTab()) {
+    @case ('students') {
+      <app-student-attendance />
+    }
+    @case ('teachers') {
+      <app-teacher-attendance />
+    }
+  }
+</div>

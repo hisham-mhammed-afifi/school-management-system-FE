@@ -173,14 +173,14 @@ export class TimetableComponent implements OnInit {
     switch (viewType) {
       case 'class':
         this.classSectionService
-          .list({ limit: 200, academicYearId: this.selectedYearId() || undefined })
+          .list({ limit: 100, academicYearId: this.selectedYearId() || undefined })
           .subscribe({
             next: (res) =>
               this.entities.set(res.data.map((s: ClassSection) => ({ id: s.id, label: s.name }))),
           });
         break;
       case 'teacher':
-        this.teacherService.list({ limit: 200, status: 'active' }).subscribe({
+        this.teacherService.list({ limit: 100, status: 'active' }).subscribe({
           next: (res) =>
             this.entities.set(
               res.data.map((t: Teacher) => ({ id: t.id, label: `${t.firstName} ${t.lastName}` })),
@@ -188,7 +188,7 @@ export class TimetableComponent implements OnInit {
         });
         break;
       case 'room':
-        this.roomService.list({ limit: 200 }).subscribe({
+        this.roomService.list({ limit: 100 }).subscribe({
           next: (res) =>
             this.entities.set(res.data.map((r: Room) => ({ id: r.id, label: r.name }))),
         });
