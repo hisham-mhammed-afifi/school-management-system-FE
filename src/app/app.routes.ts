@@ -182,6 +182,11 @@ export const routes: Routes = [
             ],
           },
           {
+            path: 'timetable',
+            loadComponent: () =>
+              import('./features/timetable/timetable').then((m) => m.TimetableComponent),
+          },
+          {
             path: 'roles',
             children: [
               {

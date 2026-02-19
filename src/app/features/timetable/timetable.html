@@ -1,0 +1,242 @@
+<div class="flex flex-col gap-4">
+  <!-- Header -->
+  <h1 class="text-xl font-bold text-text-primary">{{ 'TIMETABLE.TITLE' | translate }}</h1>
+
+  <!-- Selectors row -->
+  <div class="flex flex-wrap gap-3">
+    <!-- Academic Year -->
+    <div>
+      <label for="year-select" class="sr-only">{{ 'TIMETABLE.SELECT_YEAR' | translate }}</label>
+      <select
+        id="year-select"
+        (change)="onYearChange($event)"
+        class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+      >
+        <option value="">{{ 'TIMETABLE.SELECT_YEAR' | translate }}</option>
+        @for (year of academicYears(); track year.id) {
+          <option [value]="year.id">{{ year.name }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Term -->
+    @if (selectedYearId()) {
+      <div>
+        <label for="term-select" class="sr-only">{{ 'TIMETABLE.SELECT_TERM' | translate }}</label>
+        <select
+          id="term-select"
+          (change)="onTermChange($event)"
+          class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+        >
+          <option value="">{{ 'TIMETABLE.SELECT_TERM' | translate }}</option>
+          @for (term of terms(); track term.id) {
+            <option [value]="term.id">{{ term.name }}</option>
+          }
+        </select>
+      </div>
+    }
+
+    <!-- Period Set -->
+    @if (selectedYearId()) {
+      <div>
+        <label for="period-set-select" class="sr-only">{{
+          'TIMETABLE.SELECT_PERIOD_SET' | translate
+        }}</label>
+        <select
+          id="period-set-select"
+          (change)="onPeriodSetChange($event)"
+          class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+        >
+          <option value="">{{ 'TIMETABLE.SELECT_PERIOD_SET' | translate }}</option>
+          @for (ps of periodSets(); track ps.id) {
+            <option [value]="ps.id">{{ ps.name }}</option>
+          }
+        </select>
+      </div>
+    }
+  </div>
+
+  <!-- View type tabs + Entity selector -->
+  @if (selectedTermId() && selectedPeriodSetId()) {
+    <div class="flex flex-wrap items-center gap-3">
+      <!-- View type tabs -->
+      <div class="flex rounded-lg border border-border overflow-hidden" role="tablist">
+        <button
+          role="tab"
+          [attr.aria-selected]="selectedViewType() === 'class'"
+          (click)="onViewTypeChange('class')"
+          class="px-4 py-2 text-sm font-medium transition-colors"
+          [class]="
+            selectedViewType() === 'class'
+              ? 'bg-accent text-white'
+              : 'bg-bg-primary text-text-secondary hover:bg-surface-hover'
+          "
+        >
+          {{ 'TIMETABLE.VIEW_CLASS' | translate }}
+        </button>
+        <button
+          role="tab"
+          [attr.aria-selected]="selectedViewType() === 'teacher'"
+          (click)="onViewTypeChange('teacher')"
+          class="px-4 py-2 text-sm font-medium transition-colors border-s border-border"
+          [class]="
+            selectedViewType() === 'teacher'
+              ? 'bg-accent text-white'
+              : 'bg-bg-primary text-text-secondary hover:bg-surface-hover'
+          "
+        >
+          {{ 'TIMETABLE.VIEW_TEACHER' | translate }}
+        </button>
+        <button
+          role="tab"
+          [attr.aria-selected]="selectedViewType() === 'room'"
+          (click)="onViewTypeChange('room')"
+          class="px-4 py-2 text-sm font-medium transition-colors border-s border-border"
+          [class]="
+            selectedViewType() === 'room'
+              ? 'bg-accent text-white'
+              : 'bg-bg-primary text-text-secondary hover:bg-surface-hover'
+          "
+        >
+          {{ 'TIMETABLE.VIEW_ROOM' | translate }}
+        </button>
+      </div>
+
+      <!-- Entity selector -->
+      <div>
+        <label for="entity-select" class="sr-only">
+          @switch (selectedViewType()) {
+            @case ('class') {
+              {{ 'TIMETABLE.SELECT_CLASS' | translate }}
+            }
+            @case ('teacher') {
+              {{ 'TIMETABLE.SELECT_TEACHER' | translate }}
+            }
+            @case ('room') {
+              {{ 'TIMETABLE.SELECT_ROOM' | translate }}
+            }
+          }
+        </label>
+        <select
+          id="entity-select"
+          (change)="onEntityChange($event)"
+          class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+        >
+          <option value="">
+            @switch (selectedViewType()) {
+              @case ('class') {
+                {{ 'TIMETABLE.SELECT_CLASS' | translate }}
+              }
+              @case ('teacher') {
+                {{ 'TIMETABLE.SELECT_TEACHER' | translate }}
+              }
+              @case ('room') {
+                {{ 'TIMETABLE.SELECT_ROOM' | translate }}
+              }
+            }
+          </option>
+          @for (entity of entities(); track entity.id) {
+            <option [value]="entity.id">{{ entity.label }}</option>
+          }
+        </select>
+      </div>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (error()) {
+    <div role="alert" class="px-3 py-2 rounded-md text-sm font-medium bg-error-bg text-error-text">
+      {{ error()! | translate }}
+    </div>
+  }
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="flex justify-center py-12">
+      <p class="text-sm text-text-tertiary">{{ 'COMMON.LOADING' | translate }}</p>
+    </div>
+  }
+
+  <!-- Timetable Grid -->
+  @if (!loading() && !error() && selectedEntityId()) {
+    @if (sortedPeriods.length === 0) {
+      <div class="text-center py-12">
+        <fa-icon icon="calendar-days" class="text-4xl text-text-tertiary mb-2" />
+        <p class="text-sm text-text-tertiary">{{ 'TIMETABLE.NO_PERIODS' | translate }}</p>
+      </div>
+    } @else if (activeDays.length === 0) {
+      <div class="text-center py-12">
+        <fa-icon icon="calendar-days" class="text-4xl text-text-tertiary mb-2" />
+        <p class="text-sm text-text-tertiary">{{ 'TIMETABLE.NO_WORKING_DAYS' | translate }}</p>
+      </div>
+    } @else {
+      @if (entityName()) {
+        <h2 class="text-lg font-semibold text-text-primary">{{ entityName() }}</h2>
+      }
+
+      <div class="bg-surface rounded-xl shadow-card border border-border overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border bg-bg-secondary">
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary min-w-[120px]">
+                  {{ 'TIMETABLE.PERIOD_SET' | translate }}
+                </th>
+                @for (day of activeDays; track day.dayOfWeek) {
+                  <th class="text-start px-4 py-3 font-semibold text-text-secondary min-w-[140px]">
+                    {{ 'TIMETABLE.DAY_' + day.dayOfWeek | translate }}
+                  </th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              @for (period of sortedPeriods; track period.id) {
+                <tr
+                  class="border-b border-border last:border-b-0"
+                  [class.bg-bg-secondary]="period.isBreak"
+                >
+                  <td class="px-4 py-3 font-medium text-text-primary whitespace-nowrap">
+                    <div>{{ period.name }}</div>
+                    <div class="text-xs text-text-tertiary">
+                      {{ period.startTime }} - {{ period.endTime }}
+                    </div>
+                  </td>
+                  @for (day of activeDays; track day.dayOfWeek) {
+                    <td class="px-4 py-3">
+                      @if (period.isBreak) {
+                        <span class="text-xs text-text-tertiary italic">
+                          {{ 'TIMETABLE.BREAK' | translate }}
+                        </span>
+                      } @else {
+                        @let lesson = getCellLesson(day.dayOfWeek, period.id);
+                        @if (lesson) {
+                          <div class="flex flex-col gap-0.5">
+                            <span class="font-medium text-text-primary">{{ lesson.subject }}</span>
+                            <span class="text-xs text-text-secondary">{{ lesson.teacher }}</span>
+                            <span class="text-xs text-text-tertiary">{{ lesson.room }}</span>
+                          </div>
+                        } @else {
+                          <span class="text-xs text-text-tertiary italic">
+                            {{ 'TIMETABLE.FREE' | translate }}
+                          </span>
+                        }
+                      }
+                    </td>
+                  }
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+  }
+
+  <!-- Empty state when no entity selected yet -->
+  @if (!loading() && !error() && !selectedEntityId() && selectedTermId() && selectedPeriodSetId()) {
+    <div class="text-center py-12">
+      <fa-icon icon="calendar-days" class="text-4xl text-text-tertiary mb-2" />
+      <p class="text-sm text-text-tertiary">{{ 'TIMETABLE.NO_DATA' | translate }}</p>
+    </div>
+  }
+</div>

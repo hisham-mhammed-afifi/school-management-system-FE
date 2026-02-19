@@ -40,7 +40,8 @@
     "TEACHERS": "Teachers",
     "ROLES": "Roles",
     "CLASSES": "Classes",
-    "SUBJECTS": "Subjects"
+    "SUBJECTS": "Subjects",
+    "TIMETABLE": "Timetable"
   },
   "LAYOUT": {
     "SIDEBAR": "Main navigation",
@@ -218,6 +219,35 @@
     "DELETE_CONFIRM": "Delete Subject",
     "DELETE_MESSAGE": "Are you sure you want to delete this subject? This action cannot be undone.",
     "LOAD_ERROR": "Failed to load subjects"
+  },
+  "TIMETABLE": {
+    "TITLE": "Timetable",
+    "ACADEMIC_YEAR": "Academic Year",
+    "TERM": "Term",
+    "PERIOD_SET": "Period Set",
+    "VIEW_TYPE": "View Type",
+    "VIEW_CLASS": "Class",
+    "VIEW_TEACHER": "Teacher",
+    "VIEW_ROOM": "Room",
+    "SELECT_YEAR": "Select academic year",
+    "SELECT_TERM": "Select term",
+    "SELECT_PERIOD_SET": "Select period set",
+    "SELECT_CLASS": "Select class section",
+    "SELECT_TEACHER": "Select teacher",
+    "SELECT_ROOM": "Select room",
+    "NO_DATA": "No timetable data available",
+    "NO_PERIODS": "No periods configured",
+    "NO_WORKING_DAYS": "No working days configured",
+    "BREAK": "Break",
+    "FREE": "Free",
+    "DAY_0": "Sunday",
+    "DAY_1": "Monday",
+    "DAY_2": "Tuesday",
+    "DAY_3": "Wednesday",
+    "DAY_4": "Thursday",
+    "DAY_5": "Friday",
+    "DAY_6": "Saturday",
+    "LOAD_ERROR": "Failed to load timetable"
   },
   "SCHOOL": {
     "SELECT": "Select school",
