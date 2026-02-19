@@ -1,0 +1,265 @@
+<div class="flex flex-col gap-4">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <h1 class="text-xl font-bold text-text-primary">{{ 'REPORT_CARDS.TITLE' | translate }}</h1>
+    <button
+      (click)="openGenerate()"
+      class="inline-flex items-center gap-2 px-4 py-2 border-0 bg-accent text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-accent-hover"
+    >
+      <fa-icon icon="plus" class="text-lg leading-none" />
+      {{ 'REPORT_CARDS.GENERATE' | translate }}
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="flex flex-wrap gap-3">
+    <div>
+      <label for="rc-year-filter" class="sr-only">{{ 'EXAMS.ACADEMIC_YEAR' | translate }}</label>
+      <select
+        id="rc-year-filter"
+        (change)="onYearFilterChange($event)"
+        class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+      >
+        <option value="">{{ 'REPORT_CARDS.ALL_TERMS' | translate }}</option>
+        @for (year of academicYears(); track year.id) {
+          <option [value]="year.id">{{ year.name }}</option>
+        }
+      </select>
+    </div>
+    @if (filterYearId()) {
+      <div>
+        <label for="rc-term-filter" class="sr-only">{{
+          'REPORT_CARDS.FILTER_TERM' | translate
+        }}</label>
+        <select
+          id="rc-term-filter"
+          (change)="onTermFilterChange($event)"
+          class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+        >
+          <option value="">{{ 'REPORT_CARDS.ALL_TERMS' | translate }}</option>
+          @for (term of terms(); track term.id) {
+            <option [value]="term.id">{{ term.name }}</option>
+          }
+        </select>
+      </div>
+    }
+    <div>
+      <label for="rc-class-filter" class="sr-only">{{
+        'REPORT_CARDS.FILTER_CLASS' | translate
+      }}</label>
+      <select
+        id="rc-class-filter"
+        (change)="onClassFilterChange($event)"
+        class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+      >
+        <option value="">{{ 'REPORT_CARDS.ALL_CLASSES' | translate }}</option>
+        @for (cs of classSections(); track cs.id) {
+          <option [value]="cs.id">{{ cs.name }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <!-- Error -->
+  @if (error()) {
+    <div role="alert" class="px-3 py-2 rounded-md text-sm font-medium bg-error-bg text-error-text">
+      {{ error()! | translate }}
+    </div>
+  }
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="flex justify-center py-12">
+      <p class="text-sm text-text-tertiary">{{ 'COMMON.LOADING' | translate }}</p>
+    </div>
+  }
+
+  <!-- Table -->
+  @if (!loading() && !error()) {
+    @if (reportCards().length === 0) {
+      <div class="text-center py-12">
+        <fa-icon icon="file-lines" class="text-4xl text-text-tertiary mb-2" />
+        <p class="text-sm text-text-tertiary">{{ 'REPORT_CARDS.NO_REPORT_CARDS' | translate }}</p>
+      </div>
+    } @else {
+      <div class="bg-surface rounded-xl shadow-card border border-border overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border bg-bg-secondary">
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'REPORT_CARDS.STUDENT' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'REPORT_CARDS.TERM' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'REPORT_CARDS.CLASS_SECTION' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'REPORT_CARDS.OVERALL_PERCENTAGE' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'REPORT_CARDS.OVERALL_GPA' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'REPORT_CARDS.RANK' | translate }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (rc of reportCards(); track rc.id) {
+                <tr
+                  class="border-b border-border last:border-b-0 transition-colors hover:bg-surface-hover"
+                >
+                  <td class="px-4 py-3">
+                    <a
+                      [routerLink]="[rc.id]"
+                      class="text-accent font-medium hover:underline no-underline"
+                    >
+                      {{ rc.student?.firstName }} {{ rc.student?.lastName }}
+                    </a>
+                    <span class="block text-xs text-text-tertiary font-mono">
+                      {{ rc.student?.studentCode }}
+                    </span>
+                  </td>
+                  <td class="px-4 py-3 text-text-secondary">{{ rc.term?.name ?? '-' }}</td>
+                  <td class="px-4 py-3 text-text-secondary">{{ rc.classSection?.name ?? '-' }}</td>
+                  <td class="px-4 py-3 text-text-secondary">
+                    {{ rc.overallPercentage !== null ? rc.overallPercentage + '%' : '-' }}
+                  </td>
+                  <td class="px-4 py-3 text-text-secondary">
+                    {{ rc.overallGpa !== null ? rc.overallGpa : '-' }}
+                  </td>
+                  <td class="px-4 py-3 text-text-secondary">
+                    {{ rc.rankInClass ?? '-' }}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <app-pagination
+        [page]="meta().page"
+        [limit]="meta().limit"
+        [total]="meta().total"
+        (pageChange)="onPageChange($event)"
+      />
+    }
+  }
+
+  <!-- Generate modal -->
+  @if (showGenerate()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div
+        class="bg-surface rounded-xl p-6 shadow-card border border-border max-w-md w-full mx-4 flex flex-col gap-4"
+        role="dialog"
+        aria-modal="true"
+        [attr.aria-label]="'REPORT_CARDS.GENERATE' | translate"
+      >
+        <h3 class="text-lg font-semibold text-text-primary">
+          {{ 'REPORT_CARDS.GENERATE' | translate }}
+        </h3>
+
+        @if (generateError()) {
+          <div
+            role="alert"
+            class="px-3 py-2 rounded-md text-sm font-medium bg-error-bg text-error-text"
+          >
+            {{ generateError()! | translate }}
+          </div>
+        }
+
+        @if (generateResult(); as result) {
+          <div class="px-3 py-2 rounded-md text-sm font-medium bg-success-bg text-success-text">
+            {{
+              'REPORT_CARDS.GENERATE_SUCCESS'
+                | translate
+                  : {
+                      generated: result.generated,
+                      skipped: result.skippedExisting,
+                      missing: result.missingGrades,
+                    }
+            }}
+          </div>
+        }
+
+        @if (!generateResult()) {
+          <div class="flex flex-col gap-3">
+            <div class="flex flex-col gap-1">
+              <label for="gen-year" class="text-sm font-medium text-text-secondary">
+                {{ 'EXAMS.ACADEMIC_YEAR' | translate }}
+              </label>
+              <select
+                id="gen-year"
+                (change)="onGenerateYearChange($event)"
+                class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+              >
+                <option value="">--</option>
+                @for (year of academicYears(); track year.id) {
+                  <option [value]="year.id">{{ year.name }}</option>
+                }
+              </select>
+            </div>
+            <div class="flex flex-col gap-1">
+              <label for="gen-term" class="text-sm font-medium text-text-secondary">
+                {{ 'REPORT_CARDS.TERM' | translate }}
+              </label>
+              <select
+                id="gen-term"
+                (change)="onGenerateTermChange($event)"
+                class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+              >
+                <option value="">--</option>
+                @for (term of terms(); track term.id) {
+                  <option [value]="term.id">{{ term.name }}</option>
+                }
+              </select>
+            </div>
+            <div class="flex flex-col gap-1">
+              <label for="gen-class" class="text-sm font-medium text-text-secondary">
+                {{ 'REPORT_CARDS.CLASS_SECTION' | translate }}
+              </label>
+              <select
+                id="gen-class"
+                (change)="onGenerateClassChange($event)"
+                class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+              >
+                <option value="">--</option>
+                @for (cs of classSections(); track cs.id) {
+                  <option [value]="cs.id">{{ cs.name }}</option>
+                }
+              </select>
+            </div>
+          </div>
+        }
+
+        <div class="flex justify-end gap-3">
+          <button
+            type="button"
+            (click)="closeGenerate()"
+            class="px-4 py-2 border-0 bg-bg-secondary text-text-primary rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-surface-hover"
+          >
+            {{ 'COMMON.CANCEL' | translate }}
+          </button>
+          @if (!generateResult()) {
+            <button
+              type="button"
+              (click)="submitGenerate()"
+              [disabled]="generating() || !generateTermId() || !generateClassId()"
+              class="px-4 py-2 border-0 bg-accent text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              @if (generating()) {
+                {{ 'REPORT_CARDS.GENERATING' | translate }}
+              } @else {
+                {{ 'REPORT_CARDS.GENERATE' | translate }}
+              }
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,183 @@
+<div class="flex flex-col gap-4">
+  <h1 class="text-xl font-bold text-text-primary">{{ 'GRADE_ENTRY.TITLE' | translate }}</h1>
+
+  <!-- Selectors -->
+  <div class="flex flex-wrap gap-3">
+    <div>
+      <label for="ge-exam" class="sr-only">{{ 'GRADE_ENTRY.SELECT_EXAM' | translate }}</label>
+      <select
+        id="ge-exam"
+        [value]="selectedExamId()"
+        (change)="onExamChange($event)"
+        class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+      >
+        <option value="">{{ 'GRADE_ENTRY.SELECT_EXAM' | translate }}</option>
+        @for (exam of exams(); track exam.id) {
+          <option [value]="exam.id">{{ exam.name }}</option>
+        }
+      </select>
+    </div>
+
+    @if (selectedExamId()) {
+      <div>
+        <label for="ge-subject" class="sr-only">{{
+          'GRADE_ENTRY.SELECT_SUBJECT' | translate
+        }}</label>
+        <select
+          id="ge-subject"
+          [value]="selectedExamSubjectId()"
+          (change)="onExamSubjectChange($event)"
+          class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+        >
+          <option value="">{{ 'GRADE_ENTRY.SELECT_SUBJECT' | translate }}</option>
+          @for (es of examSubjects(); track es.id) {
+            <option [value]="es.id">
+              {{ es.subject?.name ?? es.subjectId }} - {{ es.grade?.name ?? es.gradeId }}
+            </option>
+          }
+        </select>
+      </div>
+    }
+
+    <div>
+      <label for="ge-class" class="sr-only">{{ 'GRADE_ENTRY.CLASS_SECTION' | translate }}</label>
+      <select
+        id="ge-class"
+        [value]="selectedClassSectionId()"
+        (change)="onClassSectionChange($event)"
+        class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+      >
+        <option value="">{{ 'GRADE_ENTRY.CLASS_SECTION' | translate }}</option>
+        @for (cs of classSections(); track cs.id) {
+          <option [value]="cs.id">{{ cs.name }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <!-- Error -->
+  @if (error()) {
+    <div role="alert" class="px-3 py-2 rounded-md text-sm font-medium bg-error-bg text-error-text">
+      {{ error()! | translate }}
+    </div>
+  }
+
+  <!-- Saved message -->
+  @if (saved()) {
+    <div class="px-3 py-2 rounded-md text-sm font-medium bg-success-bg text-success-text">
+      {{ 'GRADE_ENTRY.SAVED' | translate }}
+    </div>
+  }
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="flex justify-center py-12">
+      <p class="text-sm text-text-tertiary">{{ 'COMMON.LOADING' | translate }}</p>
+    </div>
+  }
+
+  <!-- Empty state -->
+  @if (!loading() && !error() && (!selectedExamSubjectId() || !selectedClassSectionId())) {
+    <div class="text-center py-12">
+      <fa-icon icon="keyboard" class="text-4xl text-text-tertiary mb-2" />
+      <p class="text-sm text-text-tertiary">{{ 'GRADE_ENTRY.SELECT_EXAM_FIRST' | translate }}</p>
+    </div>
+  }
+
+  <!-- Grade entry table -->
+  @if (!loading() && !error() && selectedExamSubjectId() && selectedClassSectionId()) {
+    @if (rows().length === 0) {
+      <div class="text-center py-12">
+        <fa-icon icon="users-slash" class="text-4xl text-text-tertiary mb-2" />
+        <p class="text-sm text-text-tertiary">{{ 'GRADE_ENTRY.NO_STUDENTS' | translate }}</p>
+      </div>
+    } @else {
+      <!-- Save button -->
+      <div class="flex">
+        <button
+          (click)="save()"
+          [disabled]="saving()"
+          class="inline-flex items-center gap-2 px-4 py-2 border-0 bg-accent text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <fa-icon icon="floppy-disk" class="text-lg leading-none" />
+          @if (saving()) {
+            {{ 'GRADE_ENTRY.SAVING' | translate }}
+          } @else {
+            {{ 'GRADE_ENTRY.SAVE_GRADES' | translate }}
+          }
+        </button>
+      </div>
+
+      <div class="bg-surface rounded-xl shadow-card border border-border overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border bg-bg-secondary">
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'GRADE_ENTRY.STUDENT_CODE' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'GRADE_ENTRY.STUDENT_NAME' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'GRADE_ENTRY.SCORE' | translate }} (/ {{ selectedMaxScore() }})
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'GRADE_ENTRY.GRADE_LETTER' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'GRADE_ENTRY.NOTES' | translate }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of rows(); track row.studentId; let i = $index) {
+                <tr
+                  class="border-b border-border last:border-b-0 transition-colors hover:bg-surface-hover"
+                >
+                  <td class="px-4 py-3 text-text-secondary font-mono text-xs">
+                    {{ row.studentCode }}
+                  </td>
+                  <td class="px-4 py-3 text-text-primary font-medium">
+                    {{ row.firstName }} {{ row.lastName }}
+                  </td>
+                  <td class="px-4 py-3">
+                    <label [for]="'score-' + i" class="sr-only">
+                      {{ 'GRADE_ENTRY.SCORE' | translate }}
+                    </label>
+                    <input
+                      [id]="'score-' + i"
+                      type="number"
+                      dir="ltr"
+                      min="0"
+                      [max]="selectedMaxScore()"
+                      [value]="row.score"
+                      (change)="onScoreChange(i, $event)"
+                      class="w-20 px-2 py-1 border border-border bg-bg-primary text-text-primary rounded-md text-sm transition-colors focus:border-accent focus:outline-none"
+                    />
+                  </td>
+                  <td class="px-4 py-3 text-text-secondary">
+                    {{ row.existingGradeLetter ?? '-' }}
+                  </td>
+                  <td class="px-4 py-3">
+                    <label [for]="'notes-' + i" class="sr-only">
+                      {{ 'GRADE_ENTRY.NOTES' | translate }}
+                    </label>
+                    <input
+                      [id]="'notes-' + i"
+                      type="text"
+                      [value]="row.notes"
+                      (change)="onNotesChange(i, $event)"
+                      [placeholder]="'GRADE_ENTRY.NOTES_PLACEHOLDER' | translate"
+                      class="w-full px-2 py-1 border border-border bg-bg-primary text-text-primary rounded-md text-sm transition-colors focus:border-accent focus:outline-none"
+                    />
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+  }
+</div>

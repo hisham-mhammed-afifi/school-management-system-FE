@@ -1,0 +1,178 @@
+<div class="flex flex-col gap-4">
+  <!-- Header -->
+  <div class="flex items-center gap-3">
+    <a
+      [routerLink]="listRoute()"
+      class="inline-flex items-center p-2 rounded-lg bg-transparent text-text-secondary transition-colors hover:bg-surface-hover no-underline"
+      [attr.aria-label]="'COMMON.BACK' | translate"
+    >
+      <fa-icon icon="arrow-left" class="text-xl leading-none" />
+    </a>
+    <h1 class="text-xl font-bold text-text-primary">
+      @if (isEdit()) {
+        {{ 'GRADING_SCALES.EDIT' | translate }}
+      } @else {
+        {{ 'GRADING_SCALES.CREATE' | translate }}
+      }
+    </h1>
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="flex justify-center py-12">
+      <p class="text-sm text-text-tertiary">{{ 'COMMON.LOADING' | translate }}</p>
+    </div>
+  }
+
+  @if (!loading()) {
+    <!-- Error -->
+    @if (errorMessage()) {
+      <div
+        role="alert"
+        class="px-3 py-2 rounded-md text-sm font-medium bg-error-bg text-error-text"
+      >
+        {{ errorMessage()! | translate }}
+      </div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4 max-w-3xl">
+      <!-- Scale name -->
+      <div class="bg-surface rounded-xl p-5 shadow-card border border-border flex flex-col gap-4">
+        <h2 class="text-base font-semibold text-text-primary">
+          {{ 'GRADING_SCALES.DETAIL' | translate }}
+        </h2>
+
+        <div class="flex flex-col gap-1">
+          <label for="scale-name" class="text-sm font-medium text-text-secondary">
+            {{ 'GRADING_SCALES.NAME' | translate }}
+          </label>
+          <input
+            id="scale-name"
+            type="text"
+            formControlName="name"
+            class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+          />
+          @if (form.controls.name.touched && form.controls.name.errors) {
+            <span class="text-xs text-danger-text">
+              @if (form.controls.name.errors['required']) {
+                {{ 'VALIDATION.REQUIRED' | translate }}
+              } @else if (form.controls.name.errors['maxlength']) {
+                {{ 'VALIDATION.MAX_LENGTH' | translate: { max: 50 } }}
+              }
+            </span>
+          }
+        </div>
+      </div>
+
+      <!-- Levels -->
+      <div class="bg-surface rounded-xl p-5 shadow-card border border-border flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-base font-semibold text-text-primary">
+            {{ 'GRADING_SCALES.LEVELS' | translate }}
+          </h2>
+          <button
+            type="button"
+            (click)="addLevel()"
+            class="inline-flex items-center gap-1 px-3 py-1.5 border-0 bg-accent text-white rounded-lg text-xs font-semibold cursor-pointer transition-colors hover:bg-accent-hover"
+          >
+            <fa-icon icon="plus" class="text-sm leading-none" />
+            {{ 'GRADING_SCALES.ADD_LEVEL' | translate }}
+          </button>
+        </div>
+
+        @if (levels.length === 0) {
+          <p class="text-text-tertiary italic text-sm">
+            {{ 'GRADING_SCALES.NO_LEVELS' | translate }}
+          </p>
+        }
+
+        <div formArrayName="levels" class="flex flex-col gap-3">
+          @for (level of levels.controls; track $index; let i = $index) {
+            <div
+              [formGroupName]="i"
+              class="flex flex-wrap items-end gap-3 p-3 rounded-lg bg-bg-secondary border border-border"
+            >
+              <div class="flex flex-col gap-1 flex-1 min-w-20">
+                <label [for]="'letter-' + i" class="text-xs font-medium text-text-secondary">
+                  {{ 'GRADING_SCALES.LETTER' | translate }}
+                </label>
+                <input
+                  [id]="'letter-' + i"
+                  type="text"
+                  formControlName="letter"
+                  class="px-2 py-1.5 border border-border bg-bg-primary text-text-primary rounded-md text-sm transition-colors focus:border-accent focus:outline-none"
+                />
+              </div>
+              <div class="flex flex-col gap-1 flex-1 min-w-20">
+                <label [for]="'min-' + i" class="text-xs font-medium text-text-secondary">
+                  {{ 'GRADING_SCALES.MIN_SCORE' | translate }}
+                </label>
+                <input
+                  [id]="'min-' + i"
+                  type="number"
+                  dir="ltr"
+                  formControlName="minScore"
+                  class="px-2 py-1.5 border border-border bg-bg-primary text-text-primary rounded-md text-sm transition-colors focus:border-accent focus:outline-none"
+                />
+              </div>
+              <div class="flex flex-col gap-1 flex-1 min-w-20">
+                <label [for]="'max-' + i" class="text-xs font-medium text-text-secondary">
+                  {{ 'GRADING_SCALES.MAX_SCORE' | translate }}
+                </label>
+                <input
+                  [id]="'max-' + i"
+                  type="number"
+                  dir="ltr"
+                  formControlName="maxScore"
+                  class="px-2 py-1.5 border border-border bg-bg-primary text-text-primary rounded-md text-sm transition-colors focus:border-accent focus:outline-none"
+                />
+              </div>
+              <div class="flex flex-col gap-1 flex-1 min-w-20">
+                <label [for]="'gpa-' + i" class="text-xs font-medium text-text-secondary">
+                  {{ 'GRADING_SCALES.GPA_POINTS' | translate }}
+                </label>
+                <input
+                  [id]="'gpa-' + i"
+                  type="number"
+                  dir="ltr"
+                  step="0.01"
+                  formControlName="gpaPoints"
+                  class="px-2 py-1.5 border border-border bg-bg-primary text-text-primary rounded-md text-sm transition-colors focus:border-accent focus:outline-none"
+                />
+              </div>
+              <button
+                type="button"
+                (click)="removeLevel(i)"
+                class="inline-flex items-center p-2 border-0 bg-transparent text-danger-text rounded-lg cursor-pointer transition-colors hover:bg-danger-bg"
+                [attr.aria-label]="'GRADING_SCALES.REMOVE_LEVEL' | translate"
+              >
+                <fa-icon icon="trash" class="text-sm leading-none" />
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex gap-3">
+        <button
+          type="submit"
+          [disabled]="saving()"
+          class="px-4 py-2 border-0 bg-accent text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          @if (saving()) {
+            {{ 'COMMON.LOADING' | translate }}
+          } @else {
+            {{ 'COMMON.SAVE' | translate }}
+          }
+        </button>
+        <a
+          [routerLink]="listRoute()"
+          class="px-4 py-2 border-0 bg-bg-secondary text-text-primary rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-surface-hover no-underline inline-flex items-center"
+        >
+          {{ 'COMMON.CANCEL' | translate }}
+        </a>
+      </div>
+    </form>
+  }
+</div>

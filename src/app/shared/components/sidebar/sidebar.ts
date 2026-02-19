@@ -35,6 +35,10 @@ export class SidebarComponent {
       { labelKey: 'NAV.SUBJECTS', route: `${prefix}/subjects`, icon: 'microscope' },
       { labelKey: 'NAV.TIMETABLE', route: `${prefix}/timetable`, icon: 'calendar-days' },
       { labelKey: 'NAV.ATTENDANCE', route: `${prefix}/attendance`, icon: 'clipboard-check' },
+      { labelKey: 'NAV.GRADING_SCALES', route: `${prefix}/grading-scales`, icon: 'scale-balanced' },
+      { labelKey: 'NAV.EXAMS', route: `${prefix}/exams`, icon: 'file-pen' },
+      { labelKey: 'NAV.GRADE_ENTRY', route: `${prefix}/grade-entry`, icon: 'keyboard' },
+      { labelKey: 'NAV.REPORT_CARDS', route: `${prefix}/report-cards`, icon: 'file-lines' },
       { labelKey: 'NAV.ROLES', route: `${prefix}/roles`, icon: 'shield-halved' },
     ];
   });

@@ -1,0 +1,117 @@
+<div class="flex flex-col gap-4">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <h1 class="text-xl font-bold text-text-primary">{{ 'EXAMS.TITLE' | translate }}</h1>
+    <a
+      routerLink="new"
+      class="inline-flex items-center gap-2 px-4 py-2 border-0 bg-accent text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-accent-hover no-underline"
+    >
+      <fa-icon icon="plus" class="text-lg leading-none" />
+      {{ 'EXAMS.ADD' | translate }}
+    </a>
+  </div>
+
+  <!-- Filters -->
+  <div class="flex flex-wrap gap-3">
+    <div>
+      <label for="exam-type-filter" class="sr-only">{{ 'EXAMS.FILTER_TYPE' | translate }}</label>
+      <select
+        id="exam-type-filter"
+        (change)="onTypeFilter($event)"
+        class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+      >
+        <option value="">{{ 'EXAMS.ALL_TYPES' | translate }}</option>
+        @for (type of examTypes; track type) {
+          <option [value]="type">{{ 'EXAMS.TYPE_' + type.toUpperCase() | translate }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <!-- Error -->
+  @if (error()) {
+    <div role="alert" class="px-3 py-2 rounded-md text-sm font-medium bg-error-bg text-error-text">
+      {{ error()! | translate }}
+    </div>
+  }
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="flex justify-center py-12">
+      <p class="text-sm text-text-tertiary">{{ 'COMMON.LOADING' | translate }}</p>
+    </div>
+  }
+
+  <!-- Table -->
+  @if (!loading() && !error()) {
+    @if (exams().length === 0) {
+      <div class="text-center py-12">
+        <fa-icon icon="file-pen" class="text-4xl text-text-tertiary mb-2" />
+        <p class="text-sm text-text-tertiary">{{ 'COMMON.NO_RESULTS' | translate }}</p>
+      </div>
+    } @else {
+      <div class="bg-surface rounded-xl shadow-card border border-border overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border bg-bg-secondary">
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'EXAMS.NAME' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'EXAMS.TYPE' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'EXAMS.WEIGHT' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'EXAMS.START_DATE' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'EXAMS.END_DATE' | translate }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (exam of exams(); track exam.id) {
+                <tr
+                  class="border-b border-border last:border-b-0 transition-colors hover:bg-surface-hover"
+                >
+                  <td class="px-4 py-3">
+                    <a
+                      [routerLink]="[exam.id]"
+                      class="text-accent font-medium hover:underline no-underline"
+                    >
+                      {{ exam.name }}
+                    </a>
+                  </td>
+                  <td class="px-4 py-3">
+                    <span
+                      class="inline-block px-2 py-0.5 text-xs rounded-full bg-bg-secondary text-text-secondary"
+                    >
+                      {{ 'EXAMS.TYPE_' + exam.examType.toUpperCase() | translate }}
+                    </span>
+                  </td>
+                  <td class="px-4 py-3 text-text-secondary">{{ exam.weight }}%</td>
+                  <td class="px-4 py-3 text-text-secondary">
+                    {{ exam.startDate ?? '-' }}
+                  </td>
+                  <td class="px-4 py-3 text-text-secondary">
+                    {{ exam.endDate ?? '-' }}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <app-pagination
+        [page]="meta().page"
+        [limit]="meta().limit"
+        [total]="meta().total"
+        (pageChange)="onPageChange($event)"
+      />
+    }
+  }
+</div>

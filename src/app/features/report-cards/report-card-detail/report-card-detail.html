@@ -1,0 +1,144 @@
+<div class="flex flex-col gap-4">
+  <!-- Header -->
+  <div class="flex items-center gap-3">
+    <a
+      [routerLink]="listRoute()"
+      class="inline-flex items-center p-2 rounded-lg bg-transparent text-text-secondary transition-colors hover:bg-surface-hover no-underline"
+      [attr.aria-label]="'COMMON.BACK' | translate"
+    >
+      <fa-icon icon="arrow-left" class="text-xl leading-none" />
+    </a>
+    <h1 class="text-xl font-bold text-text-primary">{{ 'REPORT_CARDS.DETAIL' | translate }}</h1>
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="flex justify-center py-12">
+      <p class="text-sm text-text-tertiary">{{ 'COMMON.LOADING' | translate }}</p>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (error()) {
+    <div role="alert" class="px-3 py-2 rounded-md text-sm font-medium bg-error-bg text-error-text">
+      {{ error()! | translate }}
+    </div>
+  }
+
+  <!-- Remarks saved -->
+  @if (remarksSaved()) {
+    <div class="px-3 py-2 rounded-md text-sm font-medium bg-success-bg text-success-text">
+      {{ 'REPORT_CARDS.REMARKS_SAVED' | translate }}
+    </div>
+  }
+
+  @if (reportCard(); as rc) {
+    <!-- Student info card -->
+    <div class="bg-surface rounded-xl p-5 shadow-card border border-border">
+      <div class="flex flex-col gap-3">
+        <div class="flex items-center gap-3">
+          <fa-icon icon="file-lines" class="text-3xl text-text-tertiary" />
+          <div>
+            <p class="text-lg font-semibold text-text-primary">
+              {{ rc.student?.firstName }} {{ rc.student?.lastName }}
+            </p>
+            <p class="text-sm text-text-tertiary font-mono">
+              {{ rc.student?.studentCode }}
+            </p>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4 text-sm sm:grid-cols-4">
+          <div>
+            <p class="text-text-tertiary">{{ 'REPORT_CARDS.TERM' | translate }}</p>
+            <p class="font-medium text-text-primary">{{ rc.term?.name ?? '-' }}</p>
+          </div>
+          <div>
+            <p class="text-text-tertiary">{{ 'REPORT_CARDS.CLASS_SECTION' | translate }}</p>
+            <p class="font-medium text-text-primary">{{ rc.classSection?.name ?? '-' }}</p>
+          </div>
+          <div>
+            <p class="text-text-tertiary">{{ 'REPORT_CARDS.OVERALL_PERCENTAGE' | translate }}</p>
+            <p class="font-medium text-text-primary">
+              {{ rc.overallPercentage !== null ? rc.overallPercentage + '%' : '-' }}
+            </p>
+          </div>
+          <div>
+            <p class="text-text-tertiary">{{ 'REPORT_CARDS.OVERALL_GPA' | translate }}</p>
+            <p class="font-medium text-text-primary">
+              {{ rc.overallGpa !== null ? rc.overallGpa : '-' }}
+            </p>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4 text-sm sm:grid-cols-4">
+          <div>
+            <p class="text-text-tertiary">{{ 'REPORT_CARDS.RANK' | translate }}</p>
+            <p class="font-medium text-text-primary">{{ rc.rankInClass ?? '-' }}</p>
+          </div>
+          <div>
+            <p class="text-text-tertiary">{{ 'REPORT_CARDS.GENERATED_AT' | translate }}</p>
+            <p class="font-medium text-text-primary">{{ rc.generatedAt }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Teacher Remarks -->
+    <div class="bg-surface rounded-xl p-5 shadow-card border border-border flex flex-col gap-3">
+      <div class="flex items-center justify-between">
+        <h2 class="text-base font-semibold text-text-primary">
+          {{ 'REPORT_CARDS.TEACHER_REMARKS' | translate }}
+        </h2>
+        @if (!editingRemarks()) {
+          <button
+            type="button"
+            (click)="startEditRemarks()"
+            class="inline-flex items-center gap-1 px-3 py-1.5 border-0 bg-accent text-white rounded-lg text-xs font-semibold cursor-pointer transition-colors hover:bg-accent-hover"
+          >
+            <fa-icon icon="pen-to-square" class="text-sm leading-none" />
+            {{ 'COMMON.EDIT' | translate }}
+          </button>
+        }
+      </div>
+
+      @if (editingRemarks()) {
+        <div class="flex flex-col gap-2">
+          <label for="remarks-input" class="sr-only">
+            {{ 'REPORT_CARDS.TEACHER_REMARKS' | translate }}
+          </label>
+          <textarea
+            id="remarks-input"
+            rows="4"
+            [value]="remarksValue()"
+            (input)="onRemarksChange($event)"
+            class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none resize-y"
+          ></textarea>
+          <div class="flex gap-2">
+            <button
+              type="button"
+              (click)="saveRemarks()"
+              [disabled]="savingRemarks()"
+              class="px-3 py-1.5 border-0 bg-accent text-white rounded-lg text-xs font-semibold cursor-pointer transition-colors hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              @if (savingRemarks()) {
+                {{ 'COMMON.LOADING' | translate }}
+              } @else {
+                {{ 'REPORT_CARDS.SAVE_REMARKS' | translate }}
+              }
+            </button>
+            <button
+              type="button"
+              (click)="cancelEditRemarks()"
+              class="px-3 py-1.5 border-0 bg-bg-secondary text-text-primary rounded-lg text-xs font-semibold cursor-pointer transition-colors hover:bg-surface-hover"
+            >
+              {{ 'COMMON.CANCEL' | translate }}
+            </button>
+          </div>
+        </div>
+      } @else {
+        <p class="text-sm text-text-secondary">
+          {{ rc.teacherRemarks ?? '-' }}
+        </p>
+      }
+    </div>
+  }
+</div>

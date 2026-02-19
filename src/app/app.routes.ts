@@ -192,6 +192,89 @@ export const routes: Routes = [
               import('./features/attendance/attendance').then((m) => m.AttendanceComponent),
           },
           {
+            path: 'grading-scales',
+            children: [
+              {
+                path: '',
+                loadComponent: () =>
+                  import('./features/grading-scales/grading-scales').then(
+                    (m) => m.GradingScalesComponent,
+                  ),
+              },
+              {
+                path: 'new',
+                loadComponent: () =>
+                  import('./features/grading-scales/grading-scale-form/grading-scale-form').then(
+                    (m) => m.GradingScaleFormComponent,
+                  ),
+              },
+              {
+                path: ':id',
+                loadComponent: () =>
+                  import('./features/grading-scales/grading-scale-detail/grading-scale-detail').then(
+                    (m) => m.GradingScaleDetailComponent,
+                  ),
+              },
+              {
+                path: ':id/edit',
+                loadComponent: () =>
+                  import('./features/grading-scales/grading-scale-form/grading-scale-form').then(
+                    (m) => m.GradingScaleFormComponent,
+                  ),
+              },
+            ],
+          },
+          {
+            path: 'exams',
+            children: [
+              {
+                path: '',
+                loadComponent: () => import('./features/exams/exams').then((m) => m.ExamsComponent),
+              },
+              {
+                path: 'new',
+                loadComponent: () =>
+                  import('./features/exams/exam-form/exam-form').then((m) => m.ExamFormComponent),
+              },
+              {
+                path: ':id',
+                loadComponent: () =>
+                  import('./features/exams/exam-detail/exam-detail').then(
+                    (m) => m.ExamDetailComponent,
+                  ),
+              },
+              {
+                path: ':id/edit',
+                loadComponent: () =>
+                  import('./features/exams/exam-form/exam-form').then((m) => m.ExamFormComponent),
+              },
+            ],
+          },
+          {
+            path: 'grade-entry',
+            loadComponent: () =>
+              import('./features/grade-entry/grade-entry').then((m) => m.GradeEntryComponent),
+          },
+          {
+            path: 'report-cards',
+            children: [
+              {
+                path: '',
+                loadComponent: () =>
+                  import('./features/report-cards/report-cards').then(
+                    (m) => m.ReportCardsComponent,
+                  ),
+              },
+              {
+                path: ':id',
+                loadComponent: () =>
+                  import('./features/report-cards/report-card-detail/report-card-detail').then(
+                    (m) => m.ReportCardDetailComponent,
+                  ),
+              },
+            ],
+          },
+          {
             path: 'roles',
             children: [
               {
