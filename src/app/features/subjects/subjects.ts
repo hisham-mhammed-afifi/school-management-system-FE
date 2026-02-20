@@ -23,11 +23,11 @@ export class SubjectsComponent implements OnInit {
   private readonly gradeService = inject(GradeService);
 
   readonly subjects = signal<Subject[]>([]);
-  readonly meta = signal<PaginationMeta>({ page: 1, limit: 20, total: 0, totalPages: 0 });
+  readonly meta = signal<PaginationMeta>({ page: 1, limit: 10, total: 0, totalPages: 0 });
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
 
-  readonly query = signal<ListSubjectsQuery>({ page: 1, limit: 20 });
+  readonly query = signal<ListSubjectsQuery>({ page: 1, limit: 10 });
   readonly grades = signal<Grade[]>([]);
 
   ngOnInit(): void {

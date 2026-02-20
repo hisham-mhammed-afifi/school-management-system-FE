@@ -29,10 +29,10 @@ export class FeeInvoicesComponent implements OnInit {
   readonly permissionService = inject(PermissionService);
 
   readonly invoices = signal<FeeInvoice[]>([]);
-  readonly meta = signal<PaginationMeta>({ page: 1, limit: 20, total: 0, totalPages: 0 });
+  readonly meta = signal<PaginationMeta>({ page: 1, limit: 10, total: 0, totalPages: 0 });
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
-  readonly query = signal<ListFeeInvoicesQuery>({ page: 1, limit: 20 });
+  readonly query = signal<ListFeeInvoicesQuery>({ page: 1, limit: 10 });
 
   readonly statuses: InvoiceStatus[] = [
     'draft',

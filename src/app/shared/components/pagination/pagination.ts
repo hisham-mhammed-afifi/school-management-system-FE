@@ -19,7 +19,7 @@ import { IconComponent } from '@shared/components/icon/icon';
             type="button"
             [disabled]="page() <= 1"
             (click)="goTo(page() - 1)"
-            class="p-2 rounded-lg border-0 bg-transparent text-text-secondary cursor-pointer transition-colors hover:bg-surface-hover disabled:opacity-40 disabled:cursor-not-allowed"
+            class="inline-flex items-center justify-center p-2 rounded-lg border-0 bg-transparent text-text-secondary cursor-pointer transition-colors hover:bg-surface-hover disabled:opacity-40 disabled:cursor-not-allowed"
             [attr.aria-label]="'COMMON.PREVIOUS' | translate"
           >
             <fa-icon icon="chevron-left" class="text-xl leading-none" />
@@ -31,7 +31,7 @@ import { IconComponent } from '@shared/components/icon/icon';
               <button
                 type="button"
                 (click)="goTo(p)"
-                class="min-w-9 h-9 rounded-lg border-0 text-sm font-medium cursor-pointer transition-colors"
+                class="inline-flex items-center justify-center min-w-9 h-9 rounded-lg border-0 text-sm font-medium cursor-pointer transition-colors"
                 [class]="
                   p === page()
                     ? 'bg-accent text-white'
@@ -47,7 +47,7 @@ import { IconComponent } from '@shared/components/icon/icon';
             type="button"
             [disabled]="page() >= totalPages()"
             (click)="goTo(page() + 1)"
-            class="p-2 rounded-lg border-0 bg-transparent text-text-secondary cursor-pointer transition-colors hover:bg-surface-hover disabled:opacity-40 disabled:cursor-not-allowed"
+            class="inline-flex items-center justify-center p-2 rounded-lg border-0 bg-transparent text-text-secondary cursor-pointer transition-colors hover:bg-surface-hover disabled:opacity-40 disabled:cursor-not-allowed"
             [attr.aria-label]="'COMMON.NEXT' | translate"
           >
             <fa-icon icon="chevron-right" class="text-xl leading-none" />

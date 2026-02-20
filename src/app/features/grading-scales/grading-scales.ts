@@ -20,10 +20,10 @@ export class GradingScalesComponent implements OnInit {
   readonly permissionService = inject(PermissionService);
 
   readonly scales = signal<GradingScale[]>([]);
-  readonly meta = signal<PaginationMeta>({ page: 1, limit: 20, total: 0, totalPages: 0 });
+  readonly meta = signal<PaginationMeta>({ page: 1, limit: 10, total: 0, totalPages: 0 });
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
-  readonly query = signal<ListGradingScalesQuery>({ page: 1, limit: 20 });
+  readonly query = signal<ListGradingScalesQuery>({ page: 1, limit: 10 });
 
   ngOnInit(): void {
     this.loadScales();

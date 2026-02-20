@@ -36,7 +36,7 @@ describe('StudentsComponent', () => {
         updatedAt: '2025-01-01',
       },
     ],
-    meta: { page: 1, limit: 20, total: 1, totalPages: 1 },
+    meta: { page: 1, limit: 10, total: 1, totalPages: 1 },
   };
 
   beforeEach(async () => {
@@ -126,7 +126,7 @@ describe('StudentsComponent', () => {
 
     const req = httpTesting.expectOne((r) => r.url === '/api/v1/students');
     expect(req.request.params.get('page')).toBe('2');
-    req.flush({ ...mockStudentsResponse, meta: { page: 2, limit: 20, total: 25, totalPages: 2 } });
+    req.flush({ ...mockStudentsResponse, meta: { page: 2, limit: 10, total: 25, totalPages: 2 } });
 
     expect(component.query().page).toBe(2);
   });
@@ -151,7 +151,7 @@ describe('StudentsComponent', () => {
     req.flush({
       success: true,
       data: [],
-      meta: { page: 1, limit: 20, total: 0, totalPages: 0 },
+      meta: { page: 1, limit: 10, total: 0, totalPages: 0 },
     });
 
     fixture.detectChanges();

@@ -35,7 +35,7 @@ describe('FeeInvoicesComponent', () => {
     req.flush({
       success: true,
       data,
-      meta: { page: 1, limit: 20, total: data.length, totalPages: 1 },
+      meta: { page: 1, limit: 10, total: data.length, totalPages: 1 },
     });
   }
 
@@ -81,7 +81,7 @@ describe('FeeInvoicesComponent', () => {
 
     const req = httpTesting.expectOne((r) => r.url === '/api/v1/fee-invoices');
     expect(req.request.params.get('page')).toBe('2');
-    req.flush({ success: true, data: [], meta: { page: 2, limit: 20, total: 0, totalPages: 0 } });
+    req.flush({ success: true, data: [], meta: { page: 2, limit: 10, total: 0, totalPages: 0 } });
   });
 
   it('should return correct status class', () => {

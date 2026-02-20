@@ -25,7 +25,7 @@ describe('SubjectsComponent', () => {
         subjectGrades: [{ gradeId: 'grade-1', grade: { id: 'grade-1', name: 'Grade 1' } }],
       },
     ],
-    meta: { page: 1, limit: 20, total: 1, totalPages: 1 },
+    meta: { page: 1, limit: 10, total: 1, totalPages: 1 },
   };
 
   beforeEach(async () => {
@@ -127,7 +127,7 @@ describe('SubjectsComponent', () => {
 
     const req = httpTesting.expectOne((r) => r.url === '/api/v1/subjects');
     expect(req.request.params.get('page')).toBe('2');
-    req.flush({ ...mockSubjectsResponse, meta: { page: 2, limit: 20, total: 25, totalPages: 2 } });
+    req.flush({ ...mockSubjectsResponse, meta: { page: 2, limit: 10, total: 25, totalPages: 2 } });
 
     expect(component.query().page).toBe(2);
   });
@@ -160,7 +160,7 @@ describe('SubjectsComponent', () => {
       .flush({
         success: true,
         data: [],
-        meta: { page: 1, limit: 20, total: 0, totalPages: 0 },
+        meta: { page: 1, limit: 10, total: 0, totalPages: 0 },
       });
 
     fixture.detectChanges();

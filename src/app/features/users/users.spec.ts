@@ -24,7 +24,7 @@ describe('UsersComponent', () => {
         roles: [{ roleId: 'r1', roleName: 'admin', schoolId: null, schoolName: null }],
       },
     ],
-    meta: { page: 1, limit: 20, total: 1, totalPages: 1 },
+    meta: { page: 1, limit: 10, total: 1, totalPages: 1 },
   };
 
   const mockRolesResponse = {
@@ -146,7 +146,7 @@ describe('UsersComponent', () => {
 
     const req = httpTesting.expectOne((r) => r.url === '/api/v1/users');
     expect(req.request.params.get('page')).toBe('2');
-    req.flush({ ...mockUsersResponse, meta: { page: 2, limit: 20, total: 25, totalPages: 2 } });
+    req.flush({ ...mockUsersResponse, meta: { page: 2, limit: 10, total: 25, totalPages: 2 } });
 
     expect(component.query().page).toBe(2);
   });
@@ -169,7 +169,7 @@ describe('UsersComponent', () => {
     usersReq.flush({
       success: true,
       data: [],
-      meta: { page: 1, limit: 20, total: 0, totalPages: 0 },
+      meta: { page: 1, limit: 10, total: 0, totalPages: 0 },
     });
 
     const rolesReq = httpTesting.expectOne((r) => r.url === '/api/v1/roles');

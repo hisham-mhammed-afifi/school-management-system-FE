@@ -21,11 +21,11 @@ export class TeachersComponent implements OnInit {
   readonly permissionService = inject(PermissionService);
 
   readonly teachers = signal<Teacher[]>([]);
-  readonly meta = signal<PaginationMeta>({ page: 1, limit: 20, total: 0, totalPages: 0 });
+  readonly meta = signal<PaginationMeta>({ page: 1, limit: 10, total: 0, totalPages: 0 });
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
 
-  readonly query = signal<ListTeachersQuery>({ page: 1, limit: 20 });
+  readonly query = signal<ListTeachersQuery>({ page: 1, limit: 10 });
 
   readonly statuses: TeacherStatus[] = ['active', 'on_leave', 'resigned', 'terminated'];
 

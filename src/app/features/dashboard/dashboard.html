@@ -1,4 +1,4 @@
-<div class="flex flex-col gap-4">
+<div class="flex flex-col gap-6">
   <!-- Welcome banner -->
   <section class="bg-gradient-to-br from-gradient-from to-gradient-to text-white rounded-xl p-5">
     <h1 class="text-xl font-semibold">
@@ -7,13 +7,351 @@
     <p class="text-sm mt-1 opacity-90">{{ 'DASHBOARD.SUBTITLE' | translate }}</p>
   </section>
 
-  <!-- Placeholder cards -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-    @for (card of [1, 2, 3]; track card) {
-      <div class="bg-surface rounded-xl p-5 shadow-card border border-border">
-        <div class="h-4 w-24 bg-bg-tertiary rounded animate-pulse mb-3"></div>
-        <div class="h-8 w-16 bg-bg-secondary rounded animate-pulse"></div>
-      </div>
-    }
-  </div>
+  @if (isSuperAdmin() && !overview()) {
+    <!-- ======================== PLATFORM DASHBOARD ======================== -->
+
+    <!-- Platform stats -->
+    <section aria-labelledby="platform-heading">
+      <h2 id="platform-heading" class="text-lg font-semibold text-text-primary mb-3">
+        {{ 'DASHBOARD.PLATFORM_OVERVIEW' | translate }}
+      </h2>
+
+      @if (overviewLoading()) {
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          @for (i of [1, 2]; track i) {
+            <div class="bg-surface rounded-xl p-5 shadow-card border border-border">
+              <div class="h-4 w-24 bg-bg-tertiary rounded animate-pulse mb-3"></div>
+              <div class="h-8 w-16 bg-bg-secondary rounded animate-pulse"></div>
+            </div>
+          }
+        </div>
+      } @else if (overviewError()) {
+        <div class="bg-error-bg text-error-text rounded-xl p-4 text-sm">
+          {{ 'DASHBOARD.LOAD_ERROR' | translate }}
+        </div>
+      } @else if (platformOverview(); as po) {
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="bg-surface rounded-xl p-5 shadow-card border border-border">
+            <div class="flex items-center gap-3">
+              <span
+                class="flex items-center justify-center w-10 h-10 rounded-lg bg-info-bg text-info-text"
+              >
+                <fa-icon icon="school" />
+              </span>
+              <div>
+                <p class="text-sm text-text-tertiary">
+                  {{ 'DASHBOARD.TOTAL_SCHOOLS' | translate }}
+                </p>
+                <p class="text-2xl font-bold text-text-primary">{{ po.schoolCount | number }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-surface rounded-xl p-5 shadow-card border border-border">
+            <div class="flex items-center gap-3">
+              <span
+                class="flex items-center justify-center w-10 h-10 rounded-lg bg-accent/10 text-accent"
+              >
+                <fa-icon icon="users" />
+              </span>
+              <div>
+                <p class="text-sm text-text-tertiary">{{ 'DASHBOARD.TOTAL_USERS' | translate }}</p>
+                <p class="text-2xl font-bold text-text-primary">{{ po.userCount | number }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </section>
+
+    <!-- Expiring schools -->
+    <section aria-labelledby="expiring-heading">
+      <h2 id="expiring-heading" class="text-lg font-semibold text-text-primary mb-3">
+        {{ 'DASHBOARD.EXPIRING_SCHOOLS' | translate }}
+      </h2>
+
+      @if (attendanceLoading()) {
+        <div class="bg-surface rounded-xl p-5 shadow-card border border-border">
+          <div class="h-4 w-48 bg-bg-tertiary rounded animate-pulse mb-3"></div>
+          <div class="h-4 w-32 bg-bg-secondary rounded animate-pulse"></div>
+        </div>
+      } @else if (attendanceError()) {
+        <div class="bg-error-bg text-error-text rounded-xl p-4 text-sm">
+          {{ 'DASHBOARD.LOAD_ERROR' | translate }}
+        </div>
+      } @else if (expiringSchools().length === 0) {
+        <div class="bg-surface rounded-xl p-5 shadow-card border border-border text-center">
+          <p class="text-sm text-text-tertiary">{{ 'DASHBOARD.NO_EXPIRING' | translate }}</p>
+        </div>
+      } @else {
+        <div class="bg-surface rounded-xl shadow-card border border-border overflow-hidden">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border bg-bg-secondary">
+                <th class="text-start px-4 py-3 font-medium text-text-secondary">
+                  {{ 'DASHBOARD.SCHOOL_NAME' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-medium text-text-secondary">
+                  {{ 'DASHBOARD.PLAN' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-medium text-text-secondary">
+                  {{ 'DASHBOARD.EXPIRES_AT' | translate }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (school of expiringSchools(); track school.id) {
+                <tr class="border-b border-border last:border-b-0">
+                  <td class="px-4 py-3 text-text-primary font-medium">{{ school.name }}</td>
+                  <td class="px-4 py-3 text-text-secondary capitalize">
+                    {{ school.subscriptionPlan }}
+                  </td>
+                  <td class="px-4 py-3 text-danger-text">
+                    {{ school.subscriptionExpiresAt | date: 'mediumDate' }}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+  } @else {
+    <!-- ======================== SCHOOL DASHBOARD ======================== -->
+
+    <!-- Stats cards -->
+    <section aria-labelledby="overview-heading">
+      <h2 id="overview-heading" class="sr-only">{{ 'DASHBOARD.OVERVIEW' | translate }}</h2>
+
+      @if (overviewLoading()) {
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          @for (i of [1, 2, 3, 4]; track i) {
+            <div class="bg-surface rounded-xl p-5 shadow-card border border-border">
+              <div class="h-4 w-24 bg-bg-tertiary rounded animate-pulse mb-3"></div>
+              <div class="h-8 w-16 bg-bg-secondary rounded animate-pulse"></div>
+            </div>
+          }
+        </div>
+      } @else if (overviewError()) {
+        <div class="bg-error-bg text-error-text rounded-xl p-4 text-sm">
+          {{ 'DASHBOARD.LOAD_ERROR' | translate }}
+        </div>
+      } @else if (overview(); as ov) {
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-surface rounded-xl p-5 shadow-card border border-border">
+            <div class="flex items-center gap-3">
+              <span
+                class="flex items-center justify-center w-10 h-10 rounded-lg bg-accent/10 text-accent"
+              >
+                <fa-icon icon="graduation-cap" />
+              </span>
+              <div>
+                <p class="text-sm text-text-tertiary">{{ 'DASHBOARD.STUDENTS' | translate }}</p>
+                <p class="text-2xl font-bold text-text-primary">{{ ov.students | number }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-surface rounded-xl p-5 shadow-card border border-border">
+            <div class="flex items-center gap-3">
+              <span
+                class="flex items-center justify-center w-10 h-10 rounded-lg bg-success-bg text-success-text"
+              >
+                <fa-icon icon="chalkboard-user" />
+              </span>
+              <div>
+                <p class="text-sm text-text-tertiary">{{ 'DASHBOARD.TEACHERS' | translate }}</p>
+                <p class="text-2xl font-bold text-text-primary">{{ ov.teachers | number }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-surface rounded-xl p-5 shadow-card border border-border">
+            <div class="flex items-center gap-3">
+              <span
+                class="flex items-center justify-center w-10 h-10 rounded-lg bg-info-bg text-info-text"
+              >
+                <fa-icon icon="layer-group" />
+              </span>
+              <div>
+                <p class="text-sm text-text-tertiary">{{ 'DASHBOARD.CLASSES' | translate }}</p>
+                <p class="text-2xl font-bold text-text-primary">{{ ov.classSections | number }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-surface rounded-xl p-5 shadow-card border border-border">
+            <div class="flex items-center gap-3">
+              <span
+                class="flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-from/10 text-gradient-from"
+              >
+                <fa-icon icon="clipboard-check" />
+              </span>
+              <div>
+                <p class="text-sm text-text-tertiary">
+                  {{ 'DASHBOARD.ATTENDANCE_RATE' | translate }}
+                </p>
+                <p class="text-2xl font-bold text-text-primary">
+                  {{ ov.attendanceToday | number: '1.0-1' }}%
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </section>
+
+    <!-- Fees summary -->
+    <section aria-labelledby="fees-heading">
+      <h2 id="fees-heading" class="text-lg font-semibold text-text-primary mb-3">
+        {{ 'DASHBOARD.FEES_SUMMARY' | translate }}
+      </h2>
+
+      @if (feesLoading()) {
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          @for (i of [1, 2, 3]; track i) {
+            <div class="bg-surface rounded-xl p-5 shadow-card border border-border">
+              <div class="h-4 w-24 bg-bg-tertiary rounded animate-pulse mb-3"></div>
+              <div class="h-8 w-20 bg-bg-secondary rounded animate-pulse"></div>
+            </div>
+          }
+        </div>
+      } @else if (feesError()) {
+        <div class="bg-error-bg text-error-text rounded-xl p-4 text-sm">
+          {{ 'DASHBOARD.LOAD_ERROR' | translate }}
+        </div>
+      } @else if (fees(); as f) {
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="bg-surface rounded-xl p-5 shadow-card border border-border">
+            <p class="text-sm text-text-tertiary mb-1">{{ 'DASHBOARD.COLLECTED' | translate }}</p>
+            <p class="text-2xl font-bold text-success-text">
+              {{ f.collected.amount | number: '1.0-0' }}
+            </p>
+            <p class="text-xs text-text-tertiary mt-1">
+              {{ f.collected.count }} {{ 'DASHBOARD.INVOICES' | translate }}
+            </p>
+          </div>
+
+          <div class="bg-surface rounded-xl p-5 shadow-card border border-border">
+            <p class="text-sm text-text-tertiary mb-1">{{ 'DASHBOARD.OUTSTANDING' | translate }}</p>
+            <p class="text-2xl font-bold text-accent">
+              {{ f.outstanding.amount | number: '1.0-0' }}
+            </p>
+            <p class="text-xs text-text-tertiary mt-1">
+              {{ f.outstanding.count }} {{ 'DASHBOARD.INVOICES' | translate }}
+            </p>
+          </div>
+
+          <div class="bg-surface rounded-xl p-5 shadow-card border border-border">
+            <p class="text-sm text-text-tertiary mb-1">{{ 'DASHBOARD.OVERDUE' | translate }}</p>
+            <p class="text-2xl font-bold text-danger-text">
+              {{ f.overdue.amount | number: '1.0-0' }}
+            </p>
+            <p class="text-xs text-text-tertiary mt-1">
+              {{ f.overdue.count }} {{ 'DASHBOARD.INVOICES' | translate }}
+            </p>
+          </div>
+        </div>
+      }
+    </section>
+
+    <!-- Two-column: Attendance + Recent Activity -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Attendance today -->
+      <section aria-labelledby="attendance-heading">
+        <h2 id="attendance-heading" class="text-lg font-semibold text-text-primary mb-3">
+          {{ 'DASHBOARD.ATTENDANCE_TODAY' | translate }}
+        </h2>
+
+        @if (attendanceLoading()) {
+          <div class="bg-surface rounded-xl p-5 shadow-card border border-border">
+            @for (i of [1, 2, 3]; track i) {
+              <div class="h-4 w-full bg-bg-tertiary rounded animate-pulse mb-3"></div>
+            }
+          </div>
+        } @else if (attendanceError()) {
+          <div class="bg-error-bg text-error-text rounded-xl p-4 text-sm">
+            {{ 'DASHBOARD.LOAD_ERROR' | translate }}
+          </div>
+        } @else if (attendance().length === 0) {
+          <div class="bg-surface rounded-xl p-5 shadow-card border border-border text-center">
+            <p class="text-sm text-text-tertiary">{{ 'DASHBOARD.NO_ATTENDANCE' | translate }}</p>
+          </div>
+        } @else {
+          <div class="bg-surface rounded-xl shadow-card border border-border overflow-hidden">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-border bg-bg-secondary">
+                  <th class="text-start px-4 py-3 font-medium text-text-secondary">
+                    {{ 'DASHBOARD.CLASS' | translate }}
+                  </th>
+                  <th class="text-start px-4 py-3 font-medium text-text-secondary">
+                    {{ 'DASHBOARD.PRESENT' | translate }}
+                  </th>
+                  <th class="text-start px-4 py-3 font-medium text-text-secondary">
+                    {{ 'DASHBOARD.ABSENT' | translate }}
+                  </th>
+                  <th class="text-start px-4 py-3 font-medium text-text-secondary">
+                    {{ 'DASHBOARD.RATE' | translate }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (row of attendance(); track row.classSectionId) {
+                  <tr class="border-b border-border last:border-b-0">
+                    <td class="px-4 py-3 text-text-primary font-medium">{{ row.className }}</td>
+                    <td class="px-4 py-3 text-success-text">{{ row.present }}</td>
+                    <td class="px-4 py-3 text-danger-text">{{ row.absent }}</td>
+                    <td class="px-4 py-3 text-text-secondary">{{ row.rate | number: '1.0-1' }}%</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </section>
+
+      <!-- Recent activity -->
+      <section aria-labelledby="activity-heading">
+        <h2 id="activity-heading" class="text-lg font-semibold text-text-primary mb-3">
+          {{ 'DASHBOARD.RECENT_ACTIVITY' | translate }}
+        </h2>
+
+        @if (activityLoading()) {
+          <div class="bg-surface rounded-xl p-5 shadow-card border border-border">
+            @for (i of [1, 2, 3, 4]; track i) {
+              <div class="h-4 w-full bg-bg-tertiary rounded animate-pulse mb-3"></div>
+            }
+          </div>
+        } @else if (activityError()) {
+          <div class="bg-error-bg text-error-text rounded-xl p-4 text-sm">
+            {{ 'DASHBOARD.LOAD_ERROR' | translate }}
+          </div>
+        } @else if (activity().length === 0) {
+          <div class="bg-surface rounded-xl p-5 shadow-card border border-border text-center">
+            <p class="text-sm text-text-tertiary">{{ 'DASHBOARD.NO_ACTIVITY' | translate }}</p>
+          </div>
+        } @else {
+          <div
+            class="bg-surface rounded-xl shadow-card border border-border divide-y divide-border max-h-96 overflow-y-auto"
+          >
+            @for (item of activity(); track item.id) {
+              <div class="px-4 py-3">
+                <div class="flex items-center justify-between gap-2">
+                  <p class="text-sm text-text-primary">
+                    <span class="font-medium">{{ item.actor }}</span>
+                    <span class="text-text-tertiary"> {{ item.action }} </span>
+                    <span class="text-text-secondary">{{ item.resourceType }}</span>
+                  </p>
+                  <time class="text-xs text-text-tertiary whitespace-nowrap">
+                    {{ item.createdAt | date: 'short' }}
+                  </time>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </section>
+    </div>
+  }
 </div>

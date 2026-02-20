@@ -31,7 +31,8 @@
       "Bash(awk:*)",
       "Bash(git stash:*)",
       "Bash(node -e:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(find:*)"
     ]
   }
 }

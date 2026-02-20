@@ -26,11 +26,11 @@ export class ClassSectionsComponent implements OnInit {
   private readonly gradeService = inject(GradeService);
 
   readonly sections = signal<ClassSection[]>([]);
-  readonly meta = signal<PaginationMeta>({ page: 1, limit: 20, total: 0, totalPages: 0 });
+  readonly meta = signal<PaginationMeta>({ page: 1, limit: 10, total: 0, totalPages: 0 });
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
 
-  readonly query = signal<ListClassSectionsQuery>({ page: 1, limit: 20 });
+  readonly query = signal<ListClassSectionsQuery>({ page: 1, limit: 10 });
 
   readonly academicYears = signal<AcademicYear[]>([]);
   readonly grades = signal<Grade[]>([]);

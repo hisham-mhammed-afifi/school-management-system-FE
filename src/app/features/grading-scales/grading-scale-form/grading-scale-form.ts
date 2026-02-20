@@ -87,9 +87,9 @@ export class GradingScaleFormComponent implements OnInit {
       name: formVal.name,
       levels: formVal.levels.map((l, i) => ({
         letter: l.letter,
-        minScore: l.minScore,
-        maxScore: l.maxScore,
-        gpaPoints: l.gpaPoints || undefined,
+        minScore: +l.minScore,
+        maxScore: +l.maxScore,
+        gpaPoints: l.gpaPoints != null ? +l.gpaPoints : undefined,
         orderIndex: i + 1,
       })),
     };
