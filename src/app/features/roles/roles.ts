@@ -5,6 +5,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { IconComponent } from '@shared/components/icon/icon';
 
 import { RoleService } from '@core/services/role.service';
+import { PermissionService } from '@core/services/permission.service';
 import { PaginationComponent } from '@shared/components/pagination/pagination';
 import { SEED_ROLES } from '@core/models/role';
 import type { Role, ListRolesQuery } from '@core/models/role';
@@ -18,12 +19,16 @@ import type { PaginationMeta } from '@core/models/api';
 })
 export class RolesComponent implements OnInit {
   private readonly roleService = inject(RoleService);
+  readonly permissionService = inject(PermissionService);
 
   readonly roles = signal<Role[]>([]);
   readonly meta = signal<PaginationMeta>({ page: 1, limit: 20, total: 0, totalPages: 0 });
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
   readonly query = signal<ListRolesQuery>({ page: 1, limit: 20 });
+  readonly showDeleteConfirm = signal(false);
+  readonly deletingRole = signal<Role | null>(null);
+  readonly deleting = signal(false);
 
   ngOnInit(): void {
     this.loadRoles();
@@ -44,9 +49,33 @@ export class RolesComponent implements OnInit {
     this.loadRoles();
   }
 
-  deleteRole(role: Role): void {
+  confirmDelete(role: Role): void {
+    this.deletingRole.set(role);
+    this.showDeleteConfirm.set(true);
+  }
+
+  cancelDelete(): void {
+    this.showDeleteConfirm.set(false);
+    this.deletingRole.set(null);
+  }
+
+  deleteRole(): void {
+    const role = this.deletingRole();
+    if (!role) return;
+
+    this.deleting.set(true);
     this.roleService.delete(role.id).subscribe({
-      next: () => this.loadRoles(),
+      next: () => {
+        this.deleting.set(false);
+        this.showDeleteConfirm.set(false);
+        this.deletingRole.set(null);
+        this.loadRoles();
+      },
+      error: () => {
+        this.deleting.set(false);
+        this.showDeleteConfirm.set(false);
+        this.deletingRole.set(null);
+      },
     });
   }
 

@@ -13,21 +13,25 @@
     </div>
     @if (exam()) {
       <div class="flex items-center gap-2">
-        <a
-          [routerLink]="['edit']"
-          class="inline-flex items-center gap-2 px-4 py-2 border-0 bg-accent text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-accent-hover no-underline"
-        >
-          <fa-icon icon="pen-to-square" class="text-lg leading-none" />
-          {{ 'COMMON.EDIT' | translate }}
-        </a>
-        <button
-          type="button"
-          (click)="confirmDelete()"
-          class="inline-flex items-center gap-2 px-4 py-2 border-0 bg-danger text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-danger-hover"
-        >
-          <fa-icon icon="trash" class="text-lg leading-none" />
-          {{ 'COMMON.DELETE' | translate }}
-        </button>
+        @if (permissionService.hasPermission('exams.update')) {
+          <a
+            [routerLink]="['edit']"
+            class="inline-flex items-center gap-2 px-4 py-2 border-0 bg-accent text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-accent-hover no-underline"
+          >
+            <fa-icon icon="pen-to-square" class="text-lg leading-none" />
+            {{ 'COMMON.EDIT' | translate }}
+          </a>
+        }
+        @if (permissionService.hasPermission('exams.delete')) {
+          <button
+            type="button"
+            (click)="confirmDelete()"
+            class="inline-flex items-center gap-2 px-4 py-2 border-0 bg-danger text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-danger-hover"
+          >
+            <fa-icon icon="trash" class="text-lg leading-none" />
+            {{ 'COMMON.DELETE' | translate }}
+          </button>
+        }
       </div>
     }
   </div>
@@ -88,14 +92,16 @@
         <h2 class="text-base font-semibold text-text-primary">
           {{ 'EXAMS.SUBJECTS' | translate }}
         </h2>
-        <button
-          type="button"
-          (click)="openAddSubject()"
-          class="inline-flex items-center gap-1 px-3 py-1.5 border-0 bg-accent text-white rounded-lg text-xs font-semibold cursor-pointer transition-colors hover:bg-accent-hover"
-        >
-          <fa-icon icon="plus" class="text-sm leading-none" />
-          {{ 'EXAMS.ADD_SUBJECT' | translate }}
-        </button>
+        @if (permissionService.hasPermission('exam-subjects.create')) {
+          <button
+            type="button"
+            (click)="openAddSubject()"
+            class="inline-flex items-center gap-1 px-3 py-1.5 border-0 bg-accent text-white rounded-lg text-xs font-semibold cursor-pointer transition-colors hover:bg-accent-hover"
+          >
+            <fa-icon icon="plus" class="text-sm leading-none" />
+            {{ 'EXAMS.ADD_SUBJECT' | translate }}
+          </button>
+        }
       </div>
 
       @if (examSubjects().length > 0) {
@@ -137,16 +143,18 @@
                   <td class="px-4 py-2 text-text-secondary">
                     {{ es.examDate ?? '-' }}
                   </td>
-                  <td class="px-4 py-2">
-                    <button
-                      type="button"
-                      (click)="removeSubject(es.id)"
-                      class="inline-flex items-center p-1.5 border-0 bg-transparent text-danger-text rounded-lg cursor-pointer transition-colors hover:bg-danger-bg"
-                      [attr.aria-label]="'EXAMS.REMOVE_SUBJECT' | translate"
-                    >
-                      <fa-icon icon="trash" class="text-sm leading-none" />
-                    </button>
-                  </td>
+                  @if (permissionService.hasPermission('exam-subjects.delete')) {
+                    <td class="px-4 py-2">
+                      <button
+                        type="button"
+                        (click)="confirmRemoveSubject(es.id)"
+                        class="inline-flex items-center p-1.5 border-0 bg-transparent text-danger-text rounded-lg cursor-pointer transition-colors hover:bg-danger-bg"
+                        [attr.aria-label]="'EXAMS.REMOVE_SUBJECT' | translate"
+                      >
+                        <fa-icon icon="trash" class="text-sm leading-none" />
+                      </button>
+                    </td>
+                  }
                 </tr>
               }
             </tbody>
@@ -186,6 +194,46 @@
             class="px-4 py-2 border-0 bg-danger text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-danger-hover disabled:opacity-50 disabled:cursor-not-allowed"
           >
             @if (deleting()) {
+              {{ 'COMMON.LOADING' | translate }}
+            } @else {
+              {{ 'COMMON.DELETE' | translate }}
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Remove subject confirmation -->
+  @if (showRemoveSubjectConfirm()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div
+        class="bg-surface rounded-xl p-6 shadow-card border border-border max-w-sm w-full mx-4 flex flex-col gap-4"
+        role="alertdialog"
+        aria-modal="true"
+        [attr.aria-label]="'EXAMS.REMOVE_SUBJECT_CONFIRM' | translate"
+      >
+        <h3 class="text-lg font-semibold text-text-primary">
+          {{ 'EXAMS.REMOVE_SUBJECT_CONFIRM' | translate }}
+        </h3>
+        <p class="text-sm text-text-secondary">
+          {{ 'EXAMS.REMOVE_SUBJECT_MESSAGE' | translate }}
+        </p>
+        <div class="flex justify-end gap-3">
+          <button
+            type="button"
+            (click)="cancelRemoveSubject()"
+            class="px-4 py-2 border-0 bg-bg-secondary text-text-primary rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-surface-hover"
+          >
+            {{ 'COMMON.CANCEL' | translate }}
+          </button>
+          <button
+            type="button"
+            (click)="removeSubject()"
+            [disabled]="removingSubject()"
+            class="px-4 py-2 border-0 bg-danger text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-danger-hover disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            @if (removingSubject()) {
               {{ 'COMMON.LOADING' | translate }}
             } @else {
               {{ 'COMMON.DELETE' | translate }}
@@ -305,7 +353,7 @@
             </button>
             <button
               type="submit"
-              [disabled]="addingSubject()"
+              [disabled]="addingSubject() || addSubjectForm.invalid"
               class="px-4 py-2 border-0 bg-accent text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed"
             >
               @if (addingSubject()) {

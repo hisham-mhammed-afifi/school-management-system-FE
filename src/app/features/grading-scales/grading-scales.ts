@@ -5,6 +5,7 @@ import { IconComponent } from '@shared/components/icon/icon';
 import { PaginationComponent } from '@shared/components/pagination/pagination';
 
 import { GradingScaleService } from '@core/services/grading-scale.service';
+import { PermissionService } from '@core/services/permission.service';
 import type { GradingScale, ListGradingScalesQuery } from '@core/models/grading-scale';
 import type { PaginationMeta } from '@core/models/api';
 
@@ -16,6 +17,7 @@ import type { PaginationMeta } from '@core/models/api';
 })
 export class GradingScalesComponent implements OnInit {
   private readonly gradingScaleService = inject(GradingScaleService);
+  readonly permissionService = inject(PermissionService);
 
   readonly scales = signal<GradingScale[]>([]);
   readonly meta = signal<PaginationMeta>({ page: 1, limit: 20, total: 0, totalPages: 0 });

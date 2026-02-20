@@ -81,6 +81,8 @@
     "ASSIGN_ROLE": "Assign Role",
     "ASSIGNED_ROLES": "Assigned Roles",
     "REMOVE_ROLE": "Remove role",
+    "REMOVE_ROLE_CONFIRM": "Remove Role",
+    "REMOVE_ROLE_MESSAGE": "Are you sure you want to remove this role from the user?",
     "NO_ROLES": "No roles assigned",
     "LOAD_ERROR": "Failed to load users"
   },
@@ -97,6 +99,8 @@
     "SAVE_PERMISSIONS": "Save Permissions",
     "SEARCH_PLACEHOLDER": "Search roles...",
     "SEED_PROTECTED": "This is a system role and cannot be renamed or deleted.",
+    "DELETE_CONFIRM": "Delete Role",
+    "DELETE_MESSAGE": "Are you sure you want to delete this role? This action cannot be undone.",
     "LOAD_ERROR": "Failed to load roles"
   },
   "STUDENTS": {
@@ -340,6 +344,8 @@
     "EXAM_TIME": "Exam Time",
     "NO_SUBJECTS": "No subjects added to this exam",
     "REMOVE_SUBJECT": "Remove Subject",
+    "REMOVE_SUBJECT_CONFIRM": "Remove Subject",
+    "REMOVE_SUBJECT_MESSAGE": "Are you sure you want to remove this subject from the exam?",
     "HAS_GRADES": "This exam has grades recorded and cannot be deleted.",
     "FILTER_TYPE": "Filter by type",
     "ALL_TYPES": "All Types",

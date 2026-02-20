@@ -5,6 +5,7 @@ import { IconComponent } from '@shared/components/icon/icon';
 import { PaginationComponent } from '@shared/components/pagination/pagination';
 
 import { ExamService } from '@core/services/exam.service';
+import { PermissionService } from '@core/services/permission.service';
 import type { Exam, ExamType, ListExamsQuery } from '@core/models/exam';
 import type { PaginationMeta } from '@core/models/api';
 
@@ -16,6 +17,7 @@ import type { PaginationMeta } from '@core/models/api';
 })
 export class ExamsComponent implements OnInit {
   private readonly examService = inject(ExamService);
+  readonly permissionService = inject(PermissionService);
 
   readonly exams = signal<Exam[]>([]);
   readonly meta = signal<PaginationMeta>({ page: 1, limit: 20, total: 0, totalPages: 0 });

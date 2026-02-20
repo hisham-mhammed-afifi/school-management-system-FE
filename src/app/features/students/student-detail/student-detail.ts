@@ -5,6 +5,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { IconComponent } from '@shared/components/icon/icon';
 
 import { StudentService } from '@core/services/student.service';
+import { PermissionService } from '@core/services/permission.service';
 import { SchoolService } from '@core/services/school.service';
 import type { Student } from '@core/models/student';
 
@@ -19,6 +20,7 @@ export class StudentDetailComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly studentService = inject(StudentService);
   private readonly schoolService = inject(SchoolService);
+  readonly permissionService = inject(PermissionService);
 
   readonly studentsRoute = computed(
     () => `/schools/${this.schoolService.currentSchoolId()}/students`,

@@ -40,15 +40,17 @@ describe('errorInterceptor', () => {
     expect(result).toEqual({ ok: true });
   });
 
-  it('should navigate to /forbidden on 403', () => {
+  it('should propagate 403 to the subscriber without redirecting', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
+    let caughtError: unknown;
 
-    http.get('/api/data').subscribe({ error: () => {} });
+    http.get('/api/data').subscribe({ error: (err) => (caughtError = err) });
 
     const req = httpTesting.expectOne('/api/data');
     req.flush(null, { status: 403, statusText: 'Forbidden' });
 
-    expect(navigateSpy).toHaveBeenCalledWith(['/forbidden']);
+    expect(caughtError).toBeTruthy();
+    expect(navigateSpy).not.toHaveBeenCalled();
   });
 
   it('should propagate the error to the subscriber', () => {

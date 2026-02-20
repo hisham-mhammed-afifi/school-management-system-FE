@@ -5,6 +5,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { IconComponent } from '@shared/components/icon/icon';
 
 import { RoleService } from '@core/services/role.service';
+import { PermissionService } from '@core/services/permission.service';
 import { SchoolService } from '@core/services/school.service';
 import { SEED_ROLES } from '@core/models/role';
 import type { Role, Permission } from '@core/models/role';
@@ -24,6 +25,7 @@ export class RoleDetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly roleService = inject(RoleService);
   private readonly schoolService = inject(SchoolService);
+  readonly permissionService = inject(PermissionService);
 
   readonly rolesRoute = computed(() => `/schools/${this.schoolService.currentSchoolId()}/roles`);
   readonly role = signal<Role | null>(null);

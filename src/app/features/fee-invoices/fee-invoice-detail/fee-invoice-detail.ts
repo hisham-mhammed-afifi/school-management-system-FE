@@ -6,6 +6,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { IconComponent } from '@shared/components/icon/icon';
 
 import { FeeInvoiceService } from '@core/services/fee-invoice.service';
+import { PermissionService } from '@core/services/permission.service';
 import { FeePaymentService } from '@core/services/fee-payment.service';
 import { SchoolService } from '@core/services/school.service';
 import type { FeeInvoice } from '@core/models/fee-invoice';
@@ -32,6 +33,7 @@ export class FeeInvoiceDetailComponent implements OnInit {
   private readonly feeInvoiceService = inject(FeeInvoiceService);
   private readonly feePaymentService = inject(FeePaymentService);
   private readonly schoolService = inject(SchoolService);
+  readonly permissionService = inject(PermissionService);
 
   readonly listRoute = computed(
     () => `/schools/${this.schoolService.currentSchoolId()}/fee-invoices`,

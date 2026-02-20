@@ -4,6 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { IconComponent } from '@shared/components/icon/icon';
 
 import { SubjectService } from '@core/services/subject.service';
+import { PermissionService } from '@core/services/permission.service';
 import { GradeService } from '@core/services/grade.service';
 import { SchoolService } from '@core/services/school.service';
 import type { Subject } from '@core/models/subject';
@@ -21,6 +22,7 @@ export class SubjectDetailComponent implements OnInit {
   private readonly subjectService = inject(SubjectService);
   private readonly gradeService = inject(GradeService);
   private readonly schoolService = inject(SchoolService);
+  readonly permissionService = inject(PermissionService);
 
   readonly subjectsRoute = computed(
     () => `/schools/${this.schoolService.currentSchoolId()}/subjects`,

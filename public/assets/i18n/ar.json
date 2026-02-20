@@ -81,6 +81,8 @@
     "ASSIGN_ROLE": "تعيين دور",
     "ASSIGNED_ROLES": "الأدوار المعيّنة",
     "REMOVE_ROLE": "إزالة الدور",
+    "REMOVE_ROLE_CONFIRM": "إزالة الدور",
+    "REMOVE_ROLE_MESSAGE": "هل أنت متأكد من إزالة هذا الدور من المستخدم؟",
     "NO_ROLES": "لا توجد أدوار معيّنة",
     "LOAD_ERROR": "فشل تحميل المستخدمين"
   },
@@ -97,6 +99,8 @@
     "SAVE_PERMISSIONS": "حفظ الصلاحيات",
     "SEARCH_PLACEHOLDER": "البحث في الأدوار...",
     "SEED_PROTECTED": "هذا دور نظامي ولا يمكن تغيير اسمه أو حذفه.",
+    "DELETE_CONFIRM": "حذف الدور",
+    "DELETE_MESSAGE": "هل أنت متأكد من حذف هذا الدور؟ لا يمكن التراجع عن هذا الإجراء.",
     "LOAD_ERROR": "فشل تحميل الأدوار"
   },
   "STUDENTS": {
@@ -340,6 +344,8 @@
     "EXAM_TIME": "وقت الاختبار",
     "NO_SUBJECTS": "لا توجد مواد مضافة لهذا الاختبار",
     "REMOVE_SUBJECT": "حذف المادة",
+    "REMOVE_SUBJECT_CONFIRM": "حذف المادة",
+    "REMOVE_SUBJECT_MESSAGE": "هل أنت متأكد من حذف هذه المادة من الاختبار؟",
     "HAS_GRADES": "هذا الاختبار يحتوي على درجات مسجلة ولا يمكن حذفه.",
     "FILTER_TYPE": "تصفية حسب النوع",
     "ALL_TYPES": "جميع الأنواع",

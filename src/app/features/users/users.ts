@@ -5,6 +5,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { IconComponent } from '@shared/components/icon/icon';
 
 import { UserService } from '@core/services/user.service';
+import { PermissionService } from '@core/services/permission.service';
 import { RoleService } from '@core/services/role.service';
 import { PaginationComponent } from '@shared/components/pagination/pagination';
 import type { User, ListUsersQuery } from '@core/models/user';
@@ -19,6 +20,7 @@ import type { PaginationMeta } from '@core/models/api';
 })
 export class UsersComponent implements OnInit {
   private readonly userService = inject(UserService);
+  readonly permissionService = inject(PermissionService);
   private readonly roleService = inject(RoleService);
 
   readonly users = signal<User[]>([]);

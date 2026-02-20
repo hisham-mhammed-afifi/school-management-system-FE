@@ -6,6 +6,7 @@ import { IconComponent } from '@shared/components/icon/icon';
 import { PaginationComponent } from '@shared/components/pagination/pagination';
 
 import { FeeInvoiceService } from '@core/services/fee-invoice.service';
+import { PermissionService } from '@core/services/permission.service';
 import type { FeeInvoice, InvoiceStatus, ListFeeInvoicesQuery } from '@core/models/fee-invoice';
 import type { PaginationMeta } from '@core/models/api';
 
@@ -25,6 +26,7 @@ import type { PaginationMeta } from '@core/models/api';
 })
 export class FeeInvoicesComponent implements OnInit {
   private readonly feeInvoiceService = inject(FeeInvoiceService);
+  readonly permissionService = inject(PermissionService);
 
   readonly invoices = signal<FeeInvoice[]>([]);
   readonly meta = signal<PaginationMeta>({ page: 1, limit: 20, total: 0, totalPages: 0 });

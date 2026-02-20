@@ -4,6 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { IconComponent } from '@shared/components/icon/icon';
 
 import { SubjectService } from '@core/services/subject.service';
+import { PermissionService } from '@core/services/permission.service';
 import { GradeService } from '@core/services/grade.service';
 import { PaginationComponent } from '@shared/components/pagination/pagination';
 import type { Subject, ListSubjectsQuery } from '@core/models/subject';
@@ -18,6 +19,7 @@ import type { PaginationMeta } from '@core/models/api';
 })
 export class SubjectsComponent implements OnInit {
   private readonly subjectService = inject(SubjectService);
+  readonly permissionService = inject(PermissionService);
   private readonly gradeService = inject(GradeService);
 
   readonly subjects = signal<Subject[]>([]);

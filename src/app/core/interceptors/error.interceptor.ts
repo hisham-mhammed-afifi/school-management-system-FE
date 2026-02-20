@@ -32,10 +32,6 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         );
       }
 
-      if (error.status === 403) {
-        router.navigate(['/forbidden']);
-      }
-
       return throwError(() => error);
     }),
   );

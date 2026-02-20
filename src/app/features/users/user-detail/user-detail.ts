@@ -5,6 +5,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { IconComponent } from '@shared/components/icon/icon';
 
 import { UserService } from '@core/services/user.service';
+import { PermissionService } from '@core/services/permission.service';
 import { RoleService } from '@core/services/role.service';
 import { SchoolService } from '@core/services/school.service';
 import type { User } from '@core/models/user';
@@ -21,6 +22,7 @@ export class UserDetailComponent implements OnInit {
   private readonly userService = inject(UserService);
   private readonly roleService = inject(RoleService);
   private readonly schoolService = inject(SchoolService);
+  readonly permissionService = inject(PermissionService);
 
   readonly usersRoute = computed(() => `/schools/${this.schoolService.currentSchoolId()}/users`);
   readonly user = signal<User | null>(null);
@@ -49,7 +51,23 @@ export class UserDetailComponent implements OnInit {
     });
   }
 
-  removeRole(roleId: string): void {
+  readonly showRemoveRoleConfirm = signal(false);
+  readonly removingRoleId = signal<string | null>(null);
+
+  confirmRemoveRole(roleId: string): void {
+    this.removingRoleId.set(roleId);
+    this.showRemoveRoleConfirm.set(true);
+  }
+
+  cancelRemoveRole(): void {
+    this.showRemoveRoleConfirm.set(false);
+    this.removingRoleId.set(null);
+  }
+
+  removeRole(): void {
+    const roleId = this.removingRoleId();
+    if (!roleId) return;
+
     this.actionLoading.set(true);
     this.userService.removeRole(this.userId, roleId).subscribe({
       next: () => {
@@ -57,8 +75,14 @@ export class UserDetailComponent implements OnInit {
           u ? { ...u, roles: u.roles.filter((r) => r.roleId !== roleId) } : u,
         );
         this.actionLoading.set(false);
+        this.showRemoveRoleConfirm.set(false);
+        this.removingRoleId.set(null);
       },
-      error: () => this.actionLoading.set(false),
+      error: () => {
+        this.actionLoading.set(false);
+        this.showRemoveRoleConfirm.set(false);
+        this.removingRoleId.set(null);
+      },
     });
   }
 

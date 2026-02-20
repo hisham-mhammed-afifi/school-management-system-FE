@@ -5,6 +5,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { IconComponent } from '@shared/components/icon/icon';
 
 import { StudentService } from '@core/services/student.service';
+import { PermissionService } from '@core/services/permission.service';
 import { PaginationComponent } from '@shared/components/pagination/pagination';
 import type { Student, ListStudentsQuery, StudentStatus } from '@core/models/student';
 import type { PaginationMeta } from '@core/models/api';
@@ -17,6 +18,7 @@ import type { PaginationMeta } from '@core/models/api';
 })
 export class StudentsComponent implements OnInit {
   private readonly studentService = inject(StudentService);
+  readonly permissionService = inject(PermissionService);
 
   readonly students = signal<Student[]>([]);
   readonly meta = signal<PaginationMeta>({ page: 1, limit: 20, total: 0, totalPages: 0 });

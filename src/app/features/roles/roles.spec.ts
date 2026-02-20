@@ -122,13 +122,14 @@ describe('RolesComponent', () => {
     fixture.detectChanges();
     flushInitialRequest();
 
-    component.deleteRole({
+    component.confirmDelete({
       id: 'r2',
       name: 'custom_role',
       schoolId: null,
       createdAt: '',
       updatedAt: '',
     });
+    component.deleteRole();
 
     const deleteReq = httpTesting.expectOne('/api/v1/roles/r2');
     expect(deleteReq.request.method).toBe('DELETE');

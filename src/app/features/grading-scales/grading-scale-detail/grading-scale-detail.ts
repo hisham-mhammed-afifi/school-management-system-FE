@@ -4,6 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { IconComponent } from '@shared/components/icon/icon';
 
 import { GradingScaleService } from '@core/services/grading-scale.service';
+import { PermissionService } from '@core/services/permission.service';
 import { SchoolService } from '@core/services/school.service';
 import type { GradingScale } from '@core/models/grading-scale';
 
@@ -18,6 +19,7 @@ export class GradingScaleDetailComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly gradingScaleService = inject(GradingScaleService);
   private readonly schoolService = inject(SchoolService);
+  readonly permissionService = inject(PermissionService);
 
   readonly listRoute = computed(
     () => `/schools/${this.schoolService.currentSchoolId()}/grading-scales`,

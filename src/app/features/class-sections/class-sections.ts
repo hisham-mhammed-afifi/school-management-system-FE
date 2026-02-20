@@ -5,6 +5,7 @@ import { IconComponent } from '@shared/components/icon/icon';
 import { PaginationComponent } from '@shared/components/pagination/pagination';
 
 import { ClassSectionService } from '@core/services/class-section.service';
+import { PermissionService } from '@core/services/permission.service';
 import { AcademicYearService } from '@core/services/academic-year.service';
 import { GradeService } from '@core/services/grade.service';
 import type { ClassSection, ListClassSectionsQuery } from '@core/models/class-section';
@@ -20,6 +21,7 @@ import type { PaginationMeta } from '@core/models/api';
 })
 export class ClassSectionsComponent implements OnInit {
   private readonly classSectionService = inject(ClassSectionService);
+  readonly permissionService = inject(PermissionService);
   private readonly academicYearService = inject(AcademicYearService);
   private readonly gradeService = inject(GradeService);
 

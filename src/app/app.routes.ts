@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from '@core/guards/auth.guard';
 import { guestGuard } from '@core/guards/guest.guard';
 import { schoolContextGuard } from '@core/guards/school-context.guard';
+import { permissionGuard } from '@core/guards/permission.guard';
 
 export const routes: Routes = [
   {
@@ -26,11 +27,13 @@ export const routes: Routes = [
         children: [
           {
             path: 'dashboard',
+            canActivate: [permissionGuard('dashboard.read')],
             loadComponent: () =>
               import('./features/dashboard/dashboard').then((m) => m.DashboardComponent),
           },
           {
             path: 'users',
+            canActivate: [permissionGuard('users.list')],
             children: [
               {
                 path: '',
@@ -38,6 +41,7 @@ export const routes: Routes = [
               },
               {
                 path: 'new',
+                canActivate: [permissionGuard('users.create')],
                 loadComponent: () =>
                   import('./features/users/user-form/user-form').then((m) => m.UserFormComponent),
               },
@@ -50,6 +54,7 @@ export const routes: Routes = [
               },
               {
                 path: ':id/edit',
+                canActivate: [permissionGuard('users.update')],
                 loadComponent: () =>
                   import('./features/users/user-form/user-form').then((m) => m.UserFormComponent),
               },
@@ -57,6 +62,7 @@ export const routes: Routes = [
           },
           {
             path: 'students',
+            canActivate: [permissionGuard('students.list')],
             children: [
               {
                 path: '',
@@ -65,6 +71,7 @@ export const routes: Routes = [
               },
               {
                 path: 'new',
+                canActivate: [permissionGuard('students.create')],
                 loadComponent: () =>
                   import('./features/students/student-form/student-form').then(
                     (m) => m.StudentFormComponent,
@@ -79,6 +86,7 @@ export const routes: Routes = [
               },
               {
                 path: ':id/edit',
+                canActivate: [permissionGuard('students.update')],
                 loadComponent: () =>
                   import('./features/students/student-form/student-form').then(
                     (m) => m.StudentFormComponent,
@@ -88,6 +96,7 @@ export const routes: Routes = [
           },
           {
             path: 'teachers',
+            canActivate: [permissionGuard('teachers.list')],
             children: [
               {
                 path: '',
@@ -96,6 +105,7 @@ export const routes: Routes = [
               },
               {
                 path: 'new',
+                canActivate: [permissionGuard('teachers.create')],
                 loadComponent: () =>
                   import('./features/teachers/teacher-form/teacher-form').then(
                     (m) => m.TeacherFormComponent,
@@ -110,6 +120,7 @@ export const routes: Routes = [
               },
               {
                 path: ':id/edit',
+                canActivate: [permissionGuard('teachers.update')],
                 loadComponent: () =>
                   import('./features/teachers/teacher-form/teacher-form').then(
                     (m) => m.TeacherFormComponent,
@@ -119,6 +130,7 @@ export const routes: Routes = [
           },
           {
             path: 'class-sections',
+            canActivate: [permissionGuard('class-sections.list')],
             children: [
               {
                 path: '',
@@ -129,6 +141,7 @@ export const routes: Routes = [
               },
               {
                 path: 'new',
+                canActivate: [permissionGuard('class-sections.create')],
                 loadComponent: () =>
                   import('./features/class-sections/class-section-form/class-section-form').then(
                     (m) => m.ClassSectionFormComponent,
@@ -143,6 +156,7 @@ export const routes: Routes = [
               },
               {
                 path: ':id/edit',
+                canActivate: [permissionGuard('class-sections.update')],
                 loadComponent: () =>
                   import('./features/class-sections/class-section-form/class-section-form').then(
                     (m) => m.ClassSectionFormComponent,
@@ -152,6 +166,7 @@ export const routes: Routes = [
           },
           {
             path: 'subjects',
+            canActivate: [permissionGuard('subjects.list')],
             children: [
               {
                 path: '',
@@ -160,6 +175,7 @@ export const routes: Routes = [
               },
               {
                 path: 'new',
+                canActivate: [permissionGuard('subjects.create')],
                 loadComponent: () =>
                   import('./features/subjects/subject-form/subject-form').then(
                     (m) => m.SubjectFormComponent,
@@ -174,6 +190,7 @@ export const routes: Routes = [
               },
               {
                 path: ':id/edit',
+                canActivate: [permissionGuard('subjects.update')],
                 loadComponent: () =>
                   import('./features/subjects/subject-form/subject-form').then(
                     (m) => m.SubjectFormComponent,
@@ -183,16 +200,19 @@ export const routes: Routes = [
           },
           {
             path: 'timetable',
+            canActivate: [permissionGuard('lessons.list')],
             loadComponent: () =>
               import('./features/timetable/timetable').then((m) => m.TimetableComponent),
           },
           {
             path: 'attendance',
+            canActivate: [permissionGuard('student-attendance.list')],
             loadComponent: () =>
               import('./features/attendance/attendance').then((m) => m.AttendanceComponent),
           },
           {
             path: 'grading-scales',
+            canActivate: [permissionGuard('grading-scales.list')],
             children: [
               {
                 path: '',
@@ -203,6 +223,7 @@ export const routes: Routes = [
               },
               {
                 path: 'new',
+                canActivate: [permissionGuard('grading-scales.create')],
                 loadComponent: () =>
                   import('./features/grading-scales/grading-scale-form/grading-scale-form').then(
                     (m) => m.GradingScaleFormComponent,
@@ -217,6 +238,7 @@ export const routes: Routes = [
               },
               {
                 path: ':id/edit',
+                canActivate: [permissionGuard('grading-scales.update')],
                 loadComponent: () =>
                   import('./features/grading-scales/grading-scale-form/grading-scale-form').then(
                     (m) => m.GradingScaleFormComponent,
@@ -226,6 +248,7 @@ export const routes: Routes = [
           },
           {
             path: 'exams',
+            canActivate: [permissionGuard('exams.list')],
             children: [
               {
                 path: '',
@@ -233,6 +256,7 @@ export const routes: Routes = [
               },
               {
                 path: 'new',
+                canActivate: [permissionGuard('exams.create')],
                 loadComponent: () =>
                   import('./features/exams/exam-form/exam-form').then((m) => m.ExamFormComponent),
               },
@@ -245,6 +269,7 @@ export const routes: Routes = [
               },
               {
                 path: ':id/edit',
+                canActivate: [permissionGuard('exams.update')],
                 loadComponent: () =>
                   import('./features/exams/exam-form/exam-form').then((m) => m.ExamFormComponent),
               },
@@ -252,11 +277,13 @@ export const routes: Routes = [
           },
           {
             path: 'grade-entry',
+            canActivate: [permissionGuard('student-grades.list')],
             loadComponent: () =>
               import('./features/grade-entry/grade-entry').then((m) => m.GradeEntryComponent),
           },
           {
             path: 'report-cards',
+            canActivate: [permissionGuard('report-cards.list')],
             children: [
               {
                 path: '',
@@ -276,6 +303,7 @@ export const routes: Routes = [
           },
           {
             path: 'fee-structures',
+            canActivate: [permissionGuard('fee-structures.list')],
             children: [
               {
                 path: '',
@@ -286,6 +314,7 @@ export const routes: Routes = [
               },
               {
                 path: 'new',
+                canActivate: [permissionGuard('fee-structures.create')],
                 loadComponent: () =>
                   import('./features/fee-structures/fee-structure-form/fee-structure-form').then(
                     (m) => m.FeeStructureFormComponent,
@@ -300,6 +329,7 @@ export const routes: Routes = [
               },
               {
                 path: ':id/edit',
+                canActivate: [permissionGuard('fee-structures.update')],
                 loadComponent: () =>
                   import('./features/fee-structures/fee-structure-form/fee-structure-form').then(
                     (m) => m.FeeStructureFormComponent,
@@ -309,6 +339,7 @@ export const routes: Routes = [
           },
           {
             path: 'fee-invoices',
+            canActivate: [permissionGuard('fee-invoices.list')],
             children: [
               {
                 path: '',
@@ -319,6 +350,7 @@ export const routes: Routes = [
               },
               {
                 path: 'new',
+                canActivate: [permissionGuard('fee-invoices.create')],
                 loadComponent: () =>
                   import('./features/fee-invoices/fee-invoice-form/fee-invoice-form').then(
                     (m) => m.FeeInvoiceFormComponent,
@@ -375,6 +407,7 @@ export const routes: Routes = [
           },
           {
             path: 'roles',
+            canActivate: [permissionGuard('roles.list')],
             children: [
               {
                 path: '',
@@ -382,6 +415,7 @@ export const routes: Routes = [
               },
               {
                 path: 'new',
+                canActivate: [permissionGuard('roles.create')],
                 loadComponent: () =>
                   import('./features/roles/role-form/role-form').then((m) => m.RoleFormComponent),
               },
@@ -394,6 +428,7 @@ export const routes: Routes = [
               },
               {
                 path: ':id/edit',
+                canActivate: [permissionGuard('roles.update')],
                 loadComponent: () =>
                   import('./features/roles/role-form/role-form').then((m) => m.RoleFormComponent),
               },

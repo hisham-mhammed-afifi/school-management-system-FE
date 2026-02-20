@@ -13,7 +13,7 @@
     </div>
     @if (invoice(); as inv) {
       <div class="flex items-center gap-2">
-        @if (inv.status === 'draft') {
+        @if (inv.status === 'draft' && permissionService.hasPermission('fee-invoices.update')) {
           <button
             type="button"
             (click)="openIssueModal()"
@@ -22,7 +22,12 @@
             {{ 'FEE_INVOICES.ISSUE' | translate }}
           </button>
         }
-        @if (inv.status !== 'cancelled' && inv.status !== 'paid' && inv.paidAmount === 0) {
+        @if (
+          inv.status !== 'cancelled' &&
+          inv.status !== 'paid' &&
+          inv.paidAmount === 0 &&
+          permissionService.hasPermission('fee-invoices.update')
+        ) {
           <button
             type="button"
             (click)="openCancelModal()"
@@ -32,7 +37,10 @@
           </button>
         }
         @if (
-          inv.status === 'issued' || inv.status === 'partially_paid' || inv.status === 'overdue'
+          (inv.status === 'issued' ||
+            inv.status === 'partially_paid' ||
+            inv.status === 'overdue') &&
+          permissionService.hasPermission('fee-payments.create')
         ) {
           <button
             type="button"

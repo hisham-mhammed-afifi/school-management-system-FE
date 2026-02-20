@@ -131,7 +131,8 @@ describe('UserDetailComponent', () => {
     fixture.detectChanges();
     flushInitialRequests();
 
-    component.removeRole('r1');
+    component.confirmRemoveRole('r1');
+    component.removeRole();
 
     const req = httpTesting.expectOne('/api/v1/users/user-1/roles/r1');
     expect(req.request.method).toBe('DELETE');

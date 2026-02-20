@@ -4,6 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { IconComponent } from '@shared/components/icon/icon';
 
 import { ClassSectionService } from '@core/services/class-section.service';
+import { PermissionService } from '@core/services/permission.service';
 import { SchoolService } from '@core/services/school.service';
 import type { ClassSection } from '@core/models/class-section';
 
@@ -18,6 +19,7 @@ export class ClassSectionDetailComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly classSectionService = inject(ClassSectionService);
   private readonly schoolService = inject(SchoolService);
+  readonly permissionService = inject(PermissionService);
 
   readonly listRoute = computed(
     () => `/schools/${this.schoolService.currentSchoolId()}/class-sections`,

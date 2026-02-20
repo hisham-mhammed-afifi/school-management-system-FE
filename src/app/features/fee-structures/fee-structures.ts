@@ -6,6 +6,7 @@ import { IconComponent } from '@shared/components/icon/icon';
 import { PaginationComponent } from '@shared/components/pagination/pagination';
 
 import { FeeStructureService } from '@core/services/fee-structure.service';
+import { PermissionService } from '@core/services/permission.service';
 import { FeeCategoryService } from '@core/services/fee-category.service';
 import { AcademicYearService } from '@core/services/academic-year.service';
 import { GradeService } from '@core/services/grade.service';
@@ -23,6 +24,7 @@ import type { PaginationMeta } from '@core/models/api';
 })
 export class FeeStructuresComponent implements OnInit {
   private readonly feeStructureService = inject(FeeStructureService);
+  readonly permissionService = inject(PermissionService);
   private readonly feeCategoryService = inject(FeeCategoryService);
   private readonly academicYearService = inject(AcademicYearService);
   private readonly gradeService = inject(GradeService);

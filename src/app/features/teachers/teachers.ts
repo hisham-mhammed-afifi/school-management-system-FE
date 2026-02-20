@@ -5,6 +5,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { IconComponent } from '@shared/components/icon/icon';
 
 import { TeacherService } from '@core/services/teacher.service';
+import { PermissionService } from '@core/services/permission.service';
 import { PaginationComponent } from '@shared/components/pagination/pagination';
 import type { Teacher, ListTeachersQuery, TeacherStatus } from '@core/models/teacher';
 import type { PaginationMeta } from '@core/models/api';
@@ -17,6 +18,7 @@ import type { PaginationMeta } from '@core/models/api';
 })
 export class TeachersComponent implements OnInit {
   private readonly teacherService = inject(TeacherService);
+  readonly permissionService = inject(PermissionService);
 
   readonly teachers = signal<Teacher[]>([]);
   readonly meta = signal<PaginationMeta>({ page: 1, limit: 20, total: 0, totalPages: 0 });

@@ -5,6 +5,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { IconComponent } from '@shared/components/icon/icon';
 
 import { ExamService } from '@core/services/exam.service';
+import { PermissionService } from '@core/services/permission.service';
 import { SubjectService } from '@core/services/subject.service';
 import { GradeService } from '@core/services/grade.service';
 import { SchoolService } from '@core/services/school.service';
@@ -26,6 +27,7 @@ export class ExamDetailComponent implements OnInit {
   private readonly subjectService = inject(SubjectService);
   private readonly gradeService = inject(GradeService);
   private readonly schoolService = inject(SchoolService);
+  readonly permissionService = inject(PermissionService);
 
   readonly listRoute = computed(() => `/schools/${this.schoolService.currentSchoolId()}/exams`);
   readonly exam = signal<Exam | null>(null);
@@ -125,9 +127,37 @@ export class ExamDetailComponent implements OnInit {
       });
   }
 
-  removeSubject(subjectId: string): void {
-    this.examService.removeSubject(this.examId, subjectId).subscribe({
-      next: () => this.loadExamSubjects(),
+  readonly showRemoveSubjectConfirm = signal(false);
+  readonly removingSubjectId = signal<string | null>(null);
+  readonly removingSubject = signal(false);
+
+  confirmRemoveSubject(subjectId: string): void {
+    this.removingSubjectId.set(subjectId);
+    this.showRemoveSubjectConfirm.set(true);
+  }
+
+  cancelRemoveSubject(): void {
+    this.showRemoveSubjectConfirm.set(false);
+    this.removingSubjectId.set(null);
+  }
+
+  removeSubject(): void {
+    const id = this.removingSubjectId();
+    if (!id) return;
+
+    this.removingSubject.set(true);
+    this.examService.removeSubject(this.examId, id).subscribe({
+      next: () => {
+        this.removingSubject.set(false);
+        this.showRemoveSubjectConfirm.set(false);
+        this.removingSubjectId.set(null);
+        this.loadExamSubjects();
+      },
+      error: () => {
+        this.removingSubject.set(false);
+        this.showRemoveSubjectConfirm.set(false);
+        this.removingSubjectId.set(null);
+      },
     });
   }
 
