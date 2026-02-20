@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, effect, inject, signal, untracked } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
 import { CdkTrapFocus, LiveAnnouncer } from '@angular/cdk/a11y';
@@ -10,6 +10,7 @@ import { ReportCardService } from '@core/services/report-card.service';
 import { AcademicYearService } from '@core/services/academic-year.service';
 import { TermService } from '@core/services/term.service';
 import { ClassSectionService } from '@core/services/class-section.service';
+import { SchoolService } from '@core/services/school.service';
 import type {
   ReportCard,
   ListReportCardsQuery,
@@ -33,11 +34,12 @@ import type { PaginationMeta } from '@core/models/api';
   templateUrl: './report-cards.html',
   styleUrl: './report-cards.css',
 })
-export class ReportCardsComponent implements OnInit {
+export class ReportCardsComponent {
   private readonly reportCardService = inject(ReportCardService);
   private readonly academicYearService = inject(AcademicYearService);
   private readonly termService = inject(TermService);
   private readonly classSectionService = inject(ClassSectionService);
+  private readonly schoolService = inject(SchoolService);
   private readonly liveAnnouncer = inject(LiveAnnouncer);
   private readonly translate = inject(TranslateService);
 
@@ -62,9 +64,15 @@ export class ReportCardsComponent implements OnInit {
   // Filter
   readonly filterYearId = signal('');
 
-  ngOnInit(): void {
-    this.loadDropdowns();
-    this.loadReportCards();
+  constructor() {
+    effect(() => {
+      this.schoolService.currentSchoolId();
+      untracked(() => {
+        this.query.set({ page: 1, limit: 10 });
+        this.loadDropdowns();
+        this.loadReportCards();
+      });
+    });
   }
 
   onYearFilterChange(event: Event): void {

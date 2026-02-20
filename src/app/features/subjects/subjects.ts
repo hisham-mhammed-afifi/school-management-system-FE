@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, effect, inject, signal, untracked } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { IconComponent } from '@shared/components/icon/icon';
@@ -6,6 +6,7 @@ import { IconComponent } from '@shared/components/icon/icon';
 import { SubjectService } from '@core/services/subject.service';
 import { PermissionService } from '@core/services/permission.service';
 import { GradeService } from '@core/services/grade.service';
+import { SchoolService } from '@core/services/school.service';
 import { PaginationComponent } from '@shared/components/pagination/pagination';
 import type { Subject, ListSubjectsQuery } from '@core/models/subject';
 import type { Grade } from '@core/models/grade';
@@ -17,8 +18,9 @@ import type { PaginationMeta } from '@core/models/api';
   templateUrl: './subjects.html',
   styleUrl: './subjects.css',
 })
-export class SubjectsComponent implements OnInit {
+export class SubjectsComponent {
   private readonly subjectService = inject(SubjectService);
+  private readonly schoolService = inject(SchoolService);
   readonly permissionService = inject(PermissionService);
   private readonly gradeService = inject(GradeService);
 
@@ -30,9 +32,15 @@ export class SubjectsComponent implements OnInit {
   readonly query = signal<ListSubjectsQuery>({ page: 1, limit: 10 });
   readonly grades = signal<Grade[]>([]);
 
-  ngOnInit(): void {
-    this.loadGrades();
-    this.loadSubjects();
+  constructor() {
+    effect(() => {
+      this.schoolService.currentSchoolId();
+      untracked(() => {
+        this.query.set({ page: 1, limit: 10 });
+        this.loadGrades();
+        this.loadSubjects();
+      });
+    });
   }
 
   onSearch(event: Event): void {

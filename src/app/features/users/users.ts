@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, effect, inject, signal, untracked } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -7,6 +7,7 @@ import { IconComponent } from '@shared/components/icon/icon';
 import { UserService } from '@core/services/user.service';
 import { PermissionService } from '@core/services/permission.service';
 import { RoleService } from '@core/services/role.service';
+import { SchoolService } from '@core/services/school.service';
 import { PaginationComponent } from '@shared/components/pagination/pagination';
 import type { User, ListUsersQuery } from '@core/models/user';
 import type { Role } from '@core/models/role';
@@ -18,8 +19,9 @@ import type { PaginationMeta } from '@core/models/api';
   templateUrl: './users.html',
   styleUrl: './users.css',
 })
-export class UsersComponent implements OnInit {
+export class UsersComponent {
   private readonly userService = inject(UserService);
+  private readonly schoolService = inject(SchoolService);
   readonly permissionService = inject(PermissionService);
   private readonly roleService = inject(RoleService);
 
@@ -31,9 +33,15 @@ export class UsersComponent implements OnInit {
 
   readonly query = signal<ListUsersQuery>({ page: 1, limit: 10 });
 
-  ngOnInit(): void {
-    this.loadUsers();
-    this.loadRoles();
+  constructor() {
+    effect(() => {
+      this.schoolService.currentSchoolId();
+      untracked(() => {
+        this.query.set({ page: 1, limit: 10 });
+        this.loadUsers();
+        this.loadRoles();
+      });
+    });
   }
 
   onSearch(event: Event): void {

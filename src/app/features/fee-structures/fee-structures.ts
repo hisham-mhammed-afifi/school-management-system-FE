@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, effect, inject, signal, untracked } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -10,6 +10,7 @@ import { PermissionService } from '@core/services/permission.service';
 import { FeeCategoryService } from '@core/services/fee-category.service';
 import { AcademicYearService } from '@core/services/academic-year.service';
 import { GradeService } from '@core/services/grade.service';
+import { SchoolService } from '@core/services/school.service';
 import type { FeeStructure, ListFeeStructuresQuery } from '@core/models/fee-structure';
 import type { FeeCategory } from '@core/models/fee-category';
 import type { AcademicYear } from '@core/models/academic-year';
@@ -22,8 +23,9 @@ import type { PaginationMeta } from '@core/models/api';
   templateUrl: './fee-structures.html',
   styleUrl: './fee-structures.css',
 })
-export class FeeStructuresComponent implements OnInit {
+export class FeeStructuresComponent {
   private readonly feeStructureService = inject(FeeStructureService);
+  private readonly schoolService = inject(SchoolService);
   readonly permissionService = inject(PermissionService);
   private readonly feeCategoryService = inject(FeeCategoryService);
   private readonly academicYearService = inject(AcademicYearService);
@@ -39,9 +41,15 @@ export class FeeStructuresComponent implements OnInit {
   readonly grades = signal<Grade[]>([]);
   readonly categories = signal<FeeCategory[]>([]);
 
-  ngOnInit(): void {
-    this.loadDropdowns();
-    this.loadStructures();
+  constructor() {
+    effect(() => {
+      this.schoolService.currentSchoolId();
+      untracked(() => {
+        this.query.set({ page: 1, limit: 10 });
+        this.loadDropdowns();
+        this.loadStructures();
+      });
+    });
   }
 
   onFilterYear(event: Event): void {

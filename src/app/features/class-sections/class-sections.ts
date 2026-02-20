@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, effect, inject, signal, untracked } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { IconComponent } from '@shared/components/icon/icon';
@@ -8,6 +8,7 @@ import { ClassSectionService } from '@core/services/class-section.service';
 import { PermissionService } from '@core/services/permission.service';
 import { AcademicYearService } from '@core/services/academic-year.service';
 import { GradeService } from '@core/services/grade.service';
+import { SchoolService } from '@core/services/school.service';
 import type { ClassSection, ListClassSectionsQuery } from '@core/models/class-section';
 import type { AcademicYear } from '@core/models/academic-year';
 import type { Grade } from '@core/models/grade';
@@ -19,8 +20,9 @@ import type { PaginationMeta } from '@core/models/api';
   templateUrl: './class-sections.html',
   styleUrl: './class-sections.css',
 })
-export class ClassSectionsComponent implements OnInit {
+export class ClassSectionsComponent {
   private readonly classSectionService = inject(ClassSectionService);
+  private readonly schoolService = inject(SchoolService);
   readonly permissionService = inject(PermissionService);
   private readonly academicYearService = inject(AcademicYearService);
   private readonly gradeService = inject(GradeService);
@@ -35,9 +37,15 @@ export class ClassSectionsComponent implements OnInit {
   readonly academicYears = signal<AcademicYear[]>([]);
   readonly grades = signal<Grade[]>([]);
 
-  ngOnInit(): void {
-    this.loadFilters();
-    this.loadSections();
+  constructor() {
+    effect(() => {
+      this.schoolService.currentSchoolId();
+      untracked(() => {
+        this.query.set({ page: 1, limit: 10 });
+        this.loadFilters();
+        this.loadSections();
+      });
+    });
   }
 
   onYearFilter(event: Event): void {

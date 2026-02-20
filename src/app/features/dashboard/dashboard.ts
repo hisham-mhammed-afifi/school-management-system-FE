@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, effect, inject, signal, untracked } from '@angular/core';
 import { DecimalPipe, DatePipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { IconComponent } from '@shared/components/icon/icon';
@@ -21,7 +21,7 @@ import type {
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent {
   private readonly authService = inject(AuthService);
   private readonly schoolService = inject(SchoolService);
   private readonly dashboardService = inject(DashboardService);
@@ -51,12 +51,35 @@ export class DashboardComponent implements OnInit {
   readonly feesError = signal(false);
   readonly activityError = signal(false);
 
-  ngOnInit(): void {
-    if (this.isSuperAdmin() && !this.schoolService.currentSchoolId()) {
-      this.loadPlatformDashboard();
-    } else {
-      this.loadSchoolDashboard();
-    }
+  constructor() {
+    effect(() => {
+      const schoolId = this.schoolService.currentSchoolId();
+      untracked(() => {
+        this.resetState();
+        if (this.isSuperAdmin() && !schoolId) {
+          this.loadPlatformDashboard();
+        } else {
+          this.loadSchoolDashboard();
+        }
+      });
+    });
+  }
+
+  private resetState(): void {
+    this.overview.set(null);
+    this.attendance.set([]);
+    this.fees.set(null);
+    this.activity.set([]);
+    this.platformOverview.set(null);
+    this.expiringSchools.set([]);
+    this.overviewLoading.set(true);
+    this.attendanceLoading.set(true);
+    this.feesLoading.set(true);
+    this.activityLoading.set(true);
+    this.overviewError.set(false);
+    this.attendanceError.set(false);
+    this.feesError.set(false);
+    this.activityError.set(false);
   }
 
   private loadSchoolDashboard(): void {

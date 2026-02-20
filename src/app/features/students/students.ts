@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, effect, inject, signal, untracked } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -6,6 +6,7 @@ import { IconComponent } from '@shared/components/icon/icon';
 
 import { StudentService } from '@core/services/student.service';
 import { PermissionService } from '@core/services/permission.service';
+import { SchoolService } from '@core/services/school.service';
 import { PaginationComponent } from '@shared/components/pagination/pagination';
 import type { Student, ListStudentsQuery, StudentStatus } from '@core/models/student';
 import type { PaginationMeta } from '@core/models/api';
@@ -16,8 +17,9 @@ import type { PaginationMeta } from '@core/models/api';
   templateUrl: './students.html',
   styleUrl: './students.css',
 })
-export class StudentsComponent implements OnInit {
+export class StudentsComponent {
   private readonly studentService = inject(StudentService);
+  private readonly schoolService = inject(SchoolService);
   readonly permissionService = inject(PermissionService);
 
   readonly students = signal<Student[]>([]);
@@ -35,8 +37,14 @@ export class StudentsComponent implements OnInit {
     'transferred',
   ];
 
-  ngOnInit(): void {
-    this.loadStudents();
+  constructor() {
+    effect(() => {
+      this.schoolService.currentSchoolId();
+      untracked(() => {
+        this.query.set({ page: 1, limit: 10 });
+        this.loadStudents();
+      });
+    });
   }
 
   onSearch(event: Event): void {

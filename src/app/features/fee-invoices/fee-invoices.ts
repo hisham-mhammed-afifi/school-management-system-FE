@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, effect, inject, signal, untracked } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DatePipe, DecimalPipe, NgClass } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -7,6 +7,7 @@ import { PaginationComponent } from '@shared/components/pagination/pagination';
 
 import { FeeInvoiceService } from '@core/services/fee-invoice.service';
 import { PermissionService } from '@core/services/permission.service';
+import { SchoolService } from '@core/services/school.service';
 import type { FeeInvoice, InvoiceStatus, ListFeeInvoicesQuery } from '@core/models/fee-invoice';
 import type { PaginationMeta } from '@core/models/api';
 
@@ -24,8 +25,9 @@ import type { PaginationMeta } from '@core/models/api';
   templateUrl: './fee-invoices.html',
   styleUrl: './fee-invoices.css',
 })
-export class FeeInvoicesComponent implements OnInit {
+export class FeeInvoicesComponent {
   private readonly feeInvoiceService = inject(FeeInvoiceService);
+  private readonly schoolService = inject(SchoolService);
   readonly permissionService = inject(PermissionService);
 
   readonly invoices = signal<FeeInvoice[]>([]);
@@ -43,8 +45,14 @@ export class FeeInvoicesComponent implements OnInit {
     'cancelled',
   ];
 
-  ngOnInit(): void {
-    this.loadInvoices();
+  constructor() {
+    effect(() => {
+      this.schoolService.currentSchoolId();
+      untracked(() => {
+        this.query.set({ page: 1, limit: 10 });
+        this.loadInvoices();
+      });
+    });
   }
 
   onFilterStatus(event: Event): void {

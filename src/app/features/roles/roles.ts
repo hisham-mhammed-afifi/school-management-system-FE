@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, effect, inject, signal, untracked } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CdkTrapFocus, LiveAnnouncer } from '@angular/cdk/a11y';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -7,6 +7,7 @@ import { IconComponent } from '@shared/components/icon/icon';
 
 import { RoleService } from '@core/services/role.service';
 import { PermissionService } from '@core/services/permission.service';
+import { SchoolService } from '@core/services/school.service';
 import { PaginationComponent } from '@shared/components/pagination/pagination';
 import { SEED_ROLES } from '@core/models/role';
 import type { Role, ListRolesQuery } from '@core/models/role';
@@ -18,8 +19,9 @@ import type { PaginationMeta } from '@core/models/api';
   templateUrl: './roles.html',
   styleUrl: './roles.css',
 })
-export class RolesComponent implements OnInit {
+export class RolesComponent {
   private readonly roleService = inject(RoleService);
+  private readonly schoolService = inject(SchoolService);
   private readonly liveAnnouncer = inject(LiveAnnouncer);
   private readonly translate = inject(TranslateService);
   readonly permissionService = inject(PermissionService);
@@ -33,8 +35,14 @@ export class RolesComponent implements OnInit {
   readonly deletingRole = signal<Role | null>(null);
   readonly deleting = signal(false);
 
-  ngOnInit(): void {
-    this.loadRoles();
+  constructor() {
+    effect(() => {
+      this.schoolService.currentSchoolId();
+      untracked(() => {
+        this.query.set({ page: 1, limit: 10 });
+        this.loadRoles();
+      });
+    });
   }
 
   isSeedRole(name: string): boolean {

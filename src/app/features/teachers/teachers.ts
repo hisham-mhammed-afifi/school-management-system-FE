@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, effect, inject, signal, untracked } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -6,6 +6,7 @@ import { IconComponent } from '@shared/components/icon/icon';
 
 import { TeacherService } from '@core/services/teacher.service';
 import { PermissionService } from '@core/services/permission.service';
+import { SchoolService } from '@core/services/school.service';
 import { PaginationComponent } from '@shared/components/pagination/pagination';
 import type { Teacher, ListTeachersQuery, TeacherStatus } from '@core/models/teacher';
 import type { PaginationMeta } from '@core/models/api';
@@ -16,8 +17,9 @@ import type { PaginationMeta } from '@core/models/api';
   templateUrl: './teachers.html',
   styleUrl: './teachers.css',
 })
-export class TeachersComponent implements OnInit {
+export class TeachersComponent {
   private readonly teacherService = inject(TeacherService);
+  private readonly schoolService = inject(SchoolService);
   readonly permissionService = inject(PermissionService);
 
   readonly teachers = signal<Teacher[]>([]);
@@ -29,8 +31,14 @@ export class TeachersComponent implements OnInit {
 
   readonly statuses: TeacherStatus[] = ['active', 'on_leave', 'resigned', 'terminated'];
 
-  ngOnInit(): void {
-    this.loadTeachers();
+  constructor() {
+    effect(() => {
+      this.schoolService.currentSchoolId();
+      untracked(() => {
+        this.query.set({ page: 1, limit: 10 });
+        this.loadTeachers();
+      });
+    });
   }
 
   onSearch(event: Event): void {
