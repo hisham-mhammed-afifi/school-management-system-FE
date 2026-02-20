@@ -20,7 +20,7 @@ describe('AuthService', () => {
         id: '1',
         email: 'test@example.com',
         roles: ['teacher'],
-        permissions: ['read:students'],
+        permissions: ['students.read'],
         schoolId: 'school-1',
         schools: [{ id: 'school-1', name: 'School One' }],
       },
@@ -38,7 +38,7 @@ describe('AuthService', () => {
       roles: [
         { roleId: 'r1', roleName: 'teacher', schoolId: 'school-1', schoolName: 'School One' },
       ],
-      permissions: ['read:students'],
+      permissions: ['students.read'],
     },
   };
 
@@ -211,7 +211,7 @@ describe('AuthService', () => {
       expect(user.id).toBe('1');
       expect(user.email).toBe('test@example.com');
       expect(user.roles).toEqual(['teacher']);
-      expect(user.permissions).toEqual(['read:students']);
+      expect(user.permissions).toEqual(['students.read']);
       expect(user.schoolId).toBe('school-1');
       expect(user.schools).toEqual([{ id: 'school-1', name: 'School One' }]);
     });
@@ -256,7 +256,7 @@ describe('AuthService', () => {
               schoolName: 'School Two',
             },
           ],
-          permissions: ['read:students'],
+          permissions: ['students.read'],
         },
       };
 

@@ -58,7 +58,7 @@ describe('SchoolSwitcherComponent', () => {
         { roleId: 'r1', roleName: 'teacher', schoolId: 's1', schoolName: 'School One' },
         { roleId: 'r2', roleName: 'examiner', schoolId: 's2', schoolName: 'School Two' },
       ],
-      permissions: ['read:students'],
+      permissions: ['students.read'],
     },
   };
 

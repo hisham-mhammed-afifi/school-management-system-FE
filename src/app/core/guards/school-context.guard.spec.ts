@@ -21,7 +21,7 @@ describe('schoolContextGuard', () => {
         id: '1',
         email: 'test@test.com',
         roles: ['teacher'],
-        permissions: ['read:students'],
+        permissions: ['students.read'],
         schoolId: 'school-1',
         schools: [{ id: 'school-1', name: 'School One' }],
       },
@@ -39,7 +39,7 @@ describe('schoolContextGuard', () => {
       roles: [
         { roleId: 'r1', roleName: 'teacher', schoolId: 'school-1', schoolName: 'School One' },
       ],
-      permissions: ['read:students'],
+      permissions: ['students.read'],
     },
   };
 
@@ -55,7 +55,7 @@ describe('schoolContextGuard', () => {
         { roleId: 'r1', roleName: 'teacher', schoolId: 'school-1', schoolName: 'School One' },
         { roleId: 'r2', roleName: 'examiner', schoolId: 'school-2', schoolName: 'School Two' },
       ],
-      permissions: ['read:students'],
+      permissions: ['students.read'],
     },
   };
 
