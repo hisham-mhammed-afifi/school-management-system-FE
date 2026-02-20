@@ -59,13 +59,21 @@
           <div>
             <p class="text-text-tertiary">{{ 'REPORT_CARDS.OVERALL_PERCENTAGE' | translate }}</p>
             <p class="font-medium text-text-primary">
-              {{ rc.overallPercentage !== null ? rc.overallPercentage + '%' : '-' }}
+              @if (rc.overallPercentage !== null) {
+                {{ rc.overallPercentage | number: '1.1-1' }}%
+              } @else {
+                -
+              }
             </p>
           </div>
           <div>
             <p class="text-text-tertiary">{{ 'REPORT_CARDS.OVERALL_GPA' | translate }}</p>
             <p class="font-medium text-text-primary">
-              {{ rc.overallGpa !== null ? rc.overallGpa : '-' }}
+              @if (rc.overallGpa !== null) {
+                {{ rc.overallGpa | number: '1.2-2' }}
+              } @else {
+                -
+              }
             </p>
           </div>
         </div>
@@ -76,11 +84,72 @@
           </div>
           <div>
             <p class="text-text-tertiary">{{ 'REPORT_CARDS.GENERATED_AT' | translate }}</p>
-            <p class="font-medium text-text-primary">{{ rc.generatedAt }}</p>
+            <p class="font-medium text-text-primary">{{ rc.generatedAt | date: 'mediumDate' }}</p>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Subject Grades -->
+    @if (subjects().length > 0) {
+      <div class="bg-surface rounded-xl shadow-card border border-border flex flex-col gap-3">
+        <div class="px-5 pt-5">
+          <h2 class="text-base font-semibold text-text-primary">
+            {{ 'REPORT_CARDS.SUBJECT_GRADES' | translate }}
+          </h2>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border bg-bg-secondary">
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'REPORT_CARDS.SUBJECT' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'REPORT_CARDS.SCORE' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'REPORT_CARDS.MAX_SCORE' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'REPORT_CARDS.PERCENTAGE' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'REPORT_CARDS.GRADE_LETTER' | translate }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (subj of subjects(); track subj.subjectName) {
+                <tr
+                  class="border-b border-border last:border-b-0 transition-colors hover:bg-surface-hover"
+                >
+                  <td class="px-4 py-3 font-medium text-text-primary">{{ subj.subjectName }}</td>
+                  <td class="px-4 py-3 text-text-secondary">{{ subj.score | number: '1.0-1' }}</td>
+                  <td class="px-4 py-3 text-text-secondary">
+                    {{ subj.maxScore | number: '1.0-0' }}
+                  </td>
+                  <td class="px-4 py-3 text-text-secondary">
+                    {{ subj.percentage | number: '1.1-1' }}%
+                  </td>
+                  <td class="px-4 py-3">
+                    @if (subj.gradeLetter) {
+                      <span
+                        class="inline-block px-2 py-0.5 rounded text-xs font-semibold bg-info-bg text-info-text"
+                      >
+                        {{ subj.gradeLetter }}
+                      </span>
+                    } @else {
+                      <span class="text-text-tertiary">-</span>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
 
     <!-- Teacher Remarks -->
     <div class="bg-surface rounded-xl p-5 shadow-card border border-border flex flex-col gap-3">

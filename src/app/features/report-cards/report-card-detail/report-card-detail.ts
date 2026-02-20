@@ -1,15 +1,16 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { IconComponent } from '@shared/components/icon/icon';
 
 import { ReportCardService } from '@core/services/report-card.service';
 import { SchoolService } from '@core/services/school.service';
-import type { ReportCard } from '@core/models/report-card';
+import type { ReportCard, SubjectSnapshot } from '@core/models/report-card';
 
 @Component({
   selector: 'app-report-card-detail',
-  imports: [RouterLink, TranslatePipe, IconComponent],
+  imports: [RouterLink, TranslatePipe, IconComponent, DatePipe, DecimalPipe],
   templateUrl: './report-card-detail.html',
   styleUrl: './report-card-detail.css',
 })
@@ -22,6 +23,9 @@ export class ReportCardDetailComponent implements OnInit {
     () => `/schools/${this.schoolService.currentSchoolId()}/report-cards`,
   );
   readonly reportCard = signal<ReportCard | null>(null);
+  readonly subjects = computed<SubjectSnapshot[]>(
+    () => this.reportCard()?.snapshotData?.subjects ?? [],
+  );
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
 

@@ -28,7 +28,9 @@
       "Bash(powershell -Command \"Get-ChildItem ''d:\\\\me\\\\school-management-system'' -Name\")",
       "Bash(powershell -Command:*)",
       "Bash(tee:*)",
-      "Bash(awk:*)"
+      "Bash(awk:*)",
+      "Bash(git stash:*)",
+      "Bash(node -e:*)"
     ]
   }
 }

@@ -1,0 +1,77 @@
+<div class="flex flex-col gap-4">
+  <!-- Header -->
+  <h1 class="text-xl font-bold text-text-primary">{{ 'PARENT_PORTAL.TITLE' | translate }}</h1>
+
+  <!-- Error -->
+  @if (error()) {
+    <div role="alert" class="px-3 py-2 rounded-md text-sm font-medium bg-error-bg text-error-text">
+      {{ error()! | translate }}
+    </div>
+  }
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="flex justify-center py-12">
+      <p class="text-sm text-text-tertiary">{{ 'COMMON.LOADING' | translate }}</p>
+    </div>
+  }
+
+  <!-- Children cards -->
+  @if (!loading() && !error()) {
+    @if (children().length === 0) {
+      <div class="text-center py-12">
+        <fa-icon icon="graduation-cap" class="text-4xl text-text-tertiary mb-2" />
+        <p class="text-sm text-text-tertiary">{{ 'PARENT_PORTAL.NO_CHILDREN' | translate }}</p>
+      </div>
+    } @else {
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        @for (child of children(); track child.id) {
+          <div
+            class="bg-surface rounded-xl p-5 shadow-card border border-border flex flex-col gap-4"
+          >
+            <div class="flex items-center gap-3">
+              <fa-icon icon="graduation-cap" class="text-2xl text-accent" />
+              <div>
+                <p class="text-base font-semibold text-text-primary">
+                  {{ child.firstName }} {{ child.lastName }}
+                </p>
+                <p class="text-xs text-text-tertiary font-mono">{{ child.studentCode }}</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <a
+                [routerLink]="[child.id, 'grades']"
+                class="flex items-center gap-2 px-3 py-2 rounded-lg bg-bg-secondary text-text-primary text-sm font-medium no-underline transition-colors hover:bg-surface-hover"
+              >
+                <fa-icon icon="file-pen" class="text-sm text-text-tertiary" />
+                {{ 'PARENT_PORTAL.GRADES' | translate }}
+              </a>
+              <a
+                [routerLink]="[child.id, 'attendance']"
+                class="flex items-center gap-2 px-3 py-2 rounded-lg bg-bg-secondary text-text-primary text-sm font-medium no-underline transition-colors hover:bg-surface-hover"
+              >
+                <fa-icon icon="clipboard-check" class="text-sm text-text-tertiary" />
+                {{ 'PARENT_PORTAL.ATTENDANCE' | translate }}
+              </a>
+              <a
+                [routerLink]="[child.id, 'report-cards']"
+                class="flex items-center gap-2 px-3 py-2 rounded-lg bg-bg-secondary text-text-primary text-sm font-medium no-underline transition-colors hover:bg-surface-hover"
+              >
+                <fa-icon icon="file-lines" class="text-sm text-text-tertiary" />
+                {{ 'PARENT_PORTAL.REPORT_CARDS' | translate }}
+              </a>
+              <a
+                [routerLink]="[child.id, 'invoices']"
+                class="flex items-center gap-2 px-3 py-2 rounded-lg bg-bg-secondary text-text-primary text-sm font-medium no-underline transition-colors hover:bg-surface-hover"
+              >
+                <fa-icon icon="file-invoice-dollar" class="text-sm text-text-tertiary" />
+                {{ 'PARENT_PORTAL.INVOICES' | translate }}
+              </a>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>

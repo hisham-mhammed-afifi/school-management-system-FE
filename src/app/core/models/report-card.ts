@@ -1,3 +1,15 @@
+export interface SubjectSnapshot {
+  subjectName: string;
+  score: number;
+  maxScore: number;
+  percentage: number;
+  gradeLetter: string | null;
+}
+
+export interface ReportCardSnapshot {
+  subjects: SubjectSnapshot[];
+}
+
 export interface ReportCard {
   id: string;
   schoolId: string;
@@ -5,7 +17,7 @@ export interface ReportCard {
   academicYearId: string;
   termId: string;
   classSectionId: string;
-  snapshotData: unknown;
+  snapshotData: ReportCardSnapshot | null;
   overallGpa: number | null;
   overallPercentage: number | null;
   rankInClass: number | null;

@@ -1,0 +1,157 @@
+<div class="flex flex-col gap-4">
+  <!-- Header -->
+  <div class="flex items-center gap-3">
+    <a
+      [routerLink]="portalRoute()"
+      class="inline-flex items-center p-2 rounded-lg bg-transparent text-text-secondary transition-colors hover:bg-surface-hover no-underline"
+      [attr.aria-label]="'COMMON.BACK' | translate"
+    >
+      <fa-icon icon="arrow-left" class="text-xl leading-none" />
+    </a>
+    <h1 class="text-xl font-bold text-text-primary">
+      {{ 'PARENT_PORTAL.ATTENDANCE' | translate }}
+    </h1>
+  </div>
+
+  <!-- Tabs -->
+  <nav
+    class="flex gap-1 border-b border-border"
+    [attr.aria-label]="'PARENT_PORTAL.SECTIONS' | translate"
+  >
+    <a
+      [routerLink]="childTabsBase() + '/grades'"
+      routerLinkActive="text-accent border-b-2 border-accent"
+      class="px-4 py-2 text-sm font-medium text-text-secondary no-underline transition-colors hover:text-text-primary -mb-px"
+    >
+      {{ 'PARENT_PORTAL.GRADES' | translate }}
+    </a>
+    <a
+      [routerLink]="childTabsBase() + '/attendance'"
+      routerLinkActive="text-accent border-b-2 border-accent"
+      class="px-4 py-2 text-sm font-medium text-text-secondary no-underline transition-colors hover:text-text-primary -mb-px"
+    >
+      {{ 'PARENT_PORTAL.ATTENDANCE' | translate }}
+    </a>
+    <a
+      [routerLink]="childTabsBase() + '/report-cards'"
+      routerLinkActive="text-accent border-b-2 border-accent"
+      class="px-4 py-2 text-sm font-medium text-text-secondary no-underline transition-colors hover:text-text-primary -mb-px"
+    >
+      {{ 'PARENT_PORTAL.REPORT_CARDS' | translate }}
+    </a>
+    <a
+      [routerLink]="childTabsBase() + '/invoices'"
+      routerLinkActive="text-accent border-b-2 border-accent"
+      class="px-4 py-2 text-sm font-medium text-text-secondary no-underline transition-colors hover:text-text-primary -mb-px"
+    >
+      {{ 'PARENT_PORTAL.INVOICES' | translate }}
+    </a>
+  </nav>
+
+  <!-- Filters -->
+  <div class="flex flex-wrap gap-3">
+    <div class="flex flex-col gap-1">
+      <label for="att-from" class="text-xs font-medium text-text-secondary">
+        {{ 'PARENT_PORTAL.DATE_FROM' | translate }}
+      </label>
+      <input
+        id="att-from"
+        type="date"
+        dir="ltr"
+        (change)="onFilterFrom($event)"
+        class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+      />
+    </div>
+    <div class="flex flex-col gap-1">
+      <label for="att-to" class="text-xs font-medium text-text-secondary">
+        {{ 'PARENT_PORTAL.DATE_TO' | translate }}
+      </label>
+      <input
+        id="att-to"
+        type="date"
+        dir="ltr"
+        (change)="onFilterTo($event)"
+        class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+      />
+    </div>
+  </div>
+
+  <!-- Error -->
+  @if (error()) {
+    <div role="alert" class="px-3 py-2 rounded-md text-sm font-medium bg-error-bg text-error-text">
+      {{ error()! | translate }}
+    </div>
+  }
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="flex justify-center py-12">
+      <p class="text-sm text-text-tertiary">{{ 'COMMON.LOADING' | translate }}</p>
+    </div>
+  }
+
+  <!-- Content -->
+  @if (!loading() && !error()) {
+    @if (records().length === 0) {
+      <div class="text-center py-12">
+        <fa-icon icon="clipboard-check" class="text-4xl text-text-tertiary mb-2" />
+        <p class="text-sm text-text-tertiary">{{ 'PARENT_PORTAL.NO_ATTENDANCE' | translate }}</p>
+      </div>
+    } @else {
+      <div class="bg-surface rounded-xl shadow-card border border-border overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border bg-bg-secondary">
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'PARENT_PORTAL.DATE' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'PARENT_PORTAL.CLASS_SECTION' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'PARENT_PORTAL.STATUS' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'PARENT_PORTAL.NOTES' | translate }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (rec of records(); track rec.id) {
+                <tr
+                  class="border-b border-border last:border-b-0 transition-colors hover:bg-surface-hover"
+                >
+                  <td class="px-4 py-3 font-medium text-text-primary">
+                    {{ rec.date | date: 'mediumDate' }}
+                  </td>
+                  <td class="px-4 py-3 text-text-secondary">
+                    {{ rec.classSection?.name ?? '-' }}
+                  </td>
+                  <td class="px-4 py-3">
+                    <span
+                      class="inline-block px-2 py-0.5 rounded text-xs font-semibold"
+                      [ngClass]="statusClass(rec.status)"
+                    >
+                      {{ 'PARENT_PORTAL.STATUS_' + rec.status.toUpperCase() | translate }}
+                    </span>
+                  </td>
+                  <td class="px-4 py-3 text-text-secondary">
+                    {{ rec.notes ?? '-' }}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <app-pagination
+        [page]="meta().page"
+        [limit]="meta().limit"
+        [total]="meta().total"
+        (pageChange)="onPageChange($event)"
+      />
+    }
+  }
+</div>

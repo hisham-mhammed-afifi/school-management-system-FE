@@ -44,7 +44,12 @@ describe('ReportCardDetailComponent', () => {
         rankInClass: 1,
         teacherRemarks: 'Good job',
         generatedAt: '2026-02-19T10:00:00Z',
-        snapshotData: {},
+        snapshotData: {
+          subjects: [
+            { subjectName: 'Math', score: 90, maxScore: 100, percentage: 90, gradeLetter: 'A' },
+            { subjectName: 'Science', score: 80, maxScore: 100, percentage: 80, gradeLetter: 'B' },
+          ],
+        },
       },
     });
   }
@@ -70,6 +75,38 @@ describe('ReportCardDetailComponent', () => {
     req.flush(null, { status: 404, statusText: 'Not Found' });
 
     expect(component.error()).toBe('REPORT_CARDS.LOAD_ERROR');
+  });
+
+  it('should expose subject grades from snapshotData', () => {
+    fixture.detectChanges();
+    flushDetail();
+
+    expect(component.subjects().length).toBe(2);
+    expect(component.subjects()[0].subjectName).toBe('Math');
+    expect(component.subjects()[1].gradeLetter).toBe('B');
+  });
+
+  it('should handle null snapshotData', () => {
+    fixture.detectChanges();
+
+    const req = httpTesting.expectOne((r) => r.url.startsWith('/api/v1/report-cards/'));
+    req.flush({
+      success: true,
+      data: {
+        id: 'rc-2',
+        student: { firstName: 'Sara', lastName: 'Ahmed', studentCode: 'S002' },
+        term: { name: 'Term 1' },
+        classSection: { name: 'Class 1A' },
+        overallPercentage: null,
+        overallGpa: null,
+        rankInClass: null,
+        teacherRemarks: null,
+        generatedAt: '2026-02-19T10:00:00Z',
+        snapshotData: null,
+      },
+    });
+
+    expect(component.subjects().length).toBe(0);
   });
 
   it('should toggle remarks editing', () => {

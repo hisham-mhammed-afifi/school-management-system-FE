@@ -126,10 +126,18 @@
                   <td class="px-4 py-3 text-text-secondary">{{ rc.term?.name ?? '-' }}</td>
                   <td class="px-4 py-3 text-text-secondary">{{ rc.classSection?.name ?? '-' }}</td>
                   <td class="px-4 py-3 text-text-secondary">
-                    {{ rc.overallPercentage !== null ? rc.overallPercentage + '%' : '-' }}
+                    @if (rc.overallPercentage !== null) {
+                      {{ rc.overallPercentage | number: '1.1-1' }}%
+                    } @else {
+                      -
+                    }
                   </td>
                   <td class="px-4 py-3 text-text-secondary">
-                    {{ rc.overallGpa !== null ? rc.overallGpa : '-' }}
+                    @if (rc.overallGpa !== null) {
+                      {{ rc.overallGpa | number: '1.2-2' }}
+                    } @else {
+                      -
+                    }
                   </td>
                   <td class="px-4 py-3 text-text-secondary">
                     {{ rc.rankInClass ?? '-' }}

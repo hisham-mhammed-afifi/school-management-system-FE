@@ -334,6 +334,46 @@ export const routes: Routes = [
             ],
           },
           {
+            path: 'parent-portal',
+            children: [
+              {
+                path: '',
+                loadComponent: () =>
+                  import('./features/parent-portal/parent-portal').then(
+                    (m) => m.ParentPortalComponent,
+                  ),
+              },
+              {
+                path: ':studentId/grades',
+                loadComponent: () =>
+                  import('./features/parent-portal/child-grades/child-grades').then(
+                    (m) => m.ChildGradesComponent,
+                  ),
+              },
+              {
+                path: ':studentId/attendance',
+                loadComponent: () =>
+                  import('./features/parent-portal/child-attendance/child-attendance').then(
+                    (m) => m.ChildAttendanceComponent,
+                  ),
+              },
+              {
+                path: ':studentId/report-cards',
+                loadComponent: () =>
+                  import('./features/parent-portal/child-report-cards/child-report-cards').then(
+                    (m) => m.ChildReportCardsComponent,
+                  ),
+              },
+              {
+                path: ':studentId/invoices',
+                loadComponent: () =>
+                  import('./features/parent-portal/child-invoices/child-invoices').then(
+                    (m) => m.ChildInvoicesComponent,
+                  ),
+              },
+            ],
+          },
+          {
             path: 'roles',
             children: [
               {

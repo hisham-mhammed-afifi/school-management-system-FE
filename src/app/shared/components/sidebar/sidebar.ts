@@ -49,6 +49,11 @@ export class SidebarComponent {
         route: `${prefix}/fee-invoices`,
         icon: 'file-invoice-dollar',
       },
+      {
+        labelKey: 'NAV.PARENT_PORTAL',
+        route: `${prefix}/parent-portal`,
+        icon: 'house-user',
+      },
       { labelKey: 'NAV.ROLES', route: `${prefix}/roles`, icon: 'shield-halved' },
     ];
   });

@@ -1,5 +1,6 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { DecimalPipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { IconComponent } from '@shared/components/icon/icon';
 import { PaginationComponent } from '@shared/components/pagination/pagination';
@@ -20,7 +21,7 @@ import type { PaginationMeta } from '@core/models/api';
 
 @Component({
   selector: 'app-report-cards',
-  imports: [RouterLink, TranslatePipe, PaginationComponent, IconComponent],
+  imports: [RouterLink, TranslatePipe, PaginationComponent, IconComponent, DecimalPipe],
   templateUrl: './report-cards.html',
   styleUrl: './report-cards.css',
 })

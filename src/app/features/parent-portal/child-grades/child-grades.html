@@ -1,0 +1,136 @@
+<div class="flex flex-col gap-4">
+  <!-- Header -->
+  <div class="flex items-center gap-3">
+    <a
+      [routerLink]="portalRoute()"
+      class="inline-flex items-center p-2 rounded-lg bg-transparent text-text-secondary transition-colors hover:bg-surface-hover no-underline"
+      [attr.aria-label]="'COMMON.BACK' | translate"
+    >
+      <fa-icon icon="arrow-left" class="text-xl leading-none" />
+    </a>
+    <h1 class="text-xl font-bold text-text-primary">{{ 'PARENT_PORTAL.GRADES' | translate }}</h1>
+  </div>
+
+  <!-- Tabs -->
+  <nav
+    class="flex gap-1 border-b border-border"
+    [attr.aria-label]="'PARENT_PORTAL.SECTIONS' | translate"
+  >
+    <a
+      [routerLink]="childTabsBase() + '/grades'"
+      routerLinkActive="text-accent border-b-2 border-accent"
+      class="px-4 py-2 text-sm font-medium text-text-secondary no-underline transition-colors hover:text-text-primary -mb-px"
+    >
+      {{ 'PARENT_PORTAL.GRADES' | translate }}
+    </a>
+    <a
+      [routerLink]="childTabsBase() + '/attendance'"
+      routerLinkActive="text-accent border-b-2 border-accent"
+      class="px-4 py-2 text-sm font-medium text-text-secondary no-underline transition-colors hover:text-text-primary -mb-px"
+    >
+      {{ 'PARENT_PORTAL.ATTENDANCE' | translate }}
+    </a>
+    <a
+      [routerLink]="childTabsBase() + '/report-cards'"
+      routerLinkActive="text-accent border-b-2 border-accent"
+      class="px-4 py-2 text-sm font-medium text-text-secondary no-underline transition-colors hover:text-text-primary -mb-px"
+    >
+      {{ 'PARENT_PORTAL.REPORT_CARDS' | translate }}
+    </a>
+    <a
+      [routerLink]="childTabsBase() + '/invoices'"
+      routerLinkActive="text-accent border-b-2 border-accent"
+      class="px-4 py-2 text-sm font-medium text-text-secondary no-underline transition-colors hover:text-text-primary -mb-px"
+    >
+      {{ 'PARENT_PORTAL.INVOICES' | translate }}
+    </a>
+  </nav>
+
+  <!-- Error -->
+  @if (error()) {
+    <div role="alert" class="px-3 py-2 rounded-md text-sm font-medium bg-error-bg text-error-text">
+      {{ error()! | translate }}
+    </div>
+  }
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="flex justify-center py-12">
+      <p class="text-sm text-text-tertiary">{{ 'COMMON.LOADING' | translate }}</p>
+    </div>
+  }
+
+  <!-- Content -->
+  @if (!loading() && !error()) {
+    @if (grades().length === 0) {
+      <div class="text-center py-12">
+        <fa-icon icon="file-pen" class="text-4xl text-text-tertiary mb-2" />
+        <p class="text-sm text-text-tertiary">{{ 'PARENT_PORTAL.NO_GRADES' | translate }}</p>
+      </div>
+    } @else {
+      <div class="bg-surface rounded-xl shadow-card border border-border overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border bg-bg-secondary">
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'PARENT_PORTAL.EXAM' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'PARENT_PORTAL.SUBJECT' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'PARENT_PORTAL.SCORE' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'PARENT_PORTAL.MAX_SCORE' | translate }}
+                </th>
+                <th class="text-start px-4 py-3 font-semibold text-text-secondary">
+                  {{ 'PARENT_PORTAL.GRADE_LETTER' | translate }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (grade of grades(); track grade.id) {
+                <tr
+                  class="border-b border-border last:border-b-0 transition-colors hover:bg-surface-hover"
+                >
+                  <td class="px-4 py-3 font-medium text-text-primary">
+                    {{ grade.examSubject?.exam?.name ?? '-' }}
+                  </td>
+                  <td class="px-4 py-3 text-text-secondary">
+                    {{ grade.examSubject?.subject?.name ?? '-' }}
+                  </td>
+                  <td class="px-4 py-3 text-text-secondary">
+                    {{ grade.score | number: '1.0-1' }}
+                  </td>
+                  <td class="px-4 py-3 text-text-secondary">
+                    {{ grade.examSubject?.maxScore | number: '1.0-0' }}
+                  </td>
+                  <td class="px-4 py-3">
+                    @if (grade.gradeLetter) {
+                      <span
+                        class="inline-block px-2 py-0.5 rounded text-xs font-semibold bg-info-bg text-info-text"
+                      >
+                        {{ grade.gradeLetter }}
+                      </span>
+                    } @else {
+                      <span class="text-text-tertiary">-</span>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <app-pagination
+        [page]="meta().page"
+        [limit]="meta().limit"
+        [total]="meta().total"
+        (pageChange)="onPageChange($event)"
+      />
+    }
+  }
+</div>
