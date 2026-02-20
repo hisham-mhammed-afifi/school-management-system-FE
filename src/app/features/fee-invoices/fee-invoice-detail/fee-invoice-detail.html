@@ -256,6 +256,9 @@
         role="alertdialog"
         aria-modal="true"
         [attr.aria-label]="'FEE_INVOICES.ISSUE_CONFIRM' | translate"
+        cdkTrapFocus
+        cdkTrapFocusAutoCapture
+        (keydown.escape)="closeIssueModal()"
       >
         <h3 class="text-lg font-semibold text-text-primary">
           {{ 'FEE_INVOICES.ISSUE_CONFIRM' | translate }}
@@ -307,6 +310,9 @@
         role="alertdialog"
         aria-modal="true"
         [attr.aria-label]="'FEE_INVOICES.CANCEL_CONFIRM' | translate"
+        cdkTrapFocus
+        cdkTrapFocusAutoCapture
+        (keydown.escape)="closeCancelModal()"
       >
         <h3 class="text-lg font-semibold text-text-primary">
           {{ 'FEE_INVOICES.CANCEL_CONFIRM' | translate }}
@@ -359,6 +365,9 @@
         role="dialog"
         aria-modal="true"
         [attr.aria-label]="'FEE_INVOICES.RECORD_PAYMENT' | translate"
+        cdkTrapFocus
+        cdkTrapFocusAutoCapture
+        (keydown.escape)="closePaymentModal()"
       >
         <h3 class="text-lg font-semibold text-text-primary">
           {{ 'FEE_INVOICES.RECORD_PAYMENT' | translate }}

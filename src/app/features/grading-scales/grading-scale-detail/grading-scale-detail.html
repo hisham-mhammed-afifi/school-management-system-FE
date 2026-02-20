@@ -118,6 +118,9 @@
         role="alertdialog"
         aria-modal="true"
         [attr.aria-label]="'GRADING_SCALES.DELETE_CONFIRM' | translate"
+        cdkTrapFocus
+        cdkTrapFocusAutoCapture
+        (keydown.escape)="cancelDelete()"
       >
         <h3 class="text-lg font-semibold text-text-primary">
           {{ 'GRADING_SCALES.DELETE_CONFIRM' | translate }}

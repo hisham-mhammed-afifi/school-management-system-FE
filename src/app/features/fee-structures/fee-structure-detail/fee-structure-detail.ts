@@ -1,7 +1,8 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { TranslatePipe } from '@ngx-translate/core';
+import { CdkTrapFocus, LiveAnnouncer } from '@angular/cdk/a11y';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { IconComponent } from '@shared/components/icon/icon';
 
 import { FeeStructureService } from '@core/services/fee-structure.service';
@@ -13,7 +14,7 @@ import type { FeeDiscount } from '@core/models/fee-discount';
 
 @Component({
   selector: 'app-fee-structure-detail',
-  imports: [RouterLink, TranslatePipe, IconComponent, DatePipe, DecimalPipe],
+  imports: [RouterLink, TranslatePipe, IconComponent, DatePipe, DecimalPipe, CdkTrapFocus],
   templateUrl: './fee-structure-detail.html',
   styleUrl: './fee-structure-detail.css',
 })
@@ -23,6 +24,8 @@ export class FeeStructureDetailComponent implements OnInit {
   private readonly feeStructureService = inject(FeeStructureService);
   private readonly feeDiscountService = inject(FeeDiscountService);
   private readonly schoolService = inject(SchoolService);
+  private readonly liveAnnouncer = inject(LiveAnnouncer);
+  private readonly translate = inject(TranslateService);
   readonly permissionService = inject(PermissionService);
 
   readonly listRoute = computed(
@@ -58,6 +61,7 @@ export class FeeStructureDetailComponent implements OnInit {
     this.deleting.set(true);
     this.feeStructureService.delete(this.structureId).subscribe({
       next: () => {
+        this.liveAnnouncer.announce(this.translate.instant('COMMON.SUCCESS'), 'polite');
         this.router.navigate([this.listRoute()]);
       },
       error: () => {
@@ -82,6 +86,7 @@ export class FeeStructureDetailComponent implements OnInit {
     this.deletingDiscount.set(true);
     this.feeDiscountService.delete(discountId).subscribe({
       next: () => {
+        this.liveAnnouncer.announce(this.translate.instant('COMMON.SUCCESS'), 'polite');
         this.discounts.update((list) => list.filter((d) => d.id !== discountId));
         this.deletingDiscount.set(false);
         this.showDeleteDiscountConfirm.set(null);

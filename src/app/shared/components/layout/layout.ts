@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { IconComponent } from '@shared/components/icon/icon';
@@ -30,7 +30,9 @@ export class LayoutComponent {
 
   readonly user = this.authService.user;
   readonly isSuperAdmin = this.schoolService.isSuperAdmin;
-  readonly showSchoolSwitcher = this.schoolService.hasMultipleSchools;
+  readonly showSchoolSwitcher = computed(
+    () => this.schoolService.isSuperAdmin() || this.schoolService.hasMultipleSchools(),
+  );
   readonly sidebarOpen = signal(false);
 
   toggleSidebar(): void {

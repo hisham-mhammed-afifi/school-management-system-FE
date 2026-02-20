@@ -6,7 +6,9 @@
 >
   <!-- Brand -->
   <div class="p-4 border-b border-border">
-    <h3 class="text-lg font-bold text-text-primary">{{ 'COMMON.APP_NAME' | translate }}</h3>
+    <h3 class="text-lg font-bold text-text-primary truncate">
+      {{ schoolName() || ('COMMON.APP_NAME' | translate) }}
+    </h3>
   </div>
 
   <!-- Navigation -->

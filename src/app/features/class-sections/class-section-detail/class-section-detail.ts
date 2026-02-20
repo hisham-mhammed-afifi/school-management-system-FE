@@ -1,6 +1,7 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
+import { CdkTrapFocus, LiveAnnouncer } from '@angular/cdk/a11y';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { IconComponent } from '@shared/components/icon/icon';
 
 import { ClassSectionService } from '@core/services/class-section.service';
@@ -10,7 +11,7 @@ import type { ClassSection } from '@core/models/class-section';
 
 @Component({
   selector: 'app-class-section-detail',
-  imports: [RouterLink, TranslatePipe, IconComponent],
+  imports: [RouterLink, TranslatePipe, IconComponent, CdkTrapFocus],
   templateUrl: './class-section-detail.html',
   styleUrl: './class-section-detail.css',
 })
@@ -19,6 +20,8 @@ export class ClassSectionDetailComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly classSectionService = inject(ClassSectionService);
   private readonly schoolService = inject(SchoolService);
+  private readonly liveAnnouncer = inject(LiveAnnouncer);
+  private readonly translate = inject(TranslateService);
   readonly permissionService = inject(PermissionService);
 
   readonly listRoute = computed(
@@ -50,6 +53,7 @@ export class ClassSectionDetailComponent implements OnInit {
     this.deleting.set(true);
     this.classSectionService.delete(this.sectionId).subscribe({
       next: () => {
+        this.liveAnnouncer.announce(this.translate.instant('COMMON.SUCCESS'), 'polite');
         this.router.navigate([this.listRoute()]);
       },
       error: () => {

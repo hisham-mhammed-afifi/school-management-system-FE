@@ -1,7 +1,8 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { TranslatePipe } from '@ngx-translate/core';
+import { CdkTrapFocus, LiveAnnouncer } from '@angular/cdk/a11y';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { IconComponent } from '@shared/components/icon/icon';
 
 import { ExamService } from '@core/services/exam.service';
@@ -15,7 +16,7 @@ import type { Grade } from '@core/models/grade';
 
 @Component({
   selector: 'app-exam-detail',
-  imports: [RouterLink, ReactiveFormsModule, TranslatePipe, IconComponent],
+  imports: [RouterLink, ReactiveFormsModule, TranslatePipe, IconComponent, CdkTrapFocus],
   templateUrl: './exam-detail.html',
   styleUrl: './exam-detail.css',
 })
@@ -27,6 +28,8 @@ export class ExamDetailComponent implements OnInit {
   private readonly subjectService = inject(SubjectService);
   private readonly gradeService = inject(GradeService);
   private readonly schoolService = inject(SchoolService);
+  private readonly liveAnnouncer = inject(LiveAnnouncer);
+  private readonly translate = inject(TranslateService);
   readonly permissionService = inject(PermissionService);
 
   readonly listRoute = computed(() => `/schools/${this.schoolService.currentSchoolId()}/exams`);
@@ -73,6 +76,7 @@ export class ExamDetailComponent implements OnInit {
     this.deleting.set(true);
     this.examService.delete(this.examId).subscribe({
       next: () => {
+        this.liveAnnouncer.announce(this.translate.instant('COMMON.SUCCESS'), 'polite');
         this.router.navigate([this.listRoute()]);
       },
       error: () => {
@@ -117,6 +121,7 @@ export class ExamDetailComponent implements OnInit {
       })
       .subscribe({
         next: () => {
+          this.liveAnnouncer.announce(this.translate.instant('COMMON.SUCCESS'), 'polite');
           this.addingSubject.set(false);
           this.showAddSubject.set(false);
           this.loadExamSubjects();
@@ -148,6 +153,7 @@ export class ExamDetailComponent implements OnInit {
     this.removingSubject.set(true);
     this.examService.removeSubject(this.examId, id).subscribe({
       next: () => {
+        this.liveAnnouncer.announce(this.translate.instant('COMMON.SUCCESS'), 'polite');
         this.removingSubject.set(false);
         this.showRemoveSubjectConfirm.set(false);
         this.removingSubjectId.set(null);

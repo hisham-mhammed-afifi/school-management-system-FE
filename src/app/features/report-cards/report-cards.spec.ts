@@ -119,7 +119,7 @@ describe('ReportCardsComponent', () => {
     component.generateClassId.set('cs-1');
     component.submitGenerate();
 
-    const req = httpTesting.expectOne('/api/v1/report-cards');
+    const req = httpTesting.expectOne('/api/v1/report-cards/generate');
     expect(req.request.method).toBe('POST');
     expect(req.request.body.termId).toBe('t-1');
     req.flush({ success: true, data: { generated: 5, missingGrades: 0, skippedExisting: 2 } });

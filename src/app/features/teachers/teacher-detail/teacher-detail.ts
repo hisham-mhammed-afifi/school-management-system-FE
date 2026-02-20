@@ -1,7 +1,8 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
+import { CdkTrapFocus, LiveAnnouncer } from '@angular/cdk/a11y';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { IconComponent } from '@shared/components/icon/icon';
 
 import { TeacherService } from '@core/services/teacher.service';
@@ -11,7 +12,7 @@ import type { Teacher } from '@core/models/teacher';
 
 @Component({
   selector: 'app-teacher-detail',
-  imports: [DatePipe, RouterLink, TranslatePipe, IconComponent],
+  imports: [DatePipe, RouterLink, TranslatePipe, IconComponent, CdkTrapFocus],
   templateUrl: './teacher-detail.html',
   styleUrl: './teacher-detail.css',
 })
@@ -20,6 +21,8 @@ export class TeacherDetailComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly teacherService = inject(TeacherService);
   private readonly schoolService = inject(SchoolService);
+  private readonly liveAnnouncer = inject(LiveAnnouncer);
+  private readonly translate = inject(TranslateService);
   readonly permissionService = inject(PermissionService);
 
   readonly teachersRoute = computed(
@@ -51,6 +54,7 @@ export class TeacherDetailComponent implements OnInit {
     this.deleting.set(true);
     this.teacherService.delete(this.teacherId).subscribe({
       next: () => {
+        this.liveAnnouncer.announce(this.translate.instant('COMMON.SUCCESS'), 'polite');
         this.router.navigate([this.teachersRoute()]);
       },
       error: () => {

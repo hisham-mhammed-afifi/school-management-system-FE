@@ -2,7 +2,8 @@ import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { DatePipe, DecimalPipe, NgClass } from '@angular/common';
-import { TranslatePipe } from '@ngx-translate/core';
+import { CdkTrapFocus, LiveAnnouncer } from '@angular/cdk/a11y';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { IconComponent } from '@shared/components/icon/icon';
 
 import { FeeInvoiceService } from '@core/services/fee-invoice.service';
@@ -22,6 +23,7 @@ import type { FeePayment, PaymentMethod } from '@core/models/fee-payment';
     DecimalPipe,
     NgClass,
     ReactiveFormsModule,
+    CdkTrapFocus,
   ],
   templateUrl: './fee-invoice-detail.html',
   styleUrl: './fee-invoice-detail.css',
@@ -33,6 +35,8 @@ export class FeeInvoiceDetailComponent implements OnInit {
   private readonly feeInvoiceService = inject(FeeInvoiceService);
   private readonly feePaymentService = inject(FeePaymentService);
   private readonly schoolService = inject(SchoolService);
+  private readonly liveAnnouncer = inject(LiveAnnouncer);
+  private readonly translate = inject(TranslateService);
   readonly permissionService = inject(PermissionService);
 
   readonly listRoute = computed(
@@ -104,6 +108,7 @@ export class FeeInvoiceDetailComponent implements OnInit {
     this.issuing.set(true);
     this.feeInvoiceService.issue(this.invoiceId, this.notifyGuardian()).subscribe({
       next: (res) => {
+        this.liveAnnouncer.announce(this.translate.instant('COMMON.SUCCESS'), 'polite');
         this.invoice.set(res.data);
         this.issuing.set(false);
         this.showIssueModal.set(false);
@@ -127,6 +132,7 @@ export class FeeInvoiceDetailComponent implements OnInit {
     this.cancelling.set(true);
     this.feeInvoiceService.cancel(this.invoiceId, this.cancelReason()).subscribe({
       next: (res) => {
+        this.liveAnnouncer.announce(this.translate.instant('COMMON.SUCCESS'), 'polite');
         this.invoice.set(res.data);
         this.cancelling.set(false);
         this.showCancelModal.set(false);
@@ -174,6 +180,7 @@ export class FeeInvoiceDetailComponent implements OnInit {
       })
       .subscribe({
         next: (res) => {
+          this.liveAnnouncer.announce(this.translate.instant('COMMON.SUCCESS'), 'polite');
           this.payments.update((list) => [...list, res.data]);
           this.savingPayment.set(false);
           this.showPaymentModal.set(false);

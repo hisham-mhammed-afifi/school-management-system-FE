@@ -1,6 +1,7 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
+import { CdkTrapFocus, LiveAnnouncer } from '@angular/cdk/a11y';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { IconComponent } from '@shared/components/icon/icon';
 
 import { SubjectService } from '@core/services/subject.service';
@@ -12,7 +13,7 @@ import type { Grade } from '@core/models/grade';
 
 @Component({
   selector: 'app-subject-detail',
-  imports: [RouterLink, TranslatePipe, IconComponent],
+  imports: [RouterLink, TranslatePipe, IconComponent, CdkTrapFocus],
   templateUrl: './subject-detail.html',
   styleUrl: './subject-detail.css',
 })
@@ -22,6 +23,8 @@ export class SubjectDetailComponent implements OnInit {
   private readonly subjectService = inject(SubjectService);
   private readonly gradeService = inject(GradeService);
   private readonly schoolService = inject(SchoolService);
+  private readonly liveAnnouncer = inject(LiveAnnouncer);
+  private readonly translate = inject(TranslateService);
   readonly permissionService = inject(PermissionService);
 
   readonly subjectsRoute = computed(
@@ -60,6 +63,7 @@ export class SubjectDetailComponent implements OnInit {
     this.deleting.set(true);
     this.subjectService.delete(this.subjectId).subscribe({
       next: () => {
+        this.liveAnnouncer.announce(this.translate.instant('COMMON.SUCCESS'), 'polite');
         this.router.navigate([this.subjectsRoute()]);
       },
       error: () => {
@@ -106,6 +110,7 @@ export class SubjectDetailComponent implements OnInit {
     this.gradeMessage.set(null);
     this.subjectService.setGrades(this.subjectId, [...this.selectedGradeIds()]).subscribe({
       next: () => {
+        this.liveAnnouncer.announce(this.translate.instant('COMMON.SUCCESS'), 'polite');
         this.savingGrades.set(false);
         this.showGradeManager.set(false);
         this.gradeMessage.set('SUBJECTS.GRADES_SAVED');

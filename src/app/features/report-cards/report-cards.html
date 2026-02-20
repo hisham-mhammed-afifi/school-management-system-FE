@@ -166,6 +166,9 @@
         role="dialog"
         aria-modal="true"
         [attr.aria-label]="'REPORT_CARDS.GENERATE' | translate"
+        cdkTrapFocus
+        cdkTrapFocusAutoCapture
+        (keydown.escape)="closeGenerate()"
       >
         <h3 class="text-lg font-semibold text-text-primary">
           {{ 'REPORT_CARDS.GENERATE' | translate }}

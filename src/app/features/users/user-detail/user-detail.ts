@@ -1,7 +1,8 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
+import { CdkTrapFocus, LiveAnnouncer } from '@angular/cdk/a11y';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { IconComponent } from '@shared/components/icon/icon';
 
 import { UserService } from '@core/services/user.service';
@@ -13,7 +14,7 @@ import type { Role } from '@core/models/role';
 
 @Component({
   selector: 'app-user-detail',
-  imports: [DatePipe, RouterLink, TranslatePipe, IconComponent],
+  imports: [DatePipe, RouterLink, TranslatePipe, IconComponent, CdkTrapFocus],
   templateUrl: './user-detail.html',
   styleUrl: './user-detail.css',
 })
@@ -22,6 +23,8 @@ export class UserDetailComponent implements OnInit {
   private readonly userService = inject(UserService);
   private readonly roleService = inject(RoleService);
   private readonly schoolService = inject(SchoolService);
+  private readonly liveAnnouncer = inject(LiveAnnouncer);
+  private readonly translate = inject(TranslateService);
   readonly permissionService = inject(PermissionService);
 
   readonly usersRoute = computed(() => `/schools/${this.schoolService.currentSchoolId()}/users`);
@@ -44,6 +47,7 @@ export class UserDetailComponent implements OnInit {
     this.actionLoading.set(true);
     this.userService.assignRole(this.userId, { roleId }).subscribe({
       next: (res) => {
+        this.liveAnnouncer.announce(this.translate.instant('COMMON.SUCCESS'), 'polite');
         this.user.set(res.data);
         this.actionLoading.set(false);
       },
@@ -71,6 +75,7 @@ export class UserDetailComponent implements OnInit {
     this.actionLoading.set(true);
     this.userService.removeRole(this.userId, roleId).subscribe({
       next: () => {
+        this.liveAnnouncer.announce(this.translate.instant('COMMON.SUCCESS'), 'polite');
         this.user.update((u) =>
           u ? { ...u, roles: u.roles.filter((r) => r.roleId !== roleId) } : u,
         );

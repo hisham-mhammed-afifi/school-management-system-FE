@@ -1,6 +1,7 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
+import { CdkTrapFocus, LiveAnnouncer } from '@angular/cdk/a11y';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { IconComponent } from '@shared/components/icon/icon';
 
 import { GradingScaleService } from '@core/services/grading-scale.service';
@@ -10,7 +11,7 @@ import type { GradingScale } from '@core/models/grading-scale';
 
 @Component({
   selector: 'app-grading-scale-detail',
-  imports: [RouterLink, TranslatePipe, IconComponent],
+  imports: [RouterLink, TranslatePipe, IconComponent, CdkTrapFocus],
   templateUrl: './grading-scale-detail.html',
   styleUrl: './grading-scale-detail.css',
 })
@@ -19,6 +20,8 @@ export class GradingScaleDetailComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly gradingScaleService = inject(GradingScaleService);
   private readonly schoolService = inject(SchoolService);
+  private readonly liveAnnouncer = inject(LiveAnnouncer);
+  private readonly translate = inject(TranslateService);
   readonly permissionService = inject(PermissionService);
 
   readonly listRoute = computed(
@@ -50,6 +53,7 @@ export class GradingScaleDetailComponent implements OnInit {
     this.deleting.set(true);
     this.gradingScaleService.delete(this.scaleId).subscribe({
       next: () => {
+        this.liveAnnouncer.announce(this.translate.instant('COMMON.SUCCESS'), 'polite');
         this.router.navigate([this.listRoute()]);
       },
       error: () => {

@@ -1,7 +1,8 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
-import { TranslatePipe } from '@ngx-translate/core';
+import { CdkTrapFocus, LiveAnnouncer } from '@angular/cdk/a11y';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { IconComponent } from '@shared/components/icon/icon';
 import { PaginationComponent } from '@shared/components/pagination/pagination';
 
@@ -21,7 +22,14 @@ import type { PaginationMeta } from '@core/models/api';
 
 @Component({
   selector: 'app-report-cards',
-  imports: [RouterLink, TranslatePipe, PaginationComponent, IconComponent, DecimalPipe],
+  imports: [
+    RouterLink,
+    TranslatePipe,
+    PaginationComponent,
+    IconComponent,
+    DecimalPipe,
+    CdkTrapFocus,
+  ],
   templateUrl: './report-cards.html',
   styleUrl: './report-cards.css',
 })
@@ -30,6 +38,8 @@ export class ReportCardsComponent implements OnInit {
   private readonly academicYearService = inject(AcademicYearService);
   private readonly termService = inject(TermService);
   private readonly classSectionService = inject(ClassSectionService);
+  private readonly liveAnnouncer = inject(LiveAnnouncer);
+  private readonly translate = inject(TranslateService);
 
   readonly reportCards = signal<ReportCard[]>([]);
   readonly meta = signal<PaginationMeta>({ page: 1, limit: 20, total: 0, totalPages: 0 });
@@ -112,6 +122,7 @@ export class ReportCardsComponent implements OnInit {
 
     this.reportCardService.generate({ termId, classSectionId: classId }).subscribe({
       next: (res) => {
+        this.liveAnnouncer.announce(this.translate.instant('COMMON.SUCCESS'), 'polite');
         this.generateResult.set(res.data);
         this.generating.set(false);
       },

@@ -190,6 +190,9 @@
         role="alertdialog"
         aria-modal="true"
         [attr.aria-label]="'FEE_STRUCTURES.DELETE_CONFIRM' | translate"
+        cdkTrapFocus
+        cdkTrapFocusAutoCapture
+        (keydown.escape)="cancelDelete()"
       >
         <h3 class="text-lg font-semibold text-text-primary">
           {{ 'FEE_STRUCTURES.DELETE_CONFIRM' | translate }}
@@ -230,6 +233,9 @@
         role="alertdialog"
         aria-modal="true"
         [attr.aria-label]="'FEE_STRUCTURES.DELETE_DISCOUNT_CONFIRM' | translate"
+        cdkTrapFocus
+        cdkTrapFocusAutoCapture
+        (keydown.escape)="cancelDeleteDiscount()"
       >
         <h3 class="text-lg font-semibold text-text-primary">
           {{ 'FEE_STRUCTURES.DELETE_DISCOUNT_CONFIRM' | translate }}

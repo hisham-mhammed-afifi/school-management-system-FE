@@ -27,6 +27,8 @@ export class SidebarComponent {
   private readonly schoolService = inject(SchoolService);
   private readonly permissionService = inject(PermissionService);
 
+  readonly schoolName = computed(() => this.schoolService.selectedSchool()?.name ?? '');
+
   private readonly allNavItems = computed<SidebarItem[]>(() => {
     const schoolId = this.schoolService.currentSchoolId();
     const prefix = schoolId ? `/schools/${schoolId}` : '';

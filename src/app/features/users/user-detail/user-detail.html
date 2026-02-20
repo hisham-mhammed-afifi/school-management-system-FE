@@ -133,6 +133,9 @@
         role="alertdialog"
         aria-modal="true"
         [attr.aria-label]="'USERS.REMOVE_ROLE_CONFIRM' | translate"
+        cdkTrapFocus
+        cdkTrapFocusAutoCapture
+        (keydown.escape)="cancelRemoveRole()"
       >
         <h3 class="text-lg font-semibold text-text-primary">
           {{ 'USERS.REMOVE_ROLE_CONFIRM' | translate }}

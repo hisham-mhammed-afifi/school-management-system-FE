@@ -33,7 +33,10 @@ export class ReportCardService {
   }
 
   generate(data: GenerateReportCardsRequest): Observable<ApiResponse<GenerateReportCardsResponse>> {
-    return this.http.post<ApiResponse<GenerateReportCardsResponse>>('/api/v1/report-cards', data);
+    return this.http.post<ApiResponse<GenerateReportCardsResponse>>(
+      '/api/v1/report-cards/generate',
+      data,
+    );
   }
 
   updateRemarks(

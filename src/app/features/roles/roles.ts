@@ -1,6 +1,7 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
+import { CdkTrapFocus, LiveAnnouncer } from '@angular/cdk/a11y';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { IconComponent } from '@shared/components/icon/icon';
 
@@ -13,12 +14,14 @@ import type { PaginationMeta } from '@core/models/api';
 
 @Component({
   selector: 'app-roles',
-  imports: [RouterLink, TranslatePipe, PaginationComponent, IconComponent],
+  imports: [RouterLink, TranslatePipe, PaginationComponent, IconComponent, CdkTrapFocus],
   templateUrl: './roles.html',
   styleUrl: './roles.css',
 })
 export class RolesComponent implements OnInit {
   private readonly roleService = inject(RoleService);
+  private readonly liveAnnouncer = inject(LiveAnnouncer);
+  private readonly translate = inject(TranslateService);
   readonly permissionService = inject(PermissionService);
 
   readonly roles = signal<Role[]>([]);
@@ -66,6 +69,7 @@ export class RolesComponent implements OnInit {
     this.deleting.set(true);
     this.roleService.delete(role.id).subscribe({
       next: () => {
+        this.liveAnnouncer.announce(this.translate.instant('COMMON.SUCCESS'), 'polite');
         this.deleting.set(false);
         this.showDeleteConfirm.set(false);
         this.deletingRole.set(null);

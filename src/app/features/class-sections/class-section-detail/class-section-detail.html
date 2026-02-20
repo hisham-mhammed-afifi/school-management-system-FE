@@ -108,6 +108,9 @@
         role="alertdialog"
         aria-modal="true"
         [attr.aria-label]="'CLASS_SECTIONS.DELETE_CONFIRM' | translate"
+        cdkTrapFocus
+        cdkTrapFocusAutoCapture
+        (keydown.escape)="cancelDelete()"
       >
         <h3 class="text-lg font-semibold text-text-primary">
           {{ 'CLASS_SECTIONS.DELETE_CONFIRM' | translate }}
