@@ -93,7 +93,6 @@ describe('LoginComponent', () => {
           roles: [],
           permissions: [],
           schoolId: null,
-          schools: [],
         },
       },
     });

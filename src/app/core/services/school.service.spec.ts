@@ -70,12 +70,12 @@ describe('SchoolService', () => {
     expect(service.isSuperAdmin()).toBe(false);
   });
 
-  it('should return true for isSuperAdmin when user has no schools', () => {
+  it('should return true for isSuperAdmin when user has super_admin role', () => {
     loginAs({ schools: [] });
     expect(service.isSuperAdmin()).toBe(true);
   });
 
-  it('should return false for isSuperAdmin when user has schools', () => {
+  it('should return false for isSuperAdmin when user does not have super_admin role', () => {
     loginAs({ schools: [{ id: 's1', name: 'School One' }] });
     expect(service.isSuperAdmin()).toBe(false);
   });
@@ -150,7 +150,6 @@ describe('SchoolService', () => {
             roles: roles.map((r) => r.roleName),
             permissions: [],
             schoolId: overrides.schools.length === 1 ? overrides.schools[0].id : null,
-            schools: overrides.schools,
           },
         },
       });

@@ -1,3 +1,4 @@
+// TODO: Migrate dropdown to @angular/cdk/overlay for proper focus trapping, z-index stacking, and escape handling
 import { Component, DestroyRef, ElementRef, HostListener, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';

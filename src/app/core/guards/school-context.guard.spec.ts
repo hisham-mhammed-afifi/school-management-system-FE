@@ -23,7 +23,6 @@ describe('schoolContextGuard', () => {
         roles: ['teacher'],
         permissions: ['students.read'],
         schoolId: 'school-1',
-        schools: [{ id: 'school-1', name: 'School One' }],
       },
     },
   };

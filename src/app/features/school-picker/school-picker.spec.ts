@@ -27,7 +27,6 @@ describe('SchoolPickerComponent', () => {
         roles: ['teacher'],
         permissions: [],
         schoolId: null,
-        schools: [],
       },
     },
   };

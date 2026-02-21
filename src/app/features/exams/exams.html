@@ -96,10 +96,10 @@
                   </td>
                   <td class="px-4 py-3 text-text-secondary">{{ exam.weight }}%</td>
                   <td class="px-4 py-3 text-text-secondary">
-                    {{ exam.startDate ?? '-' }}
+                    {{ exam.startDate ? (exam.startDate | date: 'mediumDate') : '-' }}
                   </td>
                   <td class="px-4 py-3 text-text-secondary">
-                    {{ exam.endDate ?? '-' }}
+                    {{ exam.endDate ? (exam.endDate | date: 'mediumDate') : '-' }}
                   </td>
                 </tr>
               }

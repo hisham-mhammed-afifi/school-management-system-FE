@@ -72,11 +72,15 @@
           </div>
           <div>
             <p class="text-text-tertiary">{{ 'EXAMS.START_DATE' | translate }}</p>
-            <p class="font-medium text-text-primary">{{ e.startDate ?? '-' }}</p>
+            <p class="font-medium text-text-primary">
+              {{ e.startDate ? (e.startDate | date: 'mediumDate') : '-' }}
+            </p>
           </div>
           <div>
             <p class="text-text-tertiary">{{ 'EXAMS.END_DATE' | translate }}</p>
-            <p class="font-medium text-text-primary">{{ e.endDate ?? '-' }}</p>
+            <p class="font-medium text-text-primary">
+              {{ e.endDate ? (e.endDate | date: 'mediumDate') : '-' }}
+            </p>
           </div>
           <div>
             <p class="text-text-tertiary">{{ 'EXAMS.GRADING_SCALE' | translate }}</p>
@@ -141,7 +145,7 @@
                     {{ es.passScore !== null ? es.passScore : '-' }}
                   </td>
                   <td class="px-4 py-2 text-text-secondary">
-                    {{ es.examDate ?? '-' }}
+                    {{ es.examDate ? (es.examDate | date: 'mediumDate') : '-' }}
                   </td>
                   @if (permissionService.hasPermission('exam-subjects.delete')) {
                     <td class="px-4 py-2">

@@ -1,7 +1,7 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap, catchError, throwError, switchMap, map } from 'rxjs';
+import { Observable, tap, catchError, throwError, switchMap, map, shareReplay } from 'rxjs';
 
 import type { ApiResponse } from '@core/models/api';
 import type {
@@ -67,6 +67,7 @@ export class AuthService {
           this.clearSession();
           return throwError(() => err);
         }),
+        shareReplay(1),
       );
 
     return this._refreshingToken;
@@ -79,7 +80,11 @@ export class AuthService {
   }
 
   logout(): void {
-    this.http.post('/api/v1/auth/logout', {}).subscribe();
+    this.http.post('/api/v1/auth/logout', {}).subscribe({
+      error: () => {
+        /* Server-side cleanup is best-effort */
+      },
+    });
     this.clearSession();
     this.router.navigate(['/login']);
   }

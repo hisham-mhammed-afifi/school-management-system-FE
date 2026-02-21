@@ -1,4 +1,5 @@
 import { Component, effect, inject, signal, untracked } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { IconComponent } from '@shared/components/icon/icon';
@@ -12,7 +13,7 @@ import type { PaginationMeta } from '@core/models/api';
 
 @Component({
   selector: 'app-exams',
-  imports: [RouterLink, TranslatePipe, PaginationComponent, IconComponent],
+  imports: [RouterLink, TranslatePipe, PaginationComponent, IconComponent, DatePipe],
   templateUrl: './exams.html',
   styleUrl: './exams.css',
 })

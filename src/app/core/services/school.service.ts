@@ -35,7 +35,7 @@ export class SchoolService {
   readonly isSuperAdmin = computed(() => {
     const user = this.authService.user();
     if (!user) return false;
-    return user.schools.length === 0;
+    return user.roles.includes('super_admin');
   });
 
   readonly hasMultipleSchools = computed(() => this.schools().length > 1);

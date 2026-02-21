@@ -12,10 +12,18 @@ export interface AuthUser {
   schools: { id: string; name: string }[];
 }
 
+export interface LoginResponseUser {
+  id: string;
+  email: string;
+  roles: string[];
+  permissions: string[];
+  schoolId: string | null;
+}
+
 export interface LoginResponse {
   accessToken: string;
   refreshToken: string;
-  user: AuthUser;
+  user: LoginResponseUser;
 }
 
 export interface RefreshTokenRequest {

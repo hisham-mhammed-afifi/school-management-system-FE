@@ -1,4 +1,5 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { CdkTrapFocus, LiveAnnouncer } from '@angular/cdk/a11y';
@@ -16,7 +17,7 @@ import type { Grade } from '@core/models/grade';
 
 @Component({
   selector: 'app-exam-detail',
-  imports: [RouterLink, ReactiveFormsModule, TranslatePipe, IconComponent, CdkTrapFocus],
+  imports: [RouterLink, ReactiveFormsModule, TranslatePipe, IconComponent, CdkTrapFocus, DatePipe],
   templateUrl: './exam-detail.html',
   styleUrl: './exam-detail.css',
 })

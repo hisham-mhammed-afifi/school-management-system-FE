@@ -460,5 +460,5 @@ export const routes: Routes = [
     ],
   },
   { path: '', redirectTo: 'schools', pathMatch: 'full' },
-  { path: '**', redirectTo: 'login' },
+  { path: '**', redirectTo: 'schools' },
 ];
