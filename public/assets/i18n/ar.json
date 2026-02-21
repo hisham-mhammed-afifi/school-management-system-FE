@@ -112,6 +112,7 @@
     "REMOVE_ROLE_CONFIRM": "إزالة الدور",
     "REMOVE_ROLE_MESSAGE": "هل أنت متأكد من إزالة هذا الدور من المستخدم؟",
     "NO_ROLES": "لا توجد أدوار معيّنة",
+    "SELECT_ROLE_REQUIRED": "يرجى اختيار دور واحد على الأقل",
     "LOAD_ERROR": "فشل تحميل المستخدمين"
   },
   "ROLES": {

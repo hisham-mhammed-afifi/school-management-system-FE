@@ -138,6 +138,11 @@
               </button>
             }
           </div>
+          @if (errorMessage() === 'USERS.SELECT_ROLE_REQUIRED') {
+            <span class="text-xs text-danger-text">
+              {{ 'USERS.SELECT_ROLE_REQUIRED' | translate }}
+            </span>
+          }
         </div>
       }
 

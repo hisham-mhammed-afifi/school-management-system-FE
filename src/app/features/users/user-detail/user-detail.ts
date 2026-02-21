@@ -91,10 +91,10 @@ export class UserDetailComponent implements OnInit {
     });
   }
 
-  unassignedRoles(): Role[] {
+  readonly unassignedRoles = computed(() => {
     const assigned = new Set(this.user()?.roles.map((r) => r.roleId) ?? []);
     return this.availableRoles().filter((r) => !assigned.has(r.id));
-  }
+  });
 
   private loadUser(): void {
     this.loading.set(true);
@@ -114,6 +114,7 @@ export class UserDetailComponent implements OnInit {
   private loadRoles(): void {
     this.roleService.list({ limit: 100 }).subscribe({
       next: (res) => this.availableRoles.set(res.data),
+      error: () => this.error.set('ROLES.LOAD_ERROR'),
     });
   }
 }

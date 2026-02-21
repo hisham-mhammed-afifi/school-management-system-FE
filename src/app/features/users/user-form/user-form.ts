@@ -71,6 +71,11 @@ export class UserFormComponent implements OnInit {
       return;
     }
 
+    if (!this.isEdit() && this.selectedRoleIds().size === 0) {
+      this.errorMessage.set('USERS.SELECT_ROLE_REQUIRED');
+      return;
+    }
+
     this.saving.set(true);
     this.errorMessage.set(null);
 
@@ -140,6 +145,7 @@ export class UserFormComponent implements OnInit {
   private loadRoles(): void {
     this.roleService.list({ limit: 100 }).subscribe({
       next: (res) => this.roles.set(res.data),
+      error: () => this.errorMessage.set('ROLES.LOAD_ERROR'),
     });
   }
 

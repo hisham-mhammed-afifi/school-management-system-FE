@@ -138,6 +138,7 @@ export class RoleDetailComponent implements OnInit {
   private loadPermissions(): void {
     this.roleService.listPermissions().subscribe({
       next: (res) => this.allPermissions.set(res.data),
+      error: () => this.error.set('ROLES.LOAD_ERROR'),
     });
   }
 }

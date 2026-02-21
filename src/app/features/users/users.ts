@@ -91,6 +91,7 @@ export class UsersComponent {
   private loadRoles(): void {
     this.roleService.list({ limit: 100 }).subscribe({
       next: (res) => this.roles.set(res.data),
+      error: () => this.error.set('ROLES.LOAD_ERROR'),
     });
   }
 }

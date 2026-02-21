@@ -111,10 +111,20 @@ describe('UserFormComponent', () => {
       expect(navigateSpy).toHaveBeenCalledWith(['/schools', 'test-school', 'users', 'new-id']);
     });
 
+    it('should show error when no role selected on create', () => {
+      flushRoles();
+
+      component.form.patchValue({ email: 'new@test.com', password: 'password123' });
+      component.onSubmit();
+
+      expect(component.errorMessage()).toBe('USERS.SELECT_ROLE_REQUIRED');
+    });
+
     it('should handle create error', () => {
       flushRoles();
 
       component.form.patchValue({ email: 'new@test.com', password: 'password123' });
+      component.toggleRole('r1');
       component.onSubmit();
 
       const req = httpTesting.expectOne('/api/v1/users');

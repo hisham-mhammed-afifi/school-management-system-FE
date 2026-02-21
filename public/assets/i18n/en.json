@@ -112,6 +112,7 @@
     "REMOVE_ROLE_CONFIRM": "Remove Role",
     "REMOVE_ROLE_MESSAGE": "Are you sure you want to remove this role from the user?",
     "NO_ROLES": "No roles assigned",
+    "SELECT_ROLE_REQUIRED": "Please select at least one role",
     "LOAD_ERROR": "Failed to load users"
   },
   "ROLES": {

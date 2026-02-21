@@ -47,6 +47,7 @@ export const routes: Routes = [
               },
               {
                 path: ':id',
+                canActivate: [permissionGuard('users.read')],
                 loadComponent: () =>
                   import('./features/users/user-detail/user-detail').then(
                     (m) => m.UserDetailComponent,
@@ -441,6 +442,7 @@ export const routes: Routes = [
               },
               {
                 path: ':id',
+                canActivate: [permissionGuard('roles.read')],
                 loadComponent: () =>
                   import('./features/roles/role-detail/role-detail').then(
                     (m) => m.RoleDetailComponent,

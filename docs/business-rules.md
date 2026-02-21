@@ -15,11 +15,19 @@
 
 ### Users & Roles
 
+- Users are identified by email (unique per school context)
+- A user must have at least one role when created
 - A user can have roles across multiple schools
+- User deletion is soft-delete (sets `isActive = false`, not hard delete)
+- Password is required on creation, not editable by admin after creation
+- User profile linking: a user can be linked to at most ONE of `teacherId`, `studentId`, or `guardianId`
 - `super_admin` users bypass all permission checks
 - `super_admin` is identified by the `super_admin` role (not by absence of schools)
 - Seed roles (protected): `super_admin`, `school_admin`, `principal`, `teacher`, `student`, `guardian`, `accountant`
+- Seed roles cannot be renamed or deleted
+- Roles with assigned users cannot be deleted
 - Custom roles can be created per school (premium feature)
+- Permissions follow `module.action` format (e.g., `users.list`, `students.create`)
 - Permissions are assigned to roles and flattened into the JWT
 
 ### School Context
@@ -57,15 +65,19 @@ Plan hierarchy: `free` < `basic` < `premium` < `enterprise`
 
 ## Architecture Decisions
 
-| Decision                                                 | Rationale                                                                                                                              | Date       |
-| -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| Use `shareReplay(1)` on token refresh observable         | Prevents duplicate refresh requests when multiple 401s fire concurrently                                                               | 2026-02-21 |
-| Detect super admin by role name, not schools.length      | `user.schools.length === 0` is fragile — deactivated users with no schools would be misidentified                                      | 2026-02-21 |
-| Separate `LoginResponseUser` type from `AuthUser`        | Backend login response has flat `schoolId`, not `schools[]` array. `AuthUser` is built from `/auth/me` profile                         | 2026-02-21 |
-| Remove `role="navigation"` from sidebar `<aside>`        | Inner `<nav>` already provides navigation landmark; double nesting confuses screen readers                                             | 2026-02-21 |
-| Wildcard route redirects to `/schools` not `/login`      | Authenticated users hitting unknown URLs get a redirect chain (login → guestGuard → schools). Direct redirect is cleaner               | 2026-02-21 |
-| Remove forgot password button until flow is implemented  | Dead button with no handler is misleading UX                                                                                           | 2026-02-21 |
-| Notification bell dropdown should migrate to CDK Overlay | CLAUDE.md mandates CDK for popups. Current manual `@HostListener` approach works but lacks CDK benefits (focus trap, z-index stacking) | 2026-02-21 |
+| Decision                                                    | Rationale                                                                                                                              | Date       |
+| ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| Use `shareReplay(1)` on token refresh observable            | Prevents duplicate refresh requests when multiple 401s fire concurrently                                                               | 2026-02-21 |
+| Detect super admin by role name, not schools.length         | `user.schools.length === 0` is fragile — deactivated users with no schools would be misidentified                                      | 2026-02-21 |
+| Separate `LoginResponseUser` type from `AuthUser`           | Backend login response has flat `schoolId`, not `schools[]` array. `AuthUser` is built from `/auth/me` profile                         | 2026-02-21 |
+| Remove `role="navigation"` from sidebar `<aside>`           | Inner `<nav>` already provides navigation landmark; double nesting confuses screen readers                                             | 2026-02-21 |
+| Wildcard route redirects to `/schools` not `/login`         | Authenticated users hitting unknown URLs get a redirect chain (login → guestGuard → schools). Direct redirect is cleaner               | 2026-02-21 |
+| Remove forgot password button until flow is implemented     | Dead button with no handler is misleading UX                                                                                           | 2026-02-21 |
+| Notification bell dropdown should migrate to CDK Overlay    | CLAUDE.md mandates CDK for popups. Current manual `@HostListener` approach works but lacks CDK benefits (focus trap, z-index stacking) | 2026-02-21 |
+| Add `permissionGuard` to detail routes                      | User/role detail routes were unprotected — any authenticated user could view details without `*.read` permission                       | 2026-02-21 |
+| Convert template methods to `computed()` signals            | Methods called in templates re-evaluate on every change detection cycle; `computed()` memoizes until dependencies change               | 2026-02-21 |
+| Validate role selection client-side before create           | Backend requires `roleIds` min 1; client-side validation gives immediate feedback instead of generic 400 error                         | 2026-02-21 |
+| Confirmation modals should use shared CDK Overlay component | 11 files use manual `fixed inset-0` overlay pattern. Shared component with CDK Overlay is the right approach (incremental migration)   | 2026-02-21 |
 
 ---
 
@@ -92,3 +104,33 @@ Plan hierarchy: `free` < `basic` < `premium` < `enterprise`
 - [x] Dark mode works correctly
 - [ ] Forgot/reset password flow (deferred)
 - [ ] Profile update page (deferred)
+
+### Users & Roles (Module 2)
+
+#### Users CRUD
+
+- [x] List users with pagination, search, role filter, and status filter
+- [x] Create user with email, phone, password, and role assignment
+- [x] Edit user email, phone, and active status
+- [x] View user details with assigned roles
+- [x] Assign roles to user from detail page
+- [x] Remove roles from user with confirmation
+- [x] Permission-based UI (create/edit buttons hidden without permission)
+- [x] Loading, error, and empty states handled
+- [x] Data reloads on school context change
+- [x] Validate at least one role selected before create
+- [x] Detail route requires `users.read` permission
+
+#### Roles CRUD
+
+- [x] List roles with pagination and search
+- [x] Create custom role with name
+- [x] Edit custom role name
+- [x] Delete custom role with confirmation
+- [x] View role details with permission management
+- [x] Toggle individual permissions or entire modules
+- [x] Indeterminate checkbox state for partially-selected modules
+- [x] Seed role protection (no edit/delete)
+- [x] Permission-based UI
+- [x] Loading, error, and empty states handled
+- [x] Detail route requires `roles.read` permission
