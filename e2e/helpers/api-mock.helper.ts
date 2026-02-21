@@ -69,6 +69,24 @@ export class ApiMockHelper {
     });
   }
 
+  /** Mock a PATCH endpoint */
+  async mockPatch(urlPattern: string, responseBody: unknown, options?: MockOptions): Promise<void> {
+    await this.page.route(urlPattern, async (route: Route) => {
+      if (route.request().method() !== 'PATCH') {
+        await route.fallback();
+        return;
+      }
+      if (options?.delay) {
+        await new Promise((r) => setTimeout(r, options.delay));
+      }
+      await route.fulfill({
+        status: options?.status ?? 200,
+        contentType: 'application/json',
+        body: JSON.stringify(responseBody),
+      });
+    });
+  }
+
   /** Mock an endpoint to return an error */
   async mockError(urlPattern: string, status = 500, message = 'Server Error'): Promise<void> {
     await this.page.route(urlPattern, (route) =>
