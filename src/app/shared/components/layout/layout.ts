@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { IconComponent } from '@shared/components/icon/icon';
@@ -6,10 +6,8 @@ import { IconComponent } from '@shared/components/icon/icon';
 import { SidebarComponent } from '@shared/components/sidebar/sidebar';
 import { ThemeToggleComponent } from '@shared/components/theme-toggle/theme-toggle';
 import { LanguageSwitcherComponent } from '@shared/components/language-switcher/language-switcher';
-import { SchoolSwitcherComponent } from '@shared/components/school-switcher/school-switcher';
 import { NotificationBellComponent } from '@shared/components/notification-bell/notification-bell';
 import { AuthService } from '@core/services/auth.service';
-import { SchoolService } from '@core/services/school.service';
 
 @Component({
   selector: 'app-layout',
@@ -19,7 +17,6 @@ import { SchoolService } from '@core/services/school.service';
     SidebarComponent,
     ThemeToggleComponent,
     LanguageSwitcherComponent,
-    SchoolSwitcherComponent,
     NotificationBellComponent,
     IconComponent,
   ],
@@ -28,13 +25,8 @@ import { SchoolService } from '@core/services/school.service';
 })
 export class LayoutComponent {
   private readonly authService = inject(AuthService);
-  private readonly schoolService = inject(SchoolService);
 
   readonly user = this.authService.user;
-  readonly isSuperAdmin = this.schoolService.isSuperAdmin;
-  readonly showSchoolSwitcher = computed(
-    () => this.schoolService.isSuperAdmin() || this.schoolService.hasMultipleSchools(),
-  );
   readonly sidebarOpen = signal(false);
 
   toggleSidebar(): void {

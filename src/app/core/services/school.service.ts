@@ -1,4 +1,4 @@
-import { Injectable, inject, signal, computed } from '@angular/core';
+import { Injectable, inject, signal, computed, effect } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router, NavigationEnd } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -53,6 +53,14 @@ export class SchoolService {
     if (!id) return null;
     return this.schools().find((s) => s.id === id) ?? null;
   });
+
+  constructor() {
+    effect(() => {
+      if (this.isSuperAdmin() && this.currentSchoolId() && this._platformSchools().length === 0) {
+        this.fetchSchools().subscribe();
+      }
+    });
+  }
 
   /** Fetch all platform schools (super admins only) */
   fetchSchools(): Observable<PaginatedResponse<School>> {

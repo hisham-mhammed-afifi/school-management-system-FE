@@ -581,7 +581,8 @@
     "SELECT_PLACEHOLDER": "Select a school...",
     "PICKER_TITLE": "Select a School",
     "PICKER_SUBTITLE": "Choose a school to continue",
-    "NO_SCHOOLS": "No schools available"
+    "NO_SCHOOLS": "No schools available",
+    "SWITCH_SCHOOLS": "Back to school list"
   },
   "NOTIFICATIONS": {
     "TITLE": "Notifications",

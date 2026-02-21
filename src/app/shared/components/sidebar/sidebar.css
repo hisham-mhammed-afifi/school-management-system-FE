@@ -16,6 +16,10 @@
   transform: translateX(0);
 }
 
+:host-context([dir='rtl']) .back-arrow {
+  transform: scaleX(-1);
+}
+
 @media (min-width: 1024px) {
   .sidebar {
     transform: translateX(0);

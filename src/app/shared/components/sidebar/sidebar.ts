@@ -28,6 +28,9 @@ export class SidebarComponent {
   private readonly permissionService = inject(PermissionService);
 
   readonly schoolName = computed(() => this.schoolService.selectedSchool()?.name ?? '');
+  readonly canSwitchSchool = computed(
+    () => this.schoolService.isSuperAdmin() || this.schoolService.hasMultipleSchools(),
+  );
 
   private readonly allNavItems = computed<SidebarItem[]>(() => {
     const schoolId = this.schoolService.currentSchoolId();

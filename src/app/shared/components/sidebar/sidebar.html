@@ -6,9 +6,28 @@
 >
   <!-- Brand -->
   <div class="p-4 border-b border-border">
-    <h3 class="text-lg font-bold text-text-primary truncate">
-      {{ schoolName() || ('COMMON.APP_NAME' | translate) }}
-    </h3>
+    @if (canSwitchSchool()) {
+      <a
+        routerLink="/schools"
+        (click)="close()"
+        [attr.aria-label]="'SCHOOL.SWITCH_SCHOOLS' | translate"
+        class="flex items-center gap-2 group no-underline"
+      >
+        <fa-icon
+          icon="arrow-left"
+          class="back-arrow text-sm text-text-tertiary transition-colors group-hover:text-accent"
+        />
+        <h3
+          class="text-lg font-bold text-text-primary truncate transition-colors group-hover:text-accent"
+        >
+          {{ schoolName() || ('COMMON.APP_NAME' | translate) }}
+        </h3>
+      </a>
+    } @else {
+      <h3 class="text-lg font-bold text-text-primary truncate">
+        {{ schoolName() || ('COMMON.APP_NAME' | translate) }}
+      </h3>
+    }
   </div>
 
   <!-- Navigation -->
