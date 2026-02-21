@@ -4,6 +4,7 @@ import {
   faArrowLeft,
   faBan,
   faBars,
+  faBell,
   faCalendarDays,
   faCalendarXmark,
   faClipboardCheck,
@@ -39,6 +40,9 @@ import {
   faUserPlus,
   faUsers,
   faUsersSlash,
+  faCheck,
+  faEnvelope,
+  faPaperPlane,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -49,6 +53,7 @@ const ICONS: Record<string, IconDefinition> = {
   'arrow-left': faArrowLeft,
   ban: faBan,
   bars: faBars,
+  bell: faBell,
   'calendar-days': faCalendarDays,
   'calendar-xmark': faCalendarXmark,
   'clipboard-check': faClipboardCheck,
@@ -84,6 +89,9 @@ const ICONS: Record<string, IconDefinition> = {
   'user-plus': faUserPlus,
   users: faUsers,
   'users-slash': faUsersSlash,
+  check: faCheck,
+  envelope: faEnvelope,
+  'paper-plane': faPaperPlane,
   xmark: faXmark,
 };
 

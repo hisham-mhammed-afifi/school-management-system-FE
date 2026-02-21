@@ -1,0 +1,101 @@
+<div class="relative">
+  <!-- Bell button -->
+  <button
+    type="button"
+    (click)="toggleDropdown()"
+    [attr.aria-label]="'NOTIFICATIONS.TITLE' | translate"
+    [attr.aria-expanded]="dropdownOpen()"
+    aria-haspopup="true"
+    class="inline-flex items-center relative p-2 rounded-lg border-0 bg-transparent text-text-primary cursor-pointer transition-colors hover:bg-surface-hover"
+  >
+    <fa-icon icon="bell" class="text-xl leading-none" />
+    @if (unreadCount() > 0) {
+      <span
+        class="absolute top-0.5 end-0.5 flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold text-accent-text bg-danger rounded-full"
+        aria-hidden="true"
+      >
+        {{ unreadCount() > 99 ? '99+' : unreadCount() }}
+      </span>
+    }
+  </button>
+
+  <!-- Dropdown -->
+  @if (dropdownOpen()) {
+    <div
+      role="menu"
+      class="absolute top-full end-0 mt-2 w-80 bg-surface border border-border rounded-xl shadow-card z-50 overflow-hidden"
+    >
+      <!-- Header -->
+      <div class="flex items-center justify-between px-4 py-3 border-b border-border">
+        <h3 class="text-sm font-semibold text-text-primary">
+          {{ 'NOTIFICATIONS.TITLE' | translate }}
+        </h3>
+        @if (unreadCount() > 0) {
+          <button
+            type="button"
+            (click)="markAllAsRead()"
+            class="text-xs font-medium text-accent border-0 bg-transparent cursor-pointer hover:underline"
+          >
+            {{ 'NOTIFICATIONS.MARK_ALL_READ' | translate }}
+          </button>
+        }
+      </div>
+
+      <!-- Content -->
+      @if (loading()) {
+        <div class="flex justify-center py-6">
+          <p class="text-xs text-text-tertiary">{{ 'COMMON.LOADING' | translate }}</p>
+        </div>
+      } @else if (recentNotifications().length === 0) {
+        <div class="flex flex-col items-center py-6">
+          <fa-icon icon="bell" class="text-2xl text-text-tertiary mb-2" />
+          <p class="text-xs text-text-tertiary">{{ 'NOTIFICATIONS.EMPTY' | translate }}</p>
+        </div>
+      } @else {
+        <ul class="max-h-72 overflow-y-auto" role="list">
+          @for (notification of recentNotifications(); track notification.id) {
+            <li
+              role="menuitem"
+              class="px-4 py-3 border-b border-border last:border-b-0 transition-colors hover:bg-surface-hover cursor-pointer"
+              [class.bg-info-bg]="!notification.isRead"
+              (click)="markAsRead(notification, $event)"
+              (keydown.enter)="markAsRead(notification, $event)"
+              tabindex="0"
+            >
+              <div class="flex items-start gap-2">
+                @if (!notification.isRead) {
+                  <span
+                    class="mt-1.5 w-2 h-2 rounded-full bg-accent flex-shrink-0"
+                    aria-hidden="true"
+                  ></span>
+                }
+                <div class="flex-1 min-w-0">
+                  <p
+                    class="text-sm font-medium text-text-primary truncate"
+                    [class.font-bold]="!notification.isRead"
+                  >
+                    {{ notification.title }}
+                  </p>
+                  <p class="text-xs text-text-secondary mt-0.5 line-clamp-2">
+                    {{ notification.body }}
+                  </p>
+                </div>
+              </div>
+            </li>
+          }
+        </ul>
+      }
+
+      <!-- Footer -->
+      <div class="border-t border-border">
+        <button
+          type="button"
+          (click)="viewAll()"
+          class="w-full px-4 py-2.5 text-sm font-medium text-accent border-0 bg-transparent cursor-pointer transition-colors hover:bg-surface-hover text-center"
+        >
+          {{ 'NOTIFICATIONS.VIEW_ALL' | translate }}
+        </button>
+      </div>
+    </div>
+  }
+</div>

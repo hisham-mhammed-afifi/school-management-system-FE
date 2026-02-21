@@ -45,6 +45,7 @@ const ALL_PERMISSIONS = [
   'report-cards.list',
   'report-cards.generate',
   'report-cards.update',
+  'notifications.create',
 ];
 
 interface SetupOptions {

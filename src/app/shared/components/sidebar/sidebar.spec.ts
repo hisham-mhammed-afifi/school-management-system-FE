@@ -67,8 +67,8 @@ describe('SidebarComponent', () => {
     const el = fixture.nativeElement as HTMLElement;
 
     const links = el.querySelectorAll('nav a');
-    // No items should render — permissions denied and role not matched
-    expect(links.length).toBe(0);
+    // Only items with no permissions/roles filter render (Notifications)
+    expect(links.length).toBe(1);
   });
 
   it('should show all items when user has all permissions and roles', () => {
@@ -79,7 +79,7 @@ describe('SidebarComponent', () => {
     const el = fixture.nativeElement as HTMLElement;
 
     const links = el.querySelectorAll('nav a');
-    expect(links.length).toBe(16);
+    expect(links.length).toBe(17);
   });
 
   it('should hide parent portal for non-guardian users', () => {
@@ -90,7 +90,7 @@ describe('SidebarComponent', () => {
     const el = fixture.nativeElement as HTMLElement;
 
     const links = el.querySelectorAll('nav a');
-    // 15 items — all permission-based items pass, but Parent Portal (role-gated) is hidden
-    expect(links.length).toBe(15);
+    // 16 items — all permission-based items + Notifications (no filter), but Parent Portal (role-gated) is hidden
+    expect(links.length).toBe(16);
   });
 });

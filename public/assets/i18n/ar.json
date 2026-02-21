@@ -49,7 +49,8 @@
     "REPORT_CARDS": "بطاقات التقارير",
     "FEE_STRUCTURES": "هياكل الرسوم",
     "FEE_INVOICES": "فواتير الرسوم",
-    "PARENT_PORTAL": "بوابة أولياء الأمور"
+    "PARENT_PORTAL": "بوابة أولياء الأمور",
+    "NOTIFICATIONS": "الإشعارات"
   },
   "LAYOUT": {
     "SIDEBAR": "القائمة الرئيسية",
@@ -581,6 +582,36 @@
     "PICKER_TITLE": "اختر مدرسة",
     "PICKER_SUBTITLE": "اختر مدرسة للمتابعة",
     "NO_SCHOOLS": "لا توجد مدارس متاحة"
+  },
+  "NOTIFICATIONS": {
+    "TITLE": "الإشعارات",
+    "SEND": "إرسال إشعار",
+    "SEND_TITLE": "إرسال إشعار",
+    "SENDING": "جارٍ الإرسال...",
+    "EMPTY": "لا توجد إشعارات",
+    "VIEW_ALL": "عرض جميع الإشعارات",
+    "MARK_ALL_READ": "تعيين الكل كمقروء",
+    "MARK_READ": "تعيين كمقروء",
+    "UNREAD": "غير مقروء",
+    "READ": "مقروء",
+    "ALL": "الكل",
+    "FILTER_STATUS": "تصفية حسب الحالة",
+    "FILTER_CHANNEL": "تصفية حسب القناة",
+    "ALL_CHANNELS": "جميع القنوات",
+    "CHANNEL_IN_APP": "داخل التطبيق",
+    "CHANNEL_SMS": "رسالة نصية",
+    "CHANNEL_EMAIL": "بريد إلكتروني",
+    "CHANNEL_PUSH": "إشعار فوري",
+    "FIELD_TITLE": "العنوان",
+    "FIELD_BODY": "الرسالة",
+    "TITLE_PLACEHOLDER": "عنوان الإشعار...",
+    "BODY_PLACEHOLDER": "اكتب رسالتك...",
+    "CHANNELS": "القنوات",
+    "RECIPIENTS": "المستلمون",
+    "SELECT_USERS_ERROR": "يرجى اختيار مستلم واحد على الأقل",
+    "SELECT_CHANNELS_ERROR": "يرجى اختيار قناة واحدة على الأقل",
+    "SENT_SUCCESS": "تم إرسال الإشعار بنجاح",
+    "LOAD_ERROR": "فشل تحميل الإشعارات"
   },
   "VALIDATION": {
     "REQUIRED": "هذا الحقل مطلوب",

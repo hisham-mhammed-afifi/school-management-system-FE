@@ -118,6 +118,11 @@ export class SidebarComponent {
         permissions: ['fee-invoices.list'],
       },
       {
+        labelKey: 'NAV.NOTIFICATIONS',
+        route: `${prefix}/notifications`,
+        icon: 'bell',
+      },
+      {
         labelKey: 'NAV.PARENT_PORTAL',
         route: `${prefix}/parent-portal`,
         icon: 'house-user',

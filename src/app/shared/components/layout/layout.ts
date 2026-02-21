@@ -7,6 +7,7 @@ import { SidebarComponent } from '@shared/components/sidebar/sidebar';
 import { ThemeToggleComponent } from '@shared/components/theme-toggle/theme-toggle';
 import { LanguageSwitcherComponent } from '@shared/components/language-switcher/language-switcher';
 import { SchoolSwitcherComponent } from '@shared/components/school-switcher/school-switcher';
+import { NotificationBellComponent } from '@shared/components/notification-bell/notification-bell';
 import { AuthService } from '@core/services/auth.service';
 import { SchoolService } from '@core/services/school.service';
 
@@ -19,6 +20,7 @@ import { SchoolService } from '@core/services/school.service';
     ThemeToggleComponent,
     LanguageSwitcherComponent,
     SchoolSwitcherComponent,
+    NotificationBellComponent,
     IconComponent,
   ],
   templateUrl: './layout.html',

@@ -49,7 +49,8 @@
     "REPORT_CARDS": "Report Cards",
     "FEE_STRUCTURES": "Fee Structures",
     "FEE_INVOICES": "Fee Invoices",
-    "PARENT_PORTAL": "Parent Portal"
+    "PARENT_PORTAL": "Parent Portal",
+    "NOTIFICATIONS": "Notifications"
   },
   "LAYOUT": {
     "SIDEBAR": "Main navigation",
@@ -581,6 +582,36 @@
     "PICKER_TITLE": "Select a School",
     "PICKER_SUBTITLE": "Choose a school to continue",
     "NO_SCHOOLS": "No schools available"
+  },
+  "NOTIFICATIONS": {
+    "TITLE": "Notifications",
+    "SEND": "Send Notification",
+    "SEND_TITLE": "Send Notification",
+    "SENDING": "Sending...",
+    "EMPTY": "No notifications",
+    "VIEW_ALL": "View all notifications",
+    "MARK_ALL_READ": "Mark all as read",
+    "MARK_READ": "Mark as read",
+    "UNREAD": "Unread",
+    "READ": "Read",
+    "ALL": "All",
+    "FILTER_STATUS": "Filter by status",
+    "FILTER_CHANNEL": "Filter by channel",
+    "ALL_CHANNELS": "All Channels",
+    "CHANNEL_IN_APP": "In-App",
+    "CHANNEL_SMS": "SMS",
+    "CHANNEL_EMAIL": "Email",
+    "CHANNEL_PUSH": "Push",
+    "FIELD_TITLE": "Title",
+    "FIELD_BODY": "Message",
+    "TITLE_PLACEHOLDER": "Notification title...",
+    "BODY_PLACEHOLDER": "Write your message...",
+    "CHANNELS": "Channels",
+    "RECIPIENTS": "Recipients",
+    "SELECT_USERS_ERROR": "Please select at least one recipient",
+    "SELECT_CHANNELS_ERROR": "Please select at least one channel",
+    "SENT_SUCCESS": "Notification sent successfully",
+    "LOAD_ERROR": "Failed to load notifications"
   },
   "VALIDATION": {
     "REQUIRED": "This field is required",

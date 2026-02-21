@@ -1,0 +1,153 @@
+<div class="flex flex-col gap-4 max-w-2xl">
+  <!-- Header -->
+  <div class="flex items-center gap-3">
+    <a
+      [routerLink]="notificationsRoute()"
+      class="p-2 rounded-lg text-text-secondary transition-colors hover:bg-surface-hover no-underline"
+      [attr.aria-label]="'COMMON.BACK' | translate"
+    >
+      <fa-icon icon="arrow-left" class="text-lg leading-none" />
+    </a>
+    <h1 class="text-xl font-bold text-text-primary">
+      {{ 'NOTIFICATIONS.SEND_TITLE' | translate }}
+    </h1>
+  </div>
+
+  <!-- Error -->
+  @if (errorMessage()) {
+    <div role="alert" class="px-3 py-2 rounded-md text-sm font-medium bg-error-bg text-error-text">
+      {{ errorMessage()! | translate }}
+    </div>
+  }
+
+  <!-- Success -->
+  @if (successMessage()) {
+    <div class="px-3 py-2 rounded-md text-sm font-medium bg-success-bg text-success-text">
+      {{ successMessage()! | translate }}
+    </div>
+  }
+
+  <!-- Form -->
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+    <div class="bg-surface rounded-xl shadow-card border border-border p-4 flex flex-col gap-4">
+      <!-- Title -->
+      <div class="flex flex-col gap-1">
+        <label for="notification-title" class="text-sm font-medium text-text-primary">
+          {{ 'NOTIFICATIONS.FIELD_TITLE' | translate }}
+        </label>
+        <input
+          id="notification-title"
+          type="text"
+          formControlName="title"
+          class="w-full px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+          [placeholder]="'NOTIFICATIONS.TITLE_PLACEHOLDER' | translate"
+        />
+        @if (form.controls.title.touched && form.controls.title.errors) {
+          <p class="text-xs text-error-text">{{ 'VALIDATION.REQUIRED' | translate }}</p>
+        }
+      </div>
+
+      <!-- Body -->
+      <div class="flex flex-col gap-1">
+        <label for="notification-body" class="text-sm font-medium text-text-primary">
+          {{ 'NOTIFICATIONS.FIELD_BODY' | translate }}
+        </label>
+        <textarea
+          id="notification-body"
+          formControlName="body"
+          rows="4"
+          class="w-full px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none resize-y"
+          [placeholder]="'NOTIFICATIONS.BODY_PLACEHOLDER' | translate"
+        ></textarea>
+        @if (form.controls.body.touched && form.controls.body.errors) {
+          <p class="text-xs text-error-text">{{ 'VALIDATION.REQUIRED' | translate }}</p>
+        }
+      </div>
+
+      <!-- Channels -->
+      <div class="flex flex-col gap-2">
+        <p class="text-sm font-medium text-text-primary">
+          {{ 'NOTIFICATIONS.CHANNELS' | translate }}
+        </p>
+        <div class="flex flex-wrap gap-2">
+          @for (channel of channels; track channel) {
+            <button
+              type="button"
+              (click)="toggleChannel(channel)"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 border rounded-lg text-sm font-medium cursor-pointer transition-colors"
+              [class.border-accent]="selectedChannels().has(channel)"
+              [class.bg-accent]="selectedChannels().has(channel)"
+              [class.text-accent-text]="selectedChannels().has(channel)"
+              [class.border-border]="!selectedChannels().has(channel)"
+              [class.bg-transparent]="!selectedChannels().has(channel)"
+              [class.text-text-secondary]="!selectedChannels().has(channel)"
+              [class.hover:bg-surface-hover]="!selectedChannels().has(channel)"
+            >
+              @switch (channel) {
+                @case ('in_app') {
+                  <fa-icon icon="bell" class="text-sm" />
+                }
+                @case ('email') {
+                  <fa-icon icon="envelope" class="text-sm" />
+                }
+                @default {
+                  <fa-icon icon="bell" class="text-sm" />
+                }
+              }
+              {{ 'NOTIFICATIONS.CHANNEL_' + channel.toUpperCase() | translate }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Recipients -->
+      <div class="flex flex-col gap-2">
+        <p class="text-sm font-medium text-text-primary">
+          {{ 'NOTIFICATIONS.RECIPIENTS' | translate }}
+          <span class="text-text-tertiary font-normal">({{ selectedUserIds().size }})</span>
+        </p>
+        @if (users().length === 0) {
+          <p class="text-sm text-text-tertiary">{{ 'COMMON.LOADING' | translate }}</p>
+        } @else {
+          <div class="max-h-48 overflow-y-auto border border-border rounded-lg">
+            @for (user of users(); track user.id) {
+              <label
+                class="flex items-center gap-3 px-3 py-2 transition-colors hover:bg-surface-hover cursor-pointer not-first:border-t not-first:border-border"
+              >
+                <input
+                  type="checkbox"
+                  [checked]="selectedUserIds().has(user.id)"
+                  (change)="toggleUser(user.id)"
+                  class="w-4 h-4 rounded border-border text-accent focus:ring-accent"
+                />
+                <span class="text-sm text-text-primary">{{ user.email }}</span>
+              </label>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center gap-3">
+      <button
+        type="submit"
+        [disabled]="saving()"
+        class="inline-flex items-center gap-2 px-4 py-2 border-0 bg-accent text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <fa-icon icon="paper-plane" class="text-sm leading-none" />
+        @if (saving()) {
+          {{ 'NOTIFICATIONS.SENDING' | translate }}
+        } @else {
+          {{ 'NOTIFICATIONS.SEND' | translate }}
+        }
+      </button>
+      <a
+        [routerLink]="notificationsRoute()"
+        class="px-4 py-2 border border-border bg-transparent text-text-secondary rounded-lg text-sm font-medium cursor-pointer transition-colors hover:bg-surface-hover no-underline"
+      >
+        {{ 'COMMON.CANCEL' | translate }}
+      </a>
+    </div>
+  </form>
+</div>

@@ -366,6 +366,26 @@ export const routes: Routes = [
             ],
           },
           {
+            path: 'notifications',
+            children: [
+              {
+                path: '',
+                loadComponent: () =>
+                  import('./features/notifications/notifications').then(
+                    (m) => m.NotificationsComponent,
+                  ),
+              },
+              {
+                path: 'send',
+                canActivate: [permissionGuard('notifications.create')],
+                loadComponent: () =>
+                  import('./features/notifications/send-notification/send-notification').then(
+                    (m) => m.SendNotificationComponent,
+                  ),
+              },
+            ],
+          },
+          {
             path: 'parent-portal',
             children: [
               {

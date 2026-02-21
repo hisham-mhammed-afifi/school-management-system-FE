@@ -17,6 +17,8 @@ import { AttendancePage } from '../pages/attendance.page';
 import { TimetablePage } from '../pages/timetable.page';
 import { ReportCardsPage } from '../pages/report-cards.page';
 import { ParentPortalPage } from '../pages/parent-portal.page';
+import { NotificationsPage } from '../pages/notifications.page';
+import { SendNotificationPage } from '../pages/send-notification.page';
 import { AuthHelper } from '../helpers/auth.helper';
 import { ApiMockHelper } from '../helpers/api-mock.helper';
 
@@ -39,6 +41,8 @@ interface AppFixtures {
   timetablePage: TimetablePage;
   reportCardsPage: ReportCardsPage;
   parentPortalPage: ParentPortalPage;
+  notificationsPage: NotificationsPage;
+  sendNotificationPage: SendNotificationPage;
   authHelper: AuthHelper;
   apiMock: ApiMockHelper;
 }
@@ -97,6 +101,12 @@ export const test = base.extend<AppFixtures>({
   },
   parentPortalPage: async ({ page }, use) => {
     await use(new ParentPortalPage(page));
+  },
+  notificationsPage: async ({ page }, use) => {
+    await use(new NotificationsPage(page));
+  },
+  sendNotificationPage: async ({ page }, use) => {
+    await use(new SendNotificationPage(page));
   },
   authHelper: async ({ page }, use) => {
     await use(new AuthHelper(page));

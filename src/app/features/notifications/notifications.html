@@ -1,0 +1,156 @@
+<div class="flex flex-col gap-4">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <h1 class="text-xl font-bold text-text-primary">{{ 'NOTIFICATIONS.TITLE' | translate }}</h1>
+    <div class="flex items-center gap-2">
+      <button
+        type="button"
+        (click)="markAllAsRead()"
+        class="inline-flex items-center gap-2 px-3 py-2 border border-border bg-transparent text-text-secondary rounded-lg text-sm font-medium cursor-pointer transition-colors hover:bg-surface-hover"
+      >
+        <fa-icon icon="check" class="text-sm leading-none" />
+        {{ 'NOTIFICATIONS.MARK_ALL_READ' | translate }}
+      </button>
+      @if (permissionService.hasPermission('notifications.create')) {
+        <a
+          routerLink="send"
+          class="inline-flex items-center gap-2 px-4 py-2 border-0 bg-accent text-white rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-accent-hover no-underline"
+        >
+          <fa-icon icon="paper-plane" class="text-lg leading-none" />
+          {{ 'NOTIFICATIONS.SEND' | translate }}
+        </a>
+      }
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="flex flex-wrap gap-3">
+    <div>
+      <label for="read-filter" class="sr-only">{{
+        'NOTIFICATIONS.FILTER_STATUS' | translate
+      }}</label>
+      <select
+        id="read-filter"
+        (change)="onReadFilter($event)"
+        class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+      >
+        <option value="">{{ 'NOTIFICATIONS.ALL' | translate }}</option>
+        <option value="false">{{ 'NOTIFICATIONS.UNREAD' | translate }}</option>
+        <option value="true">{{ 'NOTIFICATIONS.READ' | translate }}</option>
+      </select>
+    </div>
+    <div>
+      <label for="channel-filter" class="sr-only">{{
+        'NOTIFICATIONS.FILTER_CHANNEL' | translate
+      }}</label>
+      <select
+        id="channel-filter"
+        (change)="onChannelFilter($event)"
+        class="px-3 py-2 border border-border bg-bg-primary text-text-primary rounded-lg text-sm transition-colors focus:border-accent focus:outline-none"
+      >
+        <option value="">{{ 'NOTIFICATIONS.ALL_CHANNELS' | translate }}</option>
+        @for (channel of channels; track channel) {
+          <option [value]="channel">
+            {{ 'NOTIFICATIONS.CHANNEL_' + channel.toUpperCase() | translate }}
+          </option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <!-- Error -->
+  @if (error()) {
+    <div role="alert" class="px-3 py-2 rounded-md text-sm font-medium bg-error-bg text-error-text">
+      {{ error()! | translate }}
+    </div>
+  }
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="flex justify-center py-12">
+      <p class="text-sm text-text-tertiary">{{ 'COMMON.LOADING' | translate }}</p>
+    </div>
+  }
+
+  <!-- Notifications list -->
+  @if (!loading() && !error()) {
+    @if (notifications().length === 0) {
+      <div class="text-center py-12">
+        <fa-icon icon="bell" class="text-4xl text-text-tertiary mb-2" />
+        <p class="text-sm text-text-tertiary">{{ 'NOTIFICATIONS.EMPTY' | translate }}</p>
+      </div>
+    } @else {
+      <div class="bg-surface rounded-xl shadow-card border border-border overflow-hidden">
+        <ul class="divide-y divide-border" role="list">
+          @for (notification of notifications(); track notification.id) {
+            <li
+              class="px-4 py-3 transition-colors hover:bg-surface-hover cursor-pointer"
+              [class.bg-info-bg]="!notification.isRead"
+              (click)="markAsRead(notification)"
+              (keydown.enter)="markAsRead(notification)"
+              tabindex="0"
+              role="listitem"
+            >
+              <div class="flex items-start gap-3">
+                @if (!notification.isRead) {
+                  <span
+                    class="mt-2 w-2.5 h-2.5 rounded-full bg-accent flex-shrink-0"
+                    aria-hidden="true"
+                  ></span>
+                } @else {
+                  <span class="mt-2 w-2.5 h-2.5 flex-shrink-0" aria-hidden="true"></span>
+                }
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center justify-between gap-2">
+                    <p
+                      class="text-sm text-text-primary truncate"
+                      [class.font-bold]="!notification.isRead"
+                      [class.font-medium]="notification.isRead"
+                    >
+                      {{ notification.title }}
+                    </p>
+                    <span class="text-xs text-text-tertiary whitespace-nowrap flex-shrink-0">
+                      {{ notification.createdAt | date: 'short' }}
+                    </span>
+                  </div>
+                  <p class="text-sm text-text-secondary mt-0.5">{{ notification.body }}</p>
+                  <span
+                    class="inline-flex items-center gap-1 mt-1 text-xs font-medium px-2 py-0.5 rounded-full"
+                    [class.bg-accent]="notification.channel === 'in_app'"
+                    [class.text-accent-text]="notification.channel === 'in_app'"
+                    [class.bg-success-bg]="notification.channel === 'email'"
+                    [class.text-success-text]="notification.channel === 'email'"
+                    [class.bg-info-bg]="notification.channel === 'sms'"
+                    [class.text-info-text]="notification.channel === 'sms'"
+                    [class.bg-bg-secondary]="notification.channel === 'push'"
+                    [class.text-text-secondary]="notification.channel === 'push'"
+                  >
+                    @switch (notification.channel) {
+                      @case ('in_app') {
+                        <fa-icon icon="bell" class="text-[10px]" />
+                      }
+                      @case ('email') {
+                        <fa-icon icon="envelope" class="text-[10px]" />
+                      }
+                      @default {
+                        <fa-icon icon="bell" class="text-[10px]" />
+                      }
+                    }
+                    {{ 'NOTIFICATIONS.CHANNEL_' + notification.channel.toUpperCase() | translate }}
+                  </span>
+                </div>
+              </div>
+            </li>
+          }
+        </ul>
+      </div>
+
+      <app-pagination
+        [page]="meta().page"
+        [limit]="meta().limit"
+        [total]="meta().total"
+        (pageChange)="onPageChange($event)"
+      />
+    }
+  }
+</div>
