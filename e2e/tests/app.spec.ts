@@ -1,12 +1,12 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/base.fixture';
 
 test.describe('App', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
   });
 
-  test('should display app title', async ({ page }) => {
-    await expect(page.locator('h1')).toBeVisible();
+  test('should redirect to login when not authenticated', async ({ page }) => {
+    await expect(page).toHaveURL(/\/login/);
   });
 
   test('should toggle language', async ({ page }) => {
@@ -19,7 +19,7 @@ test.describe('App', () => {
   });
 
   test('should toggle theme', async ({ page }) => {
-    const darkButton = page.locator('app-theme-toggle button[aria-label="Dark"]');
+    const darkButton = page.getByRole('switch', { name: 'Dark mode' });
     await darkButton.click();
     await expect(page.locator('html')).toHaveClass(/dark/);
   });

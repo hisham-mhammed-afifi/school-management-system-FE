@@ -32,7 +32,9 @@
       "Bash(git stash:*)",
       "Bash(node -e:*)",
       "Bash(python3:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(npx playwright test:*)",
+      "Bash(npx playwright install:*)"
     ]
   }
 }
