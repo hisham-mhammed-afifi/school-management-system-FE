@@ -80,6 +80,7 @@ export const routes: Routes = [
               },
               {
                 path: ':id',
+                canActivate: [permissionGuard('students.read')],
                 loadComponent: () =>
                   import('./features/students/student-detail/student-detail').then(
                     (m) => m.StudentDetailComponent,

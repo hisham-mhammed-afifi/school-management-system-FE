@@ -30,6 +30,18 @@
 - Permissions follow `module.action` format (e.g., `users.list`, `students.create`)
 - Permissions are assigned to roles and flattened into the JWT
 
+### Students
+
+- Students are identified by `studentCode` (unique per school, immutable after creation)
+- A student has a lifecycle status: `active` → `graduated` | `withdrawn` | `suspended` | `transferred`
+- Status transitions are validated by the backend (finite state machine)
+- Student deletion is soft-delete (sets `deletedAt`, not hard delete)
+- Required fields on creation: studentCode, firstName, lastName, dateOfBirth, gender, admissionDate
+- Optional fields: nationalId, nationality, religion, bloodType, address, phone, email, photoUrl, medicalNotes
+- Student data includes sensitive PII (national ID, medical notes, contact info) — must be permission-gated
+- A student can have guardians linked via the student-guardian relationship (not yet implemented in frontend)
+- A student is enrolled in a class section via the enrollment entity (not yet implemented in frontend)
+
 ### School Context
 
 - Single-school users go directly to their dashboard after login
@@ -65,19 +77,21 @@ Plan hierarchy: `free` < `basic` < `premium` < `enterprise`
 
 ## Architecture Decisions
 
-| Decision                                                    | Rationale                                                                                                                              | Date       |
-| ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| Use `shareReplay(1)` on token refresh observable            | Prevents duplicate refresh requests when multiple 401s fire concurrently                                                               | 2026-02-21 |
-| Detect super admin by role name, not schools.length         | `user.schools.length === 0` is fragile — deactivated users with no schools would be misidentified                                      | 2026-02-21 |
-| Separate `LoginResponseUser` type from `AuthUser`           | Backend login response has flat `schoolId`, not `schools[]` array. `AuthUser` is built from `/auth/me` profile                         | 2026-02-21 |
-| Remove `role="navigation"` from sidebar `<aside>`           | Inner `<nav>` already provides navigation landmark; double nesting confuses screen readers                                             | 2026-02-21 |
-| Wildcard route redirects to `/schools` not `/login`         | Authenticated users hitting unknown URLs get a redirect chain (login → guestGuard → schools). Direct redirect is cleaner               | 2026-02-21 |
-| Remove forgot password button until flow is implemented     | Dead button with no handler is misleading UX                                                                                           | 2026-02-21 |
-| Notification bell dropdown should migrate to CDK Overlay    | CLAUDE.md mandates CDK for popups. Current manual `@HostListener` approach works but lacks CDK benefits (focus trap, z-index stacking) | 2026-02-21 |
-| Add `permissionGuard` to detail routes                      | User/role detail routes were unprotected — any authenticated user could view details without `*.read` permission                       | 2026-02-21 |
-| Convert template methods to `computed()` signals            | Methods called in templates re-evaluate on every change detection cycle; `computed()` memoizes until dependencies change               | 2026-02-21 |
-| Validate role selection client-side before create           | Backend requires `roleIds` min 1; client-side validation gives immediate feedback instead of generic 400 error                         | 2026-02-21 |
-| Confirmation modals should use shared CDK Overlay component | 11 files use manual `fixed inset-0` overlay pattern. Shared component with CDK Overlay is the right approach (incremental migration)   | 2026-02-21 |
+| Decision                                                          | Rationale                                                                                                                              | Date       |
+| ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| Use `shareReplay(1)` on token refresh observable                  | Prevents duplicate refresh requests when multiple 401s fire concurrently                                                               | 2026-02-21 |
+| Detect super admin by role name, not schools.length               | `user.schools.length === 0` is fragile — deactivated users with no schools would be misidentified                                      | 2026-02-21 |
+| Separate `LoginResponseUser` type from `AuthUser`                 | Backend login response has flat `schoolId`, not `schools[]` array. `AuthUser` is built from `/auth/me` profile                         | 2026-02-21 |
+| Remove `role="navigation"` from sidebar `<aside>`                 | Inner `<nav>` already provides navigation landmark; double nesting confuses screen readers                                             | 2026-02-21 |
+| Wildcard route redirects to `/schools` not `/login`               | Authenticated users hitting unknown URLs get a redirect chain (login → guestGuard → schools). Direct redirect is cleaner               | 2026-02-21 |
+| Remove forgot password button until flow is implemented           | Dead button with no handler is misleading UX                                                                                           | 2026-02-21 |
+| Notification bell dropdown should migrate to CDK Overlay          | CLAUDE.md mandates CDK for popups. Current manual `@HostListener` approach works but lacks CDK benefits (focus trap, z-index stacking) | 2026-02-21 |
+| Add `permissionGuard` to detail routes                            | User/role detail routes were unprotected — any authenticated user could view details without `*.read` permission                       | 2026-02-21 |
+| Convert template methods to `computed()` signals                  | Methods called in templates re-evaluate on every change detection cycle; `computed()` memoizes until dependencies change               | 2026-02-21 |
+| Validate role selection client-side before create                 | Backend requires `roleIds` min 1; client-side validation gives immediate feedback instead of generic 400 error                         | 2026-02-21 |
+| Confirmation modals should use shared CDK Overlay component       | 11 files use manual `fixed inset-0` overlay pattern. Shared component with CDK Overlay is the right approach (incremental migration)   | 2026-02-21 |
+| Soft-delete messages should reflect deactivation, not destruction | Backend uses soft-delete for students (sets `deletedAt`). UI messages should say "deactivated" not "cannot be undone"                  | 2026-02-21 |
+| Always show error feedback on failed mutations                    | Silent modal dismissal on delete failure gives no user feedback. All mutation errors must set an error signal                          | 2026-02-21 |
 
 ---
 
@@ -134,3 +148,24 @@ Plan hierarchy: `free` < `basic` < `premium` < `enterprise`
 - [x] Permission-based UI
 - [x] Loading, error, and empty states handled
 - [x] Detail route requires `roles.read` permission
+
+### Students (Module 3)
+
+#### Students CRUD
+
+- [x] List students with pagination, search, and status filter
+- [x] Create student with all required and optional fields
+- [x] Edit student (all fields except studentCode)
+- [x] View student details with organized info cards
+- [x] Delete student with confirmation modal (soft delete)
+- [x] Status displayed with color-coded badges and icons
+- [x] Permission-based UI (create/edit/delete buttons hidden without permission)
+- [x] Loading, error, and empty states handled
+- [x] Data reloads on school context change
+- [x] Dates formatted with Angular DatePipe
+- [x] RTL support (dir="ltr" on email/phone, logical properties)
+- [x] Detail route requires `students.read` permission
+- [x] Delete failure shows error message
+- [ ] Guardian management on student detail (deferred)
+- [ ] Class section filter on list (deferred)
+- [ ] Enrollment management (deferred)
