@@ -60,6 +60,7 @@ export class TeacherDetailComponent implements OnInit {
       error: () => {
         this.deleting.set(false);
         this.showDeleteConfirm.set(false);
+        this.error.set('TEACHERS.DELETE_ERROR');
       },
     });
   }

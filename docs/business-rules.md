@@ -42,6 +42,19 @@
 - A student can have guardians linked via the student-guardian relationship (not yet implemented in frontend)
 - A student is enrolled in a class section via the enrollment entity (not yet implemented in frontend)
 
+### Teachers
+
+- Teachers are identified by `teacherCode` (unique per school, immutable after creation)
+- A teacher has a lifecycle status: `active` | `on_leave` | `resigned` | `terminated`
+- Teacher deletion is soft-delete (sets `deletedAt`, not hard delete)
+- Required fields on creation: teacherCode, firstName, lastName, gender, hireDate
+- Optional fields: nationalId, phone, email, specialization, qualification, photoUrl, departmentId
+- Teacher data includes PII (national ID, contact info) — must be permission-gated
+- A teacher can be assigned subjects (many-to-many relationship, not yet implemented in frontend)
+- A teacher can have availability slots for scheduling (not yet implemented in frontend)
+- Teacher leave management (request, approve, reject) exists in backend (not yet implemented in frontend)
+- Teacher attendance tracking exists in backend (not yet implemented in frontend)
+
 ### School Context
 
 - Single-school users go directly to their dashboard after login
@@ -169,3 +182,23 @@ Plan hierarchy: `free` < `basic` < `premium` < `enterprise`
 - [ ] Guardian management on student detail (deferred)
 - [ ] Class section filter on list (deferred)
 - [ ] Enrollment management (deferred)
+
+#### Teachers CRUD
+
+- [x] List teachers with pagination, search, and status filter
+- [x] Create teacher with all required and optional fields
+- [x] Edit teacher (all fields except teacherCode)
+- [x] View teacher details with organized info cards
+- [x] Delete teacher with confirmation modal (soft delete)
+- [x] Status displayed with color-coded badges and icons
+- [x] Permission-based UI (create/edit/delete buttons hidden without permission)
+- [x] Loading, error, and empty states handled
+- [x] Data reloads on school context change
+- [x] Dates formatted with Angular DatePipe
+- [x] RTL support (dir="ltr" on email/phone, logical properties)
+- [x] Detail route requires `teachers.read` permission
+- [x] Delete failure shows error message
+- [ ] Subject assignment on teacher detail (deferred)
+- [ ] Teacher availability management (deferred)
+- [ ] Teacher leave management (deferred)
+- [ ] Department filter on list (deferred)

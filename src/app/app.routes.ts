@@ -115,6 +115,7 @@ export const routes: Routes = [
               },
               {
                 path: ':id',
+                canActivate: [permissionGuard('teachers.read')],
                 loadComponent: () =>
                   import('./features/teachers/teacher-detail/teacher-detail').then(
                     (m) => m.TeacherDetailComponent,
